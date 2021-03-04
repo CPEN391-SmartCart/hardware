@@ -1,0 +1,14 @@
+src/delay/alt_globaltmr.o: ../src/delay/alt_globaltmr.c
+src/delay/alt_globaltmr.o: /usr/local/DS-5/sw/ARMCompiler5.05u1/bin/../include/stdlib.h
+src/delay/alt_globaltmr.o: /usr/local/DS-5/sw/ARMCompiler5.05u1/bin/../include/stdint.h
+src/delay/alt_globaltmr.o: /usr/local/DS-5/sw/ARMCompiler5.05u1/bin/../include/stdbool.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/soc_cv_av/socal/hps.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/soc_cv_av/socal/socal.h
+src/delay/alt_globaltmr.o: /usr/local/DS-5/sw/ARMCompiler5.05u1/bin/../include/stddef.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/hwlib/hwlib.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/hwlib/alt_hwlibs_ver.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/hwlib/alt_mpu_registers.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/hwlib/alt_globaltmr.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/soc_cv_av/alt_clock_manager.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/soc_cv_av/alt_clock_group.h
+src/delay/alt_globaltmr.o: /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/lib/soc_cv_av/socal/alt_clkmgr.h
