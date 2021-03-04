@@ -1,0 +1,3 @@
+
+#define HX711_SCK (volatile unsigned int *)(0xFF200080)
+#define HX711_DT (volatile unsigned int *)(0xFF200090)

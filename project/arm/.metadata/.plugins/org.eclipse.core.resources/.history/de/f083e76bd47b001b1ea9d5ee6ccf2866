@@ -1,0 +1,80 @@
+/*
+ * main.c
+ *
+ *  Created on: Feb 21, 2021
+ *      Author: jared
+ */
+
+#include "bluetooth/bluetooth.h"
+#include "wifi/wifi.h"
+#include "common.h"
+#include "stdio.h"
+
+#include "wifi/wifi.h"
+#include "uart/uart.h"
+
+#include "delay/delay.h"
+
+#include "hx711/hx711.h"
+
+int exec_lua(char * str, char * res);
+
+int main(void)
+{
+//	hx711_set_gain(128);
+//
+//	hx711_tare(10);
+//
+//
+//	while (TRUE)
+//	{
+//		printf("TEST: %f\n", hx711_get_value(1));
+//	}
+
+	int i;
+	int j;
+	char test[256];
+
+	initWiFi(115200);
+	resetWiFi();
+
+	readStringWIFI(test);
+
+	writeStringWIFI("AT+CWMODE_CUR=1\r\n");
+
+	delay_us(10000000);
+
+	writeStringWIFI("AT+CWLAP\r\n");
+
+	readStringTillSizeWIFI(test, 1000000);
+
+
+	printf("TEST: %s\n", test);
+
+	return 0;
+}
+
+int exec_lua(char * str, char * res) {
+	int i;
+	int bytes_received = 0;
+	printf("executing %s as a Lua command\n", str);
+	while (*str) {
+		for(i = 0; i < 1000; i++) {;}
+		putchar_uart(*str, RS232_LineStatusReg, RS232_TransmitterFifo);
+		str += 1;
+		for(i = 0; i < 1000; i++) {;}
+		if(TestForReceivedData(RS232_LineStatusReg) == 1) {
+			res[bytes_received++] = (char) getchar_uart(RS232_LineStatusReg, RS232_ReceiverFifo);
+		}
+	}
+	putchar_uart('\n', RS232_LineStatusReg , RS232_ReceiverFifo);
+    for(i = 0; i < 200000; i++) {
+        if(TestForReceivedData(RS232_LineStatusReg) == 1) {
+        	res[bytes_received++] = (char) getchar_uart(RS232_LineStatusReg, RS232_ReceiverFifo);
+            i = 0 ; // reset timer if we got something back
+        }
+    }
+	printf("Got %u bytes\n", bytes_received);
+	res[bytes_received] = '\0';
+	return bytes_received;
+}

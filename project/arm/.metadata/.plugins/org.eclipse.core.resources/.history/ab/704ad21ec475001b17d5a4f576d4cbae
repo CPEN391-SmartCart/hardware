@@ -1,0 +1,94 @@
+/*
+ * main.c
+ *
+ *  Created on: Feb 21, 2021
+ *      Author: jared
+ */
+
+#include "bluetooth/bluetooth.h"
+#include "wifi/wifi.h"
+#include "common.h"
+#include "stdio.h"
+
+#include "wifi/wifi.h"
+#include "uart/uart.h"
+
+#include "delay/delay.h"
+
+#include "alt_16550_uart.h"
+
+int main(void)
+{
+    char stringBT[1024];
+    char stringWIFI[1024];
+    char c;
+    int i = 0;
+    int j = 0;
+
+
+//    ALT_16550_DEVICE_t uart_device = ALT_16550_DEVICE_ALTERA_16550_UART;
+//
+//    ALT_16550_HANDLE_t uart_handle;
+//
+//    ALT_STATUS_CODE status_code = alt_16550_init(uart_device,
+//    		(void*) 0xFF210200,
+//                                   50000000,
+//                                   &uart_handle);
+//
+//    alt_16550_baudrate_set(&uart_handle, 38400);
+//
+//    ALT_STATUS_CODE enabling_code = alt_16550_enable(&uart_handle);
+//
+//    printf("%d\n", status_code);
+//    printf("%d\n", enabling_code);
+//
+//    uint32_t baud_rate;
+//    alt_16550_baudrate_get(&uart_handle, &baud_rate);
+//    printf("%d\n", baud_rate);
+//
+//    printf("fifos: %d", alt_16550_fifo_enable(&uart_handle));
+//
+//    printf("write: %d", alt_16550_fifo_write(&uart_handle, "AT\r\n", 4));
+//
+//    while (TRUE)
+//    {
+//    	alt_16550_fifo_level_get_rx(&uart_handle, &i);
+//    	printf/9
+//    }
+//    printf("read: %d", alt_16550_fifo_read(&uart_handle, stringBT, 4));
+//    printf("nice: %s", stringBT);
+
+    // initialize the serial port;
+    // needs to be done according to the chip
+    // to use just change the Bluetooth PART, same idea for put char and get char for the arguments
+    initWiFi(76800);
+    resetWiFi();
+
+
+    while (i < 1000000)
+    {
+    	if (dataReadyUART(WiFi_LineStatusReg))
+    	{
+    		stringBT[j++] = readCharUART(WiFi_LineStatusReg, WiFi_ReceiverFifo);
+    	}
+
+    	i++;
+    }
+
+    stringBT[j] = '\0';
+
+    i=0;
+    while (i < 1000)
+    {
+		writeStringWIFI("AT+GMR\r\n");
+		delay_us(50);
+		readStringWIFI(stringWIFI);
+		i++;
+    }
+
+
+    printf("test: %s\n", stringBT);
+    printf("OK: %s\n", stringWIFI);
+
+	return 0;
+}

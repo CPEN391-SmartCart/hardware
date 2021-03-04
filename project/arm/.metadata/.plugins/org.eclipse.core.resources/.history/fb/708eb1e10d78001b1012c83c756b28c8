@@ -1,0 +1,14 @@
+/*
+ * hx711.c
+ *
+ *  Created on: Feb 26, 2021
+ *      Author: jared
+ */
+
+#include "hx711.h"
+#include "../io/digital.h"
+
+int is_ready()
+{
+	return digitalRead(DT) == LOW;
+}

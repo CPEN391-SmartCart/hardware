@@ -1,0 +1,78 @@
+/*
+ * main.c
+ *
+ *  Created on: Feb 21, 2021
+ *      Author: jared
+ */
+
+#include "bluetooth/bluetooth.h"
+#include "wifi/wifi.h"
+#include "common.h"
+#include "stdio.h"
+
+#include "wifi/wifi.h"
+#include "uart/uart.h"
+
+#include "delay/delay.h"
+
+#include "hx711/hx711.h"
+
+int exec_lua(char * str, char * res);
+
+int main(void)
+{
+//	hx711_set_gain(128);
+//
+//	hx711_tare(10);
+//
+//
+//	while (TRUE)
+//	{
+//		printf("TEST: %f\n", hx711_get_value(1));
+//	}
+
+	int i;
+	int j;
+	char test[256];
+
+	initWiFi(115200);
+	resetWiFi();
+
+	readStringWIFI(test);
+
+	exec_lua("AT+UART_CUR=9600,8,1,0,0\r\n", test);
+
+	printf("OK: %s\n", test);
+
+	initWiFi(9600);
+
+	delay_us(3 * 1000 * 1000);
+
+	exec_lua("AT+GMR\r\n", test);
+
+	printf("9600: %s/n", test);
+
+	delay_us(100000);
+
+	exec_lua("AT+CWMODE_CUR=1\r\n", test);
+
+	printf("cwmode: %s\n", test);
+
+	delay_us(100000);
+
+	exec_lua("AT+CWLAPOPT=1,0x2\r\n", test);
+
+	printf("cwalapopt: %s\n", test);
+
+	delay_us(100000);
+
+	exec_lua("AT+CWLAP\r\n", test);
+
+	while (TRUE)
+	{
+		readStringWIFI(test);
+		printf("AFKWIEFK: %s\n", test);
+	}
+
+	return 0;
+}

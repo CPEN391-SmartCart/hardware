@@ -1,0 +1,53 @@
+/*
+ * main.c
+ *
+ *  Created on: Feb 21, 2021
+ *      Author: jared
+ */
+
+#include "bluetooth/bluetooth.h"
+#include "wifi/wifi.h"
+#include "common.h"
+#include "stdio.h"
+
+#include "wifi/wifi.h"
+#include "uart/uart.h"
+
+#include "delay/delay.h"
+
+#include "hx711/hx711.h"
+
+#include "alt_16550_uart.h"
+
+int main(void)
+{
+//	hx711_set_gain(128);
+//
+//	hx711_tare(10);
+//
+//
+//	while (TRUE)
+//	{
+//		printf("TEST: %f\n", hx711_get_value(1));
+//	}
+
+	int i = 0;
+	char test[256];
+
+	initWiFi(115200);
+	resetWiFi();
+
+	while (i < 5)
+	{
+		writeStringWIFI("AT\r\n");
+		readStringWIFI(test);
+		i++;
+	}
+
+	for (int i = 0; i < 30; i++)
+	{
+		printf("%d\n", test[i]);
+	}
+
+	return 0;
+}

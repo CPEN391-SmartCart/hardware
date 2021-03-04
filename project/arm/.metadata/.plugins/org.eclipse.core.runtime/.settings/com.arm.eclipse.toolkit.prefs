@@ -1,0 +1,3 @@
+analytics=[{"debugger_s_host_os"\:"Linux","debugger_n_create_view_commands"\:14,"debugger_n_create_view_target_console"\:7,"debugger_s_host_os_version"\:"5.8.0-44-generic","debugger_s_java_version"\:"1.7.0_60","debugger_n_create_view_app_console"\:14,"product"\:"debugger","debugger_n_create_view_disassembly"\:12,"debugger_s_eclipse_version"\:"3.105.0.v20130522-1122","debugger_s_toolkit"\:"ulteval","debugger_s_host_locale"\:"en_CA","debugger_s_distribution"\:"ARM Development Studio 5","debugger_n_create_view_debug_control"\:2,"debugger_n_debug_capture_other"\:12,"debugger_s_host_architecture"\:"amd64","debugger_n_create_view_variables"\:12}]
+analytics_transmitted=1614657784982
+eclipse.preferences.version=1

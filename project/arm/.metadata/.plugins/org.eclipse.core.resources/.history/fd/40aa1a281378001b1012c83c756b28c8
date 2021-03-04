@@ -1,0 +1,9 @@
+
+#include <stdint.h>
+
+#define LOW 0
+#define HIGH 1
+
+int digitalRead(volatile unsigned int *address);
+
+void digitalWrite(volatile unsigned int *address, int value);
