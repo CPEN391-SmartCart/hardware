@@ -42,7 +42,19 @@ module  GraphicsController_Verilog (
 
 	reg signed [15:0] X1, Y1, X2, Y2, Colour, BackGroundColour, Command;			// registers
 	reg signed [15:0] Colour_Latch;									// holds data read from a pixel
-	reg signed [15:0] current_X, current_Y;
+
+	// additional registers
+	reg signed [15:0] current_X, current_Y, bshX, bshY, err;
+	wire signed [15:0] dx, dy;
+	wire signed [1:0] sx, sy;
+	reg load_en, err_x_en, err_y_en, x_en, y_en;
+	reg X_H, Y_H;	
+
+	// assigning reg values for Bresenham's line
+	assign dx = (X2 > X1) ? X2 - X1 : X1 - X2;
+	assign dy = (Y2 > Y1) ? Y1 - Y2 : Y2 - Y1;
+	assign sx = (X2 > X1) ? 2'b1 : -1 * 2'b1;
+	assign sy = (Y2 > Y1) ? 2'b1 : -1 * 2'b1;
 
 	// signals to control/select the registers above
 	reg  	X1_Select_H,
@@ -55,7 +67,6 @@ module  GraphicsController_Verilog (
 	
 	reg CommandWritten_H, ClearCommandWritten_H;						// signals to control that a command request has been logged
 	reg Idle_H, SetBusy_H, ClearBusy_H;									// signals to control status of the graphics chip			
-	reg X_H, Y_H;	
 	
 	// Temporary Asynchronous signals that drive the Ram (made synchronous in a register for the state machine)
 	// your Verilog code should drive these signals not the real Sram signals.
@@ -99,12 +110,15 @@ module  GraphicsController_Verilog (
 	parameter ProcessCommand = 8'h01;						// State is figure out command
 	parameter DrawHLine = 8'h02;			 	 			// State for drawing a Horizontal line
 	parameter DrawVline = 8'h03;			 	 			// State for drawing a Vertical line
-	parameter DrawLine = 8'h04;				 	 			// State for drawing any line
+	parameter DrawLine1 = 8'h04;			 	 			// State for drawing any line
+	parameter DrawLine2 = 8'h0c;			 	 			// State for drawing any line
 	parameter DrawPixel = 8'h05;							// State for drawing a pixel
 	parameter ReadPixel = 8'h06;							// State for reading a pixel
 	parameter ReadPixel1 = 8'h07;							// State for reading a pixel
 	parameter ReadPixel2 = 8'h08;							// State for reading a pixel
 	parameter PalletteReProgram = 8'h09;					// State for programming a pallette colour
+	parameter DrawRectangle1 = 8'h0a;						// State for drawing a rectangle
+	parameter DrawRectangle2 = 8'h0b;						// State for drawing a rectangle
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Commands values that can be written to command register by CPU to get graphics controller to draw a shape
@@ -115,7 +129,8 @@ module  GraphicsController_Verilog (
 	parameter ALine = 16'h0003;								// command is draw any line
 	parameter PutPixel = 16'h000a;							// command to draw a pixel
 	parameter GetPixel = 16'h000b;							// command to read a pixel
-	parameter ProgramPallette = 16'h0010;					// command is program one of the 256 pallettes with a new RGB value
+	parameter ProgramPallette = 16'h0010;					// command is program one of the 256 pallettes with a new RGB 
+	parameter Rectangle = 16'h0004;							// command to draw a rectangle
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Additional parameters
@@ -398,9 +413,53 @@ module  GraphicsController_Verilog (
 					current_Y[7:0] <= DataInFromCPU[7:0];
 			end else if(Y_H == 1) begin
 				current_Y <= current_Y + 16'h1;
+			end else if(NextState == DrawRectangle1) begin
+				current_Y <= Y1;
 			end
 		end
 	end
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Bresenham's line sequential blocks
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+	always@(posedge Clk) begin
+        if(Reset_L == 0) begin
+            err <= 16'b0;
+        end else if (load_en) begin
+            err <= dx + dy;
+        end else begin
+            case({err_x_en, err_y_en})
+                2'b01: err <= err + dy;
+                2'b10: err <= err + dx;
+                2'b11: err <= err + dx + dy;
+            endcase
+        end
+    end
+
+	always@(posedge Clk) begin
+        if(Reset_L == 0) begin
+            bshX <= 16'b0;
+        end else if (load_en) begin
+            bshX <= X1;
+        end else if (x_en) begin
+            bshX <= bshX + sx;
+        end else if(CurrentState == Idle) begin
+            bshX <= 16'b0;
+        end
+    end
+
+	always@(posedge Clk) begin
+        if(Reset_L == 0) begin
+            bshY <= 16'b0;
+        end else if (load_en) begin
+            bshY <= Y1;
+        end else if (y_en) begin
+            bshY <= bshY + sy;
+        end else if(CurrentState == Idle) begin
+            bshY <= 16'b0;
+        end     
+    end
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // next State and output logic
@@ -430,6 +489,13 @@ module  GraphicsController_Verilog (
 
 		X_H									= 0;
 		Y_H									= 0;
+
+		load_en 							= 0;
+		err_x_en 							= 0;
+		err_y_en 							= 0;
+
+		x_en 								= 0;
+		y_en 								= 0;
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// IMPORTANT we have to define what the default NEXT state will be. In this case we the state machine
@@ -468,7 +534,9 @@ module  GraphicsController_Verilog (
 				else if(Command == Vline) 
 					NextState = DrawVline;
 				else if(Command == ALine) 
-					NextState = ALine;	
+					NextState = DrawLine1;	
+				else if(Command == Rectangle)
+					NextState = DrawRectangle1;
 					
 				// add other code to process any new commands here e.g. draw a circle if you decide to implement that
 				// or draw a rectangle etc
@@ -552,7 +620,7 @@ module  GraphicsController_Verilog (
 			end
 
 			DrawHLine: begin
-				if(current_X <= X2 && current_X >= X_min && current_X <= X_max && Y1 >= Y_min && Y1 <= Y_max) begin
+				if(current_X < X2 && current_X >= X_min && current_X < X_max && Y1 >= Y_min && Y1 < Y_max) begin
 					Sig_AddressOut 	= {Y1[8:0], current_X[9:1]};		// 8 bit X address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixles/bytes
 					Sig_RW_Out			= 0;
 						
@@ -571,7 +639,7 @@ module  GraphicsController_Verilog (
 			end
 
 			DrawVline: begin
-				if(current_Y <= Y2 && current_Y >= Y_min && current_Y <= Y_max && X1 >= X_min && X1 <= X_max) begin
+				if(current_Y < Y2 && current_Y >= Y_min && current_Y < Y_max && X1 >= X_min && X1 < X_max) begin
 					Sig_AddressOut 	= {current_Y[8:0], X1[9:1]};		// 8 bit X address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixles/bytes
 					Sig_RW_Out			= 0;
 						
@@ -589,8 +657,61 @@ module  GraphicsController_Verilog (
 				end	
 			end
 
-			DrawLine: begin
-				NextState = Idle;
+			DrawRectangle1: begin
+
+				if(current_X < X2 && current_X < X_max && current_X >= X_min)
+					NextState = DrawRectangle2;
+				else
+					NextState = Idle;
+			end
+
+			DrawRectangle2: begin
+				if(current_Y < Y2 && current_Y < Y_max && current_Y >= Y_min) begin
+					NextState = DrawRectangle2;
+					Y_H = 1;
+
+					Sig_AddressOut 	= {current_Y[8:0], current_X[9:1]};		// 8 bit X address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixles/bytes
+					Sig_RW_Out			= 0;
+						
+					if(current_X[0] == 1'b0)										// if the address/pixel is an even numbered one
+						Sig_UDS_Out_L 	= 0;								// enable write to upper half of Sram data bus
+					else
+						Sig_LDS_Out_L 	= 0;								// else write to lower half of Sram data bus
+				end
+				else begin
+					NextState = DrawRectangle1;
+					X_H = 1;
+				end
+			end
+
+			DrawLine1: begin
+				load_en = 1;
+				NextState = DrawLine2;
+			end
+
+			DrawLine2: begin
+                Sig_AddressOut 	= {bshY[8:0], bshX[9:1]};		// 8 bit X address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixles/bytes
+				Sig_RW_Out			= 0;
+					
+				if(bshX[0] == 1'b0)										// if the address/pixel is an even numbered one
+					Sig_UDS_Out_L 	= 0;								// enable write to upper half of Sram data bus
+				else
+					Sig_LDS_Out_L 	= 0;								// else write to lower half of Sram data bus
+
+                if(bshX == X2 && bshY == Y2)
+                    NextState = Idle;
+                else
+                    NextState = DrawLine2;
+
+                if(2 * err >= dy) begin
+                    err_y_en = 1;
+                    x_en = 1;
+				end
+
+                if(2 * err <= dx) begin
+                    err_x_en = 1;
+                    y_en = 1;
+				end
 			end
 
 			default: begin
