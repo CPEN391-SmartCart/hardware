@@ -40,10 +40,13 @@ typedef struct PathVertex
 
 typedef struct Item
 {
+	char *barcode;
+	int section_id;
+	double cost;
     int x;
     int y;
     int aisleColor;
-    char name[MAX_SIZE];
+    char *name;
 } Item;
 
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);

@@ -110,3 +110,10 @@ void flushUART(volatile unsigned char *LineStatusReg, volatile unsigned char *Re
         unwanted_char = *ReceiverFifo;
     }
 }
+
+void enableUARTInterrupt(volatile unsigned char *interruptEnableReg) {
+	//currently set for interrupt when reading data is available
+	unsigned char receiveDataAvailableInt = 0x01;
+	(*interruptEnableReg) = receiveDataAvailableInt;
+}
+

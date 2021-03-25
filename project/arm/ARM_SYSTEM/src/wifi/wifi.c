@@ -37,6 +37,8 @@ void initWiFi(int baud_rate)
 
 void resetWiFi(void)
 {
+	disableInterrupt(WIFI_INTERRUPT);
+
     *WIFI_RST = 0;
     delay_us(50);
     *WIFI_RST = 1;
@@ -51,6 +53,9 @@ void resetWiFi(void)
 	    readStringWIFI(string);
 		delay_us(1000);
 	}
+
+	enableInterrupt(WIFI_INTERRUPT);
+
 }
 
 void writeStringWIFI(char *string)
