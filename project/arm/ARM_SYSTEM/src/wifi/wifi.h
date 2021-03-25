@@ -1,3 +1,13 @@
+#ifndef WIFI_WIFI_H_
+#define WIFI_WIFI_H_
+
+#include  <stdio.h>
+#include  "hwlib.h"
+#include  "socal/socal.h"
+#include  "socal/hps.h"
+#include  "alt_interrupt.h"
+#include "alt_int_device.h"
+
 //Bluetooth address range 0xFF21_0200 - 0xFF21_020F 
 #define WiFi_ReceiverFifo ((volatile unsigned char *)(0xFF210210))
 #define WiFi_TransmitterFifo ((volatile unsigned char *)(0xFF210210))
@@ -15,8 +25,29 @@
 #define WIFI_RST (volatile unsigned int *)(0xFF200060)
 #define WIFI_CTS (volatile unsigned int *)(0xFF200070)
 
+#define LUA_MSG_START "STRT\n"
+#define LUA_MSG_END_SUCCESS "EXIT0\0" //lua will explicitly send a null terminated character at the end, which is included here
+
+typedef struct wifi_context {
+	char *BUFFER;
+	int index;
+	char doneRead;
+	 char status;
+}wifi_context ;
+
+
+extern ALT_INT_INTERRUPT_t WIFI_INTERRUPT;
+extern volatile struct wifi_context *WIFI_ISR_CONTEXT;
+extern char BUFFER[1024];
+
 void initWiFi(int baud_rate);
 void resetWiFi(void);
 void writeStringWIFI(char *string);
 void readStringWIFI(char string[32]);
 void readStringTillSizeWIFI(char *string, int size);
+int writeAndReadResponse(char *write, char *response);
+void  wifi_isr_callback ( uint32_t icciar, void * context) ;
+void resetWifiIsrContext();
+
+
+#endif
