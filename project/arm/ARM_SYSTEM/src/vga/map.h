@@ -1,4 +1,5 @@
 #include "graphics.h"
+#include "../common.h"
 
 #define MAX_SIZE 50
 #define RES_HEIGHT 480
@@ -9,20 +10,6 @@
 #define SIDEPANEL_SPLITTER_X 576
 #define SIDEPANEL_TEXT_WIDTH 224
 
-typedef struct Legend
-{
-    char key[MAX_SIZE];
-    int color;
-} Legend;
-
-typedef struct Section
-{
-    int originX;
-    int originY;
-    int sectionWidth;
-    int sectionHeight;
-    int aisleColor;
-} Section;
 
 typedef struct Line
 {
@@ -38,16 +25,7 @@ typedef struct PathVertex
     int y;
 } PathVertex;
 
-typedef struct Item
-{
-	char *barcode;
-	int section_id;
-	double cost;
-    int x;
-    int y;
-    int aisleColor;
-    char *name;
-} Item;
+
 
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateSidePanel(int legendSize, Legend legends[]);

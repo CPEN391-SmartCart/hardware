@@ -1,9 +1,4 @@
-/*
- * barcode_request.c
- *
- *  Created on: Mar 23, 2021
- *      Author: Amr
- */
+
 #include "../delay/delay.h"
 #include "../wifi/wifi.h"
 #include <string.h>
@@ -11,7 +6,7 @@
 
 #include "item_request.h"
 
-Item getItemFromResponse(char *read){
+static Item getItemFromResponse(char *read){
 	struct Item item;
 
 	if(!read){
@@ -26,9 +21,11 @@ Item getItemFromResponse(char *read){
 	item.section_id = atoi(strtok(NULL, "|"));
 	item.name = strtok(NULL, "|");
 	item.cost = atof(strtok(NULL, "|"));
-	item.aisleColor = 0; //TODO
-	item.x = 0; //TODO
-	item.y = 0; //TODO
+	item.description = strtok(NULL, "|");
+	item.requires_weighing = strtok(NULL, "|");
+	item.x = atoi(strtok(NULL, "|"));
+	item.y = atoi(strtok(NULL, "|"));
+	item.aisleColor = 0;
 
 	char* end = strtok(NULL, "|");
 

@@ -47,7 +47,7 @@ void readStringWIFI(char string[32]);
 void readStringTillSizeWIFI(char *string, int size);
 int writeAndReadResponse(char *write, char *response);
 void  wifi_isr_callback ( uint32_t icciar, void * context) ;
-void resetWifiIsrContext();
+void resetWifiIsrContext(void);
 
 
 #endif

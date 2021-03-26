@@ -1,16 +1,11 @@
-/*
- * sections_request.c
- *
- *  Created on: Mar 24, 2021
- *      Author: Amr
- */
+
 #include <stdlib.h>
 #include "sections_request.h"
 #include "../delay/delay.h"
 #include "../wifi/wifi.h"
 #include <string.h>
 
-struct Section *getSectionsFromResponse(char *read){
+static Section *getSectionsFromResponse(char *read){
 
 	if(!read){
 		return NULL;
@@ -37,7 +32,7 @@ struct Section *getSectionsFromResponse(char *read){
 	return sections;
 }
 
-struct Section *requestSections(int store_id){
+Section *requestSections(int store_id){
 	char command[50];
 
 	if(!command){
