@@ -1,0 +1,19 @@
+LUA MSG CONVENTIONS
+
+start of return msg : STRT\n
+end of return msg : EXITX\0 (where X is error/status number)
+
+Assuming that the order of the fields is common between lua and c code. And that both know the number of fields in the json response. 
+
+no part of the response should have \0 . This is because lua sometimes sends garbage at the end of messages so theres no 100%
+reliable way of knowing when the response is actually over, we check if thats the case if we ever get \0. 
+
+There are 2 types of get requests: ones that return lists, and ones that return simple objects. 
+When returing lists: first element is size of lists then each field seperated by '|'
+When returning objects: each field seperated by '|', field order and names predetermined 
+
+
+
+EXIT0 : Successful return 
+EXIT1 : HTTP Error 
+

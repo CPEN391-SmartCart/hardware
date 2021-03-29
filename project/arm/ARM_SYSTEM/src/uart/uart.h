@@ -13,5 +13,6 @@ void writeCharUART(char c, volatile unsigned char *LineStatusReg, volatile unsig
 int readCharUART(volatile unsigned char *LineStatusReg, volatile unsigned char *ReceiverFifo);
 void flushUART(volatile unsigned char *, volatile unsigned char *);
 int dataReadyUART(volatile unsigned char *LineStatusReg);
+void enableUARTInterrupt(volatile unsigned char *interruptEnableReg);
 
 #endif
