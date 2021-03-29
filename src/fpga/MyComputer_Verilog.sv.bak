@@ -1,4 +1,23 @@
 
+typedef struct packed {
+	logic [15:0] x;
+	logic [15:0] y;
+	logic [15:0] node_id;
+	logic [15:0] current_cost;
+	logic [15:0] child_one_id;
+	logic [15:0] distance_child_one;
+	logic [15:0] child_two_id;
+	logic [15:0] distance_child_two;
+	logic [15:0] child_three_id;
+	logic [15:0] distance_child_three;
+	logic [15:0] child_four_id;
+	logic [15:0] distance_child_four;
+	logic [15:0] child_five_id;
+	logic [15:0] distance_child_five;
+	logic [15:0] child_six_id;
+	logic [15:0] distance_child_six;
+} node_info;
+
 //////////////////////////////////////////////////////////////////////////////////
 // Top level WHOLE system not just Qsys generated HPS system
 //////////////////////////////////////////////////////////////////////////////////
@@ -287,6 +306,8 @@ module MyComputer_Verilog (
 			.system_pll_ref_clk_clk          (CLOCK_50),          				//   system_pll_ref_clk.clk
 			.system_pll_ref_reset_reset      (0)       								// system_pll_ref_reset.reset
 		);
+		
+		
 		
  
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
