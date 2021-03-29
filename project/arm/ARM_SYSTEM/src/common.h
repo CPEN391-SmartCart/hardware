@@ -18,7 +18,7 @@ typedef struct Item
     char *name;
 	double cost;
     char *description;
-    char requires_weighing;
+    char *requires_weighing;
     int x;
     int y;
     int aisleColor;

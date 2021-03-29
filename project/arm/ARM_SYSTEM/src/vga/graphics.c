@@ -60,6 +60,18 @@ void DrawAnyLine(int x1, int y1, int x2, int y2, int Colour)
     GraphicsCommandReg = DrawLine; // give graphics "draw line" command
 }
 
+void DrawShortestPath(int startX, int startY, int goalX, int goalY, int Colour)
+{
+    WAIT_FOR_GRAPHICS; // is graphics ready for new command
+
+    GraphicsX1Reg = startX;
+    GraphicsY1Reg = startY;
+    GraphicsX2Reg = goalX;
+    GraphicsY2Reg = goalY;
+    GraphicsColourReg = Colour;    // set pixel colour
+    GraphicsCommandReg = DrawLine; // give graphics "draw line" command
+}
+
 void Rectangle(int x, int y, int width, int height, int colour, int borderThickness)
 {
     FilledRectangle(x, y, borderThickness, height, colour);
