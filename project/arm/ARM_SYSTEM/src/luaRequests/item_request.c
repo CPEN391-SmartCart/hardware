@@ -54,7 +54,7 @@ Item requestItem(char *barcode){
 	int status = writeAndReadResponse(BARCODE_SCRIPT_CMD_FORMAT, response);
 
 	if(status != 0){
-		printf("\n ERROR: Lua Script returned EXIT%c \n, status");
+		printf("\n ERROR: Lua Script returned EXIT%c \n", status);
 	}
 
 	return getItemFromResponse(response);
