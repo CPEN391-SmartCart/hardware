@@ -202,11 +202,11 @@ module MyComputer_Verilog (
 	logic path_start;
 	logic start_pulse;
 	
-	logic [3:0] sram_address;
+	logic [5:0] sram_address;
 	Edge_Detector goal_edge(.clk(CLOCK_50), .async_sig(path_goal_set), .out_sync_sig(get_goal_node));
 	
-	logic [511:0] start_data;
-	logic [511:0] goal_data;
+	logic [271:0] start_data;
+	logic [271:0] goal_data;
 	
 	node_info start_node;
 	node_info goal_node;
@@ -242,8 +242,8 @@ module MyComputer_Verilog (
 	
 	//logic sram_write;
 	
-	logic [511:0] sram_readdata;
-	logic [511:0] sram_writedata;
+	logic [15:0] sram_readdata;
+	logic [15:0] sram_writedata;
  
 	 ///////////////////////////////////////////////////////////////////////////////////////
 	 // u0 is an instanace of the QSYS generated computer
@@ -257,7 +257,7 @@ module MyComputer_Verilog (
 			.sram_goal_write						(1'b0),
 			.sram_goal_readdata					(sram_readdata),
 			.sram_goal_writedata					(sram_writedata),
-			.sram_goal_byteenable				({64{1'b1}}),
+			.sram_goal_byteenable				(2'b11),
 			.path_finished_export				(path_finished),
 			.path_goal_set_export				(path_goal_set),
 			.path_start_export			 		(path_start),
@@ -373,7 +373,6 @@ module MyComputer_Verilog (
 	  // exported in Qsys and connect their outputs to the real 7-Segment displays on the DE1
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 	  
-	  /*
 	  HexTo7SegmentDisplay    HEXDisplay0_1 (				// HEXDisplay0_1 is an instance of pair of 7 segment decoder
 			// inputs
 			.Input1(Temp_hex0_1),								// Connect input1 of the HexDisplay circuit to temporary signal/wire
@@ -426,8 +425,7 @@ module MyComputer_Verilog (
 				.VGA_Blanking 					(VGA_BLANK_N),
 				.VGA_SYNC						(VGA_SYNC_N)
 		 );
-		 */
-	
+		 
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		// create an instance of the IO port with serial ports
 		///////////////////////////////////////////////////////////////////////////////////////////////
