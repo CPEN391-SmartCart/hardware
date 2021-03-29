@@ -20,7 +20,6 @@ void initUART(
     /************** Initialize Bluetooth UART registers **************/
 
     // set bit 7 of Line Control Register to 1, to gain access to the baud rate registers
-	long test = 1U << 7;
     *LineControlReg |= 1U << 7;
 
     // set Divisor latch (LSB and MSB) with correct value for required baud rate
@@ -83,7 +82,7 @@ void writeCharUART(char c, volatile unsigned char *LineStatusReg, volatile unsig
     while (!(*LineStatusReg >> 5) & 1U);
 
     // write character to Transmitter fifo register
-    *TransmitterFifo = (unsigned char)c;
+    *TransmitterFifo = c;
 }
 
 int dataReadyUART(volatile unsigned char *LineStatusReg)

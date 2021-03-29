@@ -9,8 +9,8 @@
 #include "../io/digital.h"
 
 uint8_t GAIN;
-long OFFSET;
-float SCALE = 1;
+long OFFSET = 0;
+float SCALE = 1.f;
 
 uint8_t hx711_is_ready()
 {
@@ -97,12 +97,12 @@ long hx711_read_average(uint8_t times)
 
 double hx711_get_value(uint8_t times)
 {
-	return hx711_read_average(times) - OFFSET;
+	return (hx711_read_average(times) - OFFSET) / SCALE;
 }
 
 float hx711_get_units(uint8_t times)
 {
-	return hx711_get_value(times) / SCALE;
+	return (hx711_read_average(times) - OFFSET) / SCALE;
 }
 
 void hx711_tare(uint8_t times)
