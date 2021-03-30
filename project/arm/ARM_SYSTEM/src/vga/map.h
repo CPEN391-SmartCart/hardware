@@ -11,19 +11,19 @@
 #define SIDEPANEL_TEXT_WIDTH 224
 
 
-typedef struct Line
-{
-    int x1;
-    int y1;
-    int x2;
-    int y2;
-} Line;
+//typedef struct Line
+//{
+//    int x1;
+//    int y1;
+//    int x2;
+//    int y2;
+//} Line;
 
-typedef struct PathVertex
-{
-    int x;
-    int y;
-} PathVertex;
+//typedef struct PathVertex
+//{
+//    int x;
+//    int y;
+//} PathVertex;
 
 
 
@@ -35,5 +35,5 @@ void ShowItem(Item item);
 void HideItem(Item item);
 void HideAllItems(int listSize, Item shoppingList[]);
 void ShowNextItem(char* itemName);
-void DrawItemPath(int oldPathSize, PathVertex oldPath[], int newPathSize, PathVertex newPath[]);
+//void DrawItemPath(int oldPathSize, PathVertex oldPath[], int newPathSize, PathVertex newPath[]);
 
