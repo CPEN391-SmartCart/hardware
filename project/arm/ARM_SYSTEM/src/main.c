@@ -18,6 +18,8 @@
 #include "hx711/hx711.h"
 #include "string.h"
 
+#include "objectFactory.h"
+
 #define PATH_GOAL_SET (volatile unsigned int *)(0xFF200200)
 #define PATH_START (volatile unsigned int *)(0xFF200100)
 #define PATH_FINISHED (volatile unsigned int *)(0xFF200210)
@@ -107,9 +109,11 @@ int main(void)
 //
 //	}
 
-	*PATH_GOAL_SET = 0;
-
-	char* SRAM_COPY = SRAM;
+//	////////////////////////////
+//	*PATH_GOAL_SET = 0;
+//
+//	char* SRAM_COPY = SRAM;
+//	////////////////////////////
 
 //	short start_node[] = {
 //			0x0050,
@@ -131,57 +135,61 @@ int main(void)
 //			0x0000
 //	};
 
-	short start_node[] = {
-			0x0010,
-			0x0010,
-			0x0013,
-			0x0000,
-			0x0000,
-			0x0016,
-			0x0004,
-			0x0017,
-			0x0002,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	};
+//	////////////////////////////
+//	short start_node[] = {
+//			0x0010,
+//			0x0010,
+//			0x0013,
+//			0x0000,
+//			0x0000,
+//			0x0016,
+//			0x0004,
+//			0x0017,
+//			0x0002,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000
+//	};
+//
+//	short goal_node[] = {
+//			0x0082,
+//			0x0043,
+//			0x0045,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000,
+//			0x0000
+//	};
+//
+//	for (i = 16, j = 0; i >= 0; i--)
+//	{
+//		memcpy(SRAM_COPY + j, &start_node[i], 2);
+//		j += 2;
+//	}
+//
+//	for (i = 16, j = 0; i >= 0; i--)
+//	{
+//		memcpy(SRAM_COPY + 64 + j, &goal_node[i], 2);
+//		j += 2;
+//	}
 
-	short goal_node[] = {
-			0x0082,
-			0x0043,
-			0x0045,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	};
+//	////////////////////////////
 
-	for (i = 16, j = 0; i >= 0; i--)
-	{
-		memcpy(SRAM_COPY + j, &start_node[i], 2);
-		j += 2;
-	}
-
-	for (i = 16, j = 0; i >= 0; i--)
-	{
-		memcpy(SRAM_COPY + 64 + j, &goal_node[i], 2);
-		j += 2;
-	}
 	//16
 //	memcpy(SRAM_COPY, "\x00", 1);
 //	memcpy(SRAM_COPY + 1, "\x00", 1);
@@ -254,9 +262,39 @@ int main(void)
 //	memcpy(SRAM_COPY + 64 + 32, "\x82", 1);
 //	memcpy(SRAM_COPY + 64 + 33, "\x00", 1);
 
-	*PATH_GOAL_SET = 1;
+//	////////////////////////////
 
+//	*PATH_GOAL_SET = 1;
+//	////////////////////////////
 
+	//vga test
+	int sectionSize = sizeof(sections) / sizeof(Section);
+	int legendSize = sizeof(legends) / sizeof(Legend);
+	int listSize = sizeof(shoppingList) / sizeof(Item);
+//	int pathOneSize = sizeof(itemOnePath) / sizeof(PathVertex);
+//	int pathTwoSize = sizeof(itemTwoPath) / sizeof(PathVertex);
+//	int pathThreeSize = sizeof(itemThreePath) / sizeof(PathVertex);
+
+	printf("Clearing screen...\n");
+	Reset();
+
+	printf("Creating store map...\n");
+	CreateStoreMap(sectionSize, sections, legendSize, legends);
+	CreateSidePanel(legendSize, legends);
+
+//	UpdateBalance(10.15, 0.05);
+//	LoadItemColors(listSize, shoppingList);
+//
+//	Item selectedItem;
+//
+//	int k = 0;
+//	int updated = FALSE;
+
+	// intial product
+//	ShowItem(shoppingList[0]);
+//	DrawItemPath(pathThreeSize, itemThreePath, pathOneSize, itemOnePath);
+//
+//	ShowNextItem(shoppingList[0].name);
 	return 0;
 }
 
