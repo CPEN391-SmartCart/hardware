@@ -30,7 +30,7 @@ typedef struct packed {
 
 module Dijkstra
 #(
-	parameter MAX_NODES = 100
+	parameter MAX_NODES = 10
 )
 (
 	input logic clk,

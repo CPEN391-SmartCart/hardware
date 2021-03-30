@@ -11,7 +11,16 @@ module  GraphicsController_Verilog (
 		input GraphicsCS_L,	 											// CS from main computer address decoder
 		input VSync_L,														// Vertical sync from VGA controller
 		input unsigned [15:0] SRam_DataIn,							// 16 bit data bus in from Sran
+
+// inputs/output for path finding
 		
+		input unsigned [15:0] path_x,
+		input unsigned [15:0] path_y,
+		input unsigned [6:0] max_index,
+		input unsigned success,
+
+		output unsigned [6:0] index,
+
 // Sram output signals
 		
 		output reg unsigned [9:0] VScrollValue,  					// scroll value for terminal emulation (allows screen scrolling up/down)
@@ -44,17 +53,28 @@ module  GraphicsController_Verilog (
 	reg signed [15:0] Colour_Latch;									// holds data read from a pixel
 
 	// additional registers
-	reg signed [15:0] current_X, current_Y, bshX, bshY, err;
-	wire signed [15:0] dx, dy;
-	wire signed [1:0] sx, sy;
-	reg load_en, err_x_en, err_y_en, x_en, y_en;
+	reg signed [15:0] current_X, current_Y; //, bshX, bshY, err;
+	reg signed [15:0] start_x, start_y, goal_x, goal_y, initial_x, initial_y, path_err;
+	// wire signed [15:0] dx, dy;
+	wire signed [15:0] path_dx, path_dy;
+	// wire signed [1:0] sx, sy;
+	wire signed [1:0] path_sx, path_sy;
+	reg load_en, err_x_en, err_y_en, x_en, y_en, vga_path_index_en, store_start_en, store_goal_en;
 	reg X_H, Y_H;	
+	reg [6:0] vga_path_index;
 
 	// assigning reg values for Bresenham's line
-	assign dx = (X2 > X1) ? X2 - X1 : X1 - X2;
-	assign dy = (Y2 > Y1) ? Y1 - Y2 : Y2 - Y1;
-	assign sx = (X2 > X1) ? 2'b1 : -1 * 2'b1;
-	assign sy = (Y2 > Y1) ? 2'b1 : -1 * 2'b1;
+	// assign dx = (X2 > X1) ? X2 - X1 : X1 - X2;
+	// assign dy = (Y2 > Y1) ? Y1 - Y2 : Y2 - Y1;
+	// assign sx = (X2 > X1) ? 2'b1 : -1 * 2'b1;
+	// assign sy = (Y2 > Y1) ? 2'b1 : -1 * 2'b1;
+
+	assign path_dx = (goal_x > initial_x) ? goal_x - initial_x : initial_x - goal_x;
+	assign path_dy = (goal_y > initial_y) ? initial_y - goal_y : goal_y - initial_y;
+	assign path_sx = (goal_x > initial_x) ? 2'b1 : -1 * 2'b1;
+	assign path_sy = (goal_y > initial_y) ? 2'b1 : -1 * 2'b1;
+
+	assign index = vga_path_index;
 
 	// signals to control/select the registers above
 	reg  	X1_Select_H,
@@ -119,6 +139,10 @@ module  GraphicsController_Verilog (
 	parameter PalletteReProgram = 8'h09;					// State for programming a pallette colour
 	parameter DrawRectangle1 = 8'h0a;						// State for drawing a rectangle
 	parameter DrawRectangle2 = 8'h0b;						// State for drawing a rectangle
+	parameter PathStoreStart = 8'h0c;
+	parameter PathStoreGoal = 8'h0d;
+	parameter DrawPath = 8'h0e;
+	parameter WaitPathSuccess = 8'h0f;
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Commands values that can be written to command register by CPU to get graphics controller to draw a shape
@@ -131,6 +155,7 @@ module  GraphicsController_Verilog (
 	parameter GetPixel = 16'h000b;							// command to read a pixel
 	parameter ProgramPallette = 16'h0010;					// command is program one of the 256 pallettes with a new RGB 
 	parameter Rectangle = 16'h0004;							// command to draw a rectangle
+	parameter Path = 16'h0005;								// command to draw shortest path
 	
 	/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 	// Additional parameters
@@ -423,43 +448,134 @@ module  GraphicsController_Verilog (
 // Bresenham's line sequential blocks
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+	// always@(posedge Clk) begin
+    //     if(Reset_L == 0) begin
+    //         err <= 16'b0;
+    //     end else if (load_en) begin
+    //         err <= dx + dy;
+	// 	end else begin
+    //         case({err_x_en, err_y_en})
+    //             2'b01: err <= err + dy;
+    //             2'b10: err <= err + dx;
+    //             2'b11: err <= err + dx + dy;
+    //         endcase
+    //     end
+    // end
+
+	// always@(posedge Clk) begin
+    //     if(Reset_L == 0) begin
+    //         bshX <= 16'b0;
+    //     end else if (load_en) begin
+    //         bshX <= X1;
+    //     end else if (x_en) begin
+    //         bshX <= bshX + sx;
+    //     end else if(CurrentState == Idle) begin
+    //         bshX <= 16'b0;
+    //     end
+    // end
+
+	// always@(posedge Clk) begin
+    //     if(Reset_L == 0) begin
+    //         bshY <= 16'b0;
+    //     end else if (load_en) begin
+    //         bshY <= Y1;
+    //     end else if (y_en) begin
+    //         bshY <= bshY + sy;
+    //     end else if(CurrentState == Idle) begin
+    //         bshY <= 16'b0;
+    //     end     
+    // end
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Path Finding Routes
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
 	always@(posedge Clk) begin
         if(Reset_L == 0) begin
-            err <= 16'b0;
-        end else if (load_en) begin
-            err <= dx + dy;
-        end else begin
+            path_err <= 16'b0;
+        end else if (store_start_en) begin
+            path_err <= path_dx + path_dy;
+		end else if (CurrentState == PathStoreStart) begin
+			path_err <= 16'b0;
+		end else begin
             case({err_x_en, err_y_en})
-                2'b01: err <= err + dy;
-                2'b10: err <= err + dx;
-                2'b11: err <= err + dx + dy;
+                2'b01: path_err <= path_err + path_dy;
+                2'b10: path_err <= path_err + path_dx;
+                2'b11: path_err <= path_err + path_dx + path_dy;
             endcase
         end
     end
 
 	always@(posedge Clk) begin
         if(Reset_L == 0) begin
-            bshX <= 16'b0;
-        end else if (load_en) begin
-            bshX <= X1;
-        end else if (x_en) begin
-            bshX <= bshX + sx;
+            vga_path_index <= 7'b0;
+        end else if (vga_path_index_en) begin
+            vga_path_index <= vga_path_index + 1'b1;
         end else if(CurrentState == Idle) begin
-            bshX <= 16'b0;
+            vga_path_index <= 7'b0;
+        end     
+    end
+
+	always@(posedge Clk) begin
+        if(Reset_L == 0) begin
+            start_x <= 16'b0;
+			initial_x <= 16'b0;
+        end else if (store_start_en) begin
+            if(vga_path_index == 0) begin
+	            start_x <= path_x;
+				initial_x <= path_x;
+			end else begin
+				start_x <= goal_x;	
+				initial_x <= goal_x;			
+			end
+        end else if (x_en) begin
+            start_x <= start_x + path_sx;
+        end else if(CurrentState == Idle) begin
+            start_x <= 16'b0;
+			initial_x <= 16'b0;
         end
     end
 
 	always@(posedge Clk) begin
         if(Reset_L == 0) begin
-            bshY <= 16'b0;
-        end else if (load_en) begin
-            bshY <= Y1;
+            start_y <= 16'b0;
+			initial_y <= 16'b0;
+        end else if (store_start_en) begin
+			if(vga_path_index == 0) begin
+	            start_y <= path_y;
+				initial_y <= path_y;
+			end else begin
+				start_y <= goal_y;	
+				initial_y <= goal_y;			
+			end
         end else if (y_en) begin
-            bshY <= bshY + sy;
+            start_y <= start_y + path_sy;
         end else if(CurrentState == Idle) begin
-            bshY <= 16'b0;
+            start_y <= 16'b0;
+			initial_y <= 16'b0;
         end     
     end
+
+	always@(posedge Clk) begin
+        if(Reset_L == 0) begin
+            goal_x <= 16'b0;
+        end else if (store_goal_en) begin
+            goal_x <= path_x;
+        end else if(CurrentState == Idle) begin
+            goal_x <= 16'b0;
+        end
+    end
+
+	always@(posedge Clk) begin
+        if(Reset_L == 0) begin
+            goal_y <= 16'b0;
+        end else if (store_goal_en) begin
+            goal_y <= path_y;
+        end else if(CurrentState == Idle) begin
+            goal_y <= 16'b0;
+        end
+    end
+
 	
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // next State and output logic
@@ -496,6 +612,10 @@ module  GraphicsController_Verilog (
 
 		x_en 								= 0;
 		y_en 								= 0;
+
+		store_start_en						= 0;
+		store_goal_en 						= 0;
+		vga_path_index_en					= 0;
 
 		//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		// IMPORTANT we have to define what the default NEXT state will be. In this case we the state machine
@@ -537,6 +657,8 @@ module  GraphicsController_Verilog (
 					NextState = DrawLine1;	
 				else if(Command == Rectangle)
 					NextState = DrawRectangle1;
+				else if(Command == Path)
+					NextState = WaitPathSuccess;
 					
 				// add other code to process any new commands here e.g. draw a circle if you decide to implement that
 				// or draw a rectangle etc
@@ -684,31 +806,79 @@ module  GraphicsController_Verilog (
 				end
 			end
 
-			DrawLine1: begin
-				load_en = 1;
-				NextState = DrawLine2;
+			// DrawLine1: begin
+			// 	load_en = 1;
+			// 	NextState = DrawLine2;
+			// end
+
+			// DrawLine2: begin
+            //     Sig_AddressOut 	= {bshY[8:0], bshX[9:1]};		// 8 bit X address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixles/bytes
+			// 	Sig_RW_Out			= 0;
+					
+			// 	if(bshX[0] == 1'b0)										// if the address/pixel is an even numbered one
+			// 		Sig_UDS_Out_L 	= 0;								// enable write to upper half of Sram data bus
+			// 	else
+			// 		Sig_LDS_Out_L 	= 0;								// else write to lower half of Sram data bus
+
+            //     if(bshX == X2 && bshY == Y2)
+            //         NextState = Idle;
+            //     else
+            //         NextState = DrawLine2;
+
+            //     if(2 * err >= dy) begin
+            //         err_y_en = 1;
+            //         x_en = 1;
+			// 	end
+
+            //     if(2 * err <= dx) begin
+            //         err_x_en = 1;
+            //         y_en = 1;
+			// 	end
+			// end
+
+			WaitPathSuccess: begin
+				if(success)
+					NextState = PathStoreStart;
+				else 
+					NextState = WaitPathSuccess;
 			end
 
-			DrawLine2: begin
-                Sig_AddressOut 	= {bshY[8:0], bshX[9:1]};		// 8 bit X address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixles/bytes
+			PathStoreStart: begin
+				if(vga_path_index >= max_index)
+					NextState = Idle;
+				else
+					NextState = PathStoreGoal;
+
+				store_start_en = 1;
+				vga_path_index_en = 1;
+				
+			end
+
+			PathStoreGoal: begin
+				store_goal_en = 1;
+				NextState = DrawPath;
+			end
+
+			DrawPath: begin
+				Sig_AddressOut 	= {start_y[8:0], start_x[9:1]};		// 8 bit X address even though it goes up to 1024 which would mean 10 bits, because each address = 2 pixles/bytes
 				Sig_RW_Out			= 0;
 					
-				if(bshX[0] == 1'b0)										// if the address/pixel is an even numbered one
+				if(start_x[0] == 1'b0)										// if the address/pixel is an even numbered one
 					Sig_UDS_Out_L 	= 0;								// enable write to upper half of Sram data bus
 				else
 					Sig_LDS_Out_L 	= 0;								// else write to lower half of Sram data bus
 
-                if(bshX == X2 && bshY == Y2)
-                    NextState = Idle;
+                if(start_x == goal_x && start_y == goal_y)
+                    NextState = PathStoreStart;
                 else
-                    NextState = DrawLine2;
+                    NextState = DrawPath;
 
-                if(2 * err >= dy) begin
+                if(2 * path_err >= path_dy) begin
                     err_y_en = 1;
                     x_en = 1;
 				end
 
-                if(2 * err <= dx) begin
+                if(2 * path_err <= path_dx) begin
                     err_x_en = 1;
                     y_en = 1;
 				end

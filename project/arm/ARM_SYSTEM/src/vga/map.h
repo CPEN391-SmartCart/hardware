@@ -10,23 +10,6 @@
 #define SIDEPANEL_SPLITTER_X 576
 #define SIDEPANEL_TEXT_WIDTH 224
 
-
-//typedef struct Line
-//{
-//    int x1;
-//    int y1;
-//    int x2;
-//    int y2;
-//} Line;
-
-//typedef struct PathVertex
-//{
-//    int x;
-//    int y;
-//} PathVertex;
-
-
-
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateSidePanel(int legendSize, Legend legends[]);
 void UpdateBalance(double subtotal, double gstRate);
@@ -35,5 +18,5 @@ void ShowItem(Item item);
 void HideItem(Item item);
 void HideAllItems(int listSize, Item shoppingList[]);
 void ShowNextItem(char* itemName);
-//void DrawItemPath(int oldPathSize, PathVertex oldPath[], int newPathSize, PathVertex newPath[]);
+void DrawPathOnMap();
 

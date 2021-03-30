@@ -48,28 +48,23 @@ void VLine(int x1, int y1, int length, int Colour)
     GraphicsCommandReg = DrawVLine; // give graphics "write pixel" command
 }
 
-void DrawAnyLine(int x1, int y1, int x2, int y2, int Colour)
+// void DrawAnyLine(int x1, int y1, int x2, int y2, int Colour)
+// {
+//     WAIT_FOR_GRAPHICS; // is graphics ready for new command
+
+//     GraphicsX1Reg = x1;
+//     GraphicsY1Reg = y1;
+//     GraphicsX2Reg = x2;
+//     GraphicsY2Reg = y2;
+//     GraphicsColourReg = Colour;    // set pixel colour
+//     GraphicsCommandReg = DrawLine; // give graphics "draw line" command
+// }
+
+void DrawShortestPath(int Colour)
 {
-    WAIT_FOR_GRAPHICS; // is graphics ready for new command
-
-    GraphicsX1Reg = x1;
-    GraphicsY1Reg = y1;
-    GraphicsX2Reg = x2;
-    GraphicsY2Reg = y2;
+    WAIT_FOR_GRAPHICS;             // is graphics ready for new command
     GraphicsColourReg = Colour;    // set pixel colour
-    GraphicsCommandReg = DrawLine; // give graphics "draw line" command
-}
-
-void DrawShortestPath(int startX, int startY, int goalX, int goalY, int Colour)
-{
-    WAIT_FOR_GRAPHICS; // is graphics ready for new command
-
-    GraphicsX1Reg = startX;
-    GraphicsY1Reg = startY;
-    GraphicsX2Reg = goalX;
-    GraphicsY2Reg = goalY;
-    GraphicsColourReg = Colour;    // set pixel colour
-    GraphicsCommandReg = DrawLine; // give graphics "draw line" command
+    GraphicsCommandReg = DrawPath; // give graphics "draw path" command
 }
 
 void Rectangle(int x, int y, int width, int height, int colour, int borderThickness)
@@ -89,7 +84,7 @@ void FilledRectangle(int x, int y, int width, int height, int Colour)
     GraphicsX2Reg = x + width;
     GraphicsY2Reg = y + height;
     GraphicsColourReg = Colour;         // set pixel colour
-    GraphicsCommandReg = DrawRectangle; // give graphics "draw rectangle" command    
+    GraphicsCommandReg = DrawRectangle; // give graphics "draw rectangle" command
 }
 
 void ProgramPalette(int PaletteNumber, int RGB)

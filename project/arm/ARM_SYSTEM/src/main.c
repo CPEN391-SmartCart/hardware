@@ -156,13 +156,12 @@ int main(void)
 
     *PATH_GOAL_SET = 1;
 
+    delay_us(100000);
+
 	//vga test
 	int sectionSize = sizeof(sections) / sizeof(Section);
 	int legendSize = sizeof(legends) / sizeof(Legend);
 	int listSize = sizeof(shoppingList) / sizeof(Item);
-//	int pathOneSize = sizeof(itemOnePath) / sizeof(PathVertex);
-//	int pathTwoSize = sizeof(itemTwoPath) / sizeof(PathVertex);
-//	int pathThreeSize = sizeof(itemThreePath) / sizeof(PathVertex);
 
 	printf("Clearing screen...\n");
 	Reset();
@@ -170,20 +169,7 @@ int main(void)
 	printf("Creating store map...\n");
 	CreateStoreMap(sectionSize, sections, legendSize, legends);
 	CreateSidePanel(legendSize, legends);
-
-//	UpdateBalance(10.15, 0.05);
-//	LoadItemColors(listSize, shoppingList);
-//
-//	Item selectedItem;
-//
-//	int k = 0;
-//	int updated = FALSE;
-
-	// intial product
-//	ShowItem(shoppingList[0]);
-//	DrawItemPath(pathThreeSize, itemThreePath, pathOneSize, itemOnePath);
-//
-//	ShowNextItem(shoppingList[0].name);
+    DrawPathOnMap();
 	return 0;
 }
 
