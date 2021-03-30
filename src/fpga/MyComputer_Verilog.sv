@@ -403,10 +403,6 @@ module MyComputer_Verilog (
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 	  // Instantiate an instance of the graphics and video controller circuit drawn as a schematic
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
-		logic [6:0] vga_path_index;
-		logic [6:0] vga_path_index_in;
-
-		assign vga_path_index_in = vga_path_index >= 0 ? vga_path_index : 0;
 
 		Graphics_and_Video_Controller		GraphicsController1 ( 
 				.Reset_L						(RESET_L_WIRE),
@@ -419,10 +415,6 @@ module MyComputer_Verilog (
 				.LowerByteSelect_L 				(IO_LowerByte_Select_L_WIRE),
 				.WriteEnable_L 					(IO_RW_WIRE),
 				.GraphicsCS_L 					(IO_Enable_L_WIRE),
-				.PathX							(path[vga_path_index_in].x),
-				.PathY 							(path[vga_path_index_in].y),
-				.MaxIndex 						(index),
-				.Success 						(success),
 				
 				.VGA_Clock						(VGA_CLK),
 				.VGA_Blue 						(VGA_B),
@@ -432,7 +424,6 @@ module MyComputer_Verilog (
 				.VGA_VSync						(VGA_VS),
 				.VGA_Blanking 					(VGA_BLANK_N),
 				.VGA_SYNC						(VGA_SYNC_N),
-				.Index 							(vga_path_index)
 		 );
 		 
 		///////////////////////////////////////////////////////////////////////////////////////////////
