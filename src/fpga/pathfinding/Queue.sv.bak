@@ -25,10 +25,7 @@ typedef struct packed {
 	logic [15:0] distance_child_six;
 } node_info;
 
-module Explored_RAM
-#(
-	parameter MAX_NODES = 100
-)
+module Queue_RAM
 (
 	input logic clk,
 	input logic write_enable,
@@ -36,10 +33,10 @@ module Explored_RAM
 	input node_info write_data,
 	input logic [6:0] read_address,
 	
-	output node_info explored_node
+	output node_info queue_node
 );
 
-	reg [271:0] mem [MAX_NODES-1:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
+	reg [271:0] mem [100:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
 	logic [271:0] read_data;
 	
 	always_ff @(posedge clk)
@@ -50,13 +47,88 @@ module Explored_RAM
 		read_data <= mem[read_address];
 	end
 	
-	assign explored_node = '{read_data[271:256], read_data[255:240], read_data[239:224], read_data[223:208], read_data[207:192], read_data[191:176], read_data[175:160], read_data[159:144], read_data[143:128], read_data[127:112], read_data[111:96], read_data[95:80], read_data[79:64], read_data[63:48], read_data[47:32], read_data[31:16], read_data[15:0]};
+	assign queue_node = '{read_data[271:256], read_data[255:240], read_data[239:224], read_data[223:208], read_data[207:192], read_data[191:176], read_data[175:160], read_data[159:144], read_data[143:128], read_data[127:112], read_data[111:96], read_data[95:80], read_data[79:64], read_data[63:48], read_data[47:32], read_data[31:16], read_data[15:0]};
 endmodule
 
-module Explored_Child
-#(
-	parameter MAX_NODES = 100
-)
+module Queue_Minimum_Node
+(
+	input logic clk,
+	input logic reset,
+	input logic find,
+	input node_info read_node,
+	
+	output logic finding_minimum,
+	output logic [6:0] read_address,
+	output node_info minimum_node,
+	output logic [6:0] minimum_address,
+	output logic done
+);
+	
+	localparam IDLE 			= 3'b000;
+	localparam START			= 3'b001;
+	localparam SET_ADDRESS	= 3'b010;
+	localparam WAIT_READ		= 3'b011;
+	localparam READ			= 3'b100;
+	localparam DONE			= 3'b101;
+
+	logic [2:0] state;
+	
+	always_ff @(posedge clk)
+	begin
+		if (reset)
+			state <= IDLE;
+		else
+			case (state)
+				IDLE:
+					if (find)
+						state <= START;
+						
+				START: state <= WAIT_READ;
+				WAIT_READ: state <= READ;
+				READ:
+					if (read_node.node_id == 16'b0)
+						state <= DONE;
+					else if (read_address < 7'd127)
+						state <= SET_ADDRESS;
+					else
+						state <= DONE;
+				SET_ADDRESS: state <= WAIT_READ;
+						
+				DONE: state <= IDLE;
+			endcase
+	end
+
+	always_ff @(posedge clk)
+	begin
+		case (state)
+			IDLE: begin
+				done <= 1'b0;
+				read_address <= 7'b0;	
+			end
+			START: begin
+				finding_minimum <= 1'b1;
+				minimum_node <= '{16'd0, 16'd0, 16'd800, 16'd800, 16'd800, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0};
+				minimum_address <= 7'b0;
+			end
+			READ: begin
+				if (read_node.current_cost < minimum_node.current_cost && read_node.node_id != 16'b0) begin
+					minimum_node <= read_node;
+					minimum_address <= read_address;
+				end
+			end
+			SET_ADDRESS: begin
+				read_address <= read_address + 1'b1;
+			end
+			DONE: begin
+				finding_minimum <= 1'b0;
+				done <= 1'b1;
+			end
+		endcase
+	end
+	
+endmodule
+
+module Queue_Child
 (
 	input logic clk,
 	input logic reset,
@@ -64,17 +136,21 @@ module Explored_Child
 	input node_info current_child,
 	input node_info read_node,
 	
+	output logic finding_child,
 	output logic [6:0] read_address,
-	output logic explored_child,
+	output node_info child_from_queue,
+	output logic child_queued,
+	output logic [6:0] child_address,
 	output logic done
 );
-
+	
 	localparam IDLE 			= 3'b000;
 	localparam START			= 3'b001;
 	localparam SET_ADDRESS	= 3'b010;
 	localparam WAIT_READ		= 3'b011;
 	localparam READ			= 3'b100;
 	localparam DONE			= 3'b101;
+
 
 	logic [2:0] state;
 	
@@ -87,125 +163,50 @@ module Explored_Child
 				IDLE:
 					if (find)
 						state <= START;
-				
+						
 				START: state <= WAIT_READ;
 				WAIT_READ: state <= READ;
 				READ:
 					if (read_node.node_id == 16'b0 || read_node.node_id == current_child.node_id)
 						state <= DONE;
-					else if (read_address < MAX_NODES)
+					else if (read_address < 7'd127)
 						state <= SET_ADDRESS;
 					else
 						state <= DONE;
 				SET_ADDRESS: state <= WAIT_READ;
-				
+						
 				DONE: state <= IDLE;
 			endcase
 	end
-	
+
 	always_ff @(posedge clk)
 	begin
 		case (state)
 			IDLE: begin
-				read_address <= 7'b0;
 				done <= 1'b0;
-				explored_child <= 1'b0;
+				read_address <= 7'b0;
+				child_queued <= 1'b0;
+				child_from_queue <= '{0, 0, 16'd800, 16'd800, 16'd800, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0};
+				child_address <= 7'b0;
 			end
 			START: begin
+				finding_child <= 1'b1;
 			end
 			READ: begin
-				if (read_node.node_id == current_child.node_id) begin
-					explored_child <= 1'b1;
+				if (read_node.node_id == current_child.node_id && current_child.node_id != 16'd800) begin
+					child_from_queue <= read_node;
+					child_address <= read_address;
+					child_queued = 1'b1;
 				end
 			end
 			SET_ADDRESS: begin
 				read_address <= read_address + 1'b1;
 			end
-			
 			DONE: begin
+				finding_child <= 1'b0;
 				done <= 1'b1;
 			end
 		endcase
 	end
-endmodule
-
-module Explored_Parent
-#(
-	parameter MAX_NODES = 100
-)
-(
-	input logic clk,
-	input logic reset,
-	input logic find,
-	input node_info current_node,
-	input node_info read_node,
 	
-	output logic finding_parent,
-	output logic [6:0] read_address,
-	output node_info parent_node,
-	output logic done
-);
-
-	localparam IDLE 			= 3'b000;
-	localparam START			= 3'b001;
-	localparam SET_ADDRESS	= 3'b010;
-	localparam WAIT_READ		= 3'b011;
-	localparam READ			= 3'b100;
-	localparam DONE			= 3'b101;
-
-	localparam node_info initial_node = '{16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0};
-
-	logic [2:0] state;
-	
-	always_ff @(posedge clk)
-	begin
-		if (reset)
-			state <= IDLE;
-		else
-			case (state)
-				IDLE:
-					if (find)
-						state <= START;
-				
-				START: state <= WAIT_READ;
-				WAIT_READ: state <= READ;
-				READ:
-					if (read_node.node_id == 16'b0 || read_node.node_id == current_node.parent_node_id)
-						state <= DONE;
-					else if (read_address < MAX_NODES)
-						state <= SET_ADDRESS;
-					else
-						state <= DONE;
-				SET_ADDRESS: state <= WAIT_READ;
-				
-				DONE: state <= IDLE;
-			endcase
-	end
-	
-	always_ff @(posedge clk)
-	begin
-		case (state)
-			IDLE: begin
-				read_address <= 7'b0;
-				done <= 1'b0;
-			end
-			START: begin
-				parent_node <= initial_node;
-				finding_parent <= 1'b1;
-			end
-			READ: begin
-				if (read_node.node_id == current_node.parent_node_id) begin
-					parent_node <= read_node;
-				end
-			end
-			SET_ADDRESS: begin
-				read_address <= read_address + 1'b1;
-			end
-			
-			DONE: begin
-				finding_parent <= 1'b0;
-				done <= 1'b1;
-			end
-		endcase
-	end
 endmodule

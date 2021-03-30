@@ -26,6 +26,9 @@ typedef struct packed {
 } node_info;
 
 module Queue_RAM
+#(
+	parameter MAX_NODES = 100
+)
 (
 	input logic clk,
 	input logic write_enable,
@@ -36,7 +39,7 @@ module Queue_RAM
 	output node_info queue_node
 );
 
-	reg [271:0] mem [100:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
+	reg [271:0] mem [MAX_NODES-1:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
 	logic [271:0] read_data;
 	
 	always_ff @(posedge clk)
@@ -51,6 +54,9 @@ module Queue_RAM
 endmodule
 
 module Queue_Minimum_Node
+#(
+	parameter MAX_NODES = 100
+)
 (
 	input logic clk,
 	input logic reset,
@@ -88,7 +94,7 @@ module Queue_Minimum_Node
 				READ:
 					if (read_node.node_id == 16'b0)
 						state <= DONE;
-					else if (read_address < 7'd127)
+					else if (read_address < MAX_NODES)
 						state <= SET_ADDRESS;
 					else
 						state <= DONE;
@@ -129,6 +135,9 @@ module Queue_Minimum_Node
 endmodule
 
 module Queue_Child
+#(
+	parameter MAX_NODES = 100
+)
 (
 	input logic clk,
 	input logic reset,
@@ -169,7 +178,7 @@ module Queue_Child
 				READ:
 					if (read_node.node_id == 16'b0 || read_node.node_id == current_child.node_id)
 						state <= DONE;
-					else if (read_address < 7'd127)
+					else if (read_address < MAX_NODES)
 						state <= SET_ADDRESS;
 					else
 						state <= DONE;

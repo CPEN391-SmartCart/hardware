@@ -20,9 +20,6 @@ typedef struct packed {
 } node_info;
 
 module Determined_Nodes_Mem
-#(
-	parameter MAX_NODES = 100
-)
 (
 	input logic clk,
 	input logic write_enable,
@@ -33,7 +30,7 @@ module Determined_Nodes_Mem
 	output node_info mem_node
 );
 	
-	reg [271:0] mem [MAX_NODES-1:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
+	reg [271:0] mem [100:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
 	logic [271:0] read_data;
 	
 	initial begin
@@ -52,9 +49,6 @@ module Determined_Nodes_Mem
 endmodule
 
 module Dijkstra_Mem_Reader
-#(
-	parameter MAX_NODES = 100
-)
 (
 	input logic clk,
 	input logic reset,
@@ -105,7 +99,7 @@ module Dijkstra_Mem_Reader
 				READ_NODE:
 					if (mem_node.node_id == node_id)
 						state <= FIND_CHILDREN;
-					else if (read_address < MAX_NODES)
+					else if (read_address < 7'd127)
 						state <= SET_NODE_ADDRESS;
 					else 
 						state <= FIND_CHILDREN;
@@ -116,7 +110,7 @@ module Dijkstra_Mem_Reader
 				READ_CHILD:
 					if (child_count == 4'd6)
 						state <= DONE;
-					else if (read_address < MAX_NODES)
+					else if (read_address < 7'd127)
 						state <= SET_CHILD_ADDRESS;
 					else 
 						state <= DONE;

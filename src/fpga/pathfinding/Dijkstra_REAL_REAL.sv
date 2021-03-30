@@ -23,6 +23,11 @@ typedef struct packed {
 	logic [15:0] distance_child_six;
 } node_info;
 
+typedef struct packed {
+	logic [15:0] x;
+	logic [15:0] y;
+} coord;
+
 module Dijkstra
 #(
 	parameter MAX_NODES = 100
@@ -33,110 +38,137 @@ module Dijkstra
 	input logic start,
 	input node_info start_node,
 	input node_info goal_node,
-	output node_info path [100],
+	output coord path [100],
 	output integer i,
 	output logic success
 );
 
-	localparam IDLE 								= 8'd0;
-	localparam START								= 8'd1;
-	localparam LOW_FIND							= 8'd2;
-	localparam INIT_QUEUE						= 8'd3;
-	localparam LOOP								= 8'd4;
-	localparam FIND_MINIMUM_HIGH				= 8'd5;
-	localparam FIND_MINIMUM_LOW				= 8'd6;
-	localparam FIND_MINIMUM_DONE				= 8'd7;
-	localparam POP 								= 8'd8;
-	localparam FIND_NODE_HIGH					= 8'd9;
-	localparam FIND_NODE_LOW					= 8'd10;
-	localparam FIND_NODE_DONE					= 8'd11;
-	localparam IS_GOAL							= 8'd12;
-	localparam EXPLORE							= 8'd13;
-	localparam INCREMENT_EXPLORE_INDEX		= 8'd14;
-	
-	localparam GET_CHILD_1						= 8'd15;
-	localparam IS_CHILD_1_QUEUED_HIGH		= 8'd16;
-	localparam IS_CHILD_1_QUEUED_LOW			= 8'd17;
-	localparam IS_CHILD_1_QUEUED_DONE		= 8'd18;
-	localparam GET_CHILD_1_FROM_QUEUE		= 8'd19;
-	localparam IS_CHILD_1_EXPLORED_HIGH		= 8'd20;
-	localparam IS_CHILD_1_EXPLORED_LOW 		= 8'd21;
-	localparam IS_CHILD_1_EXPLORED_DONE		= 8'd22;
-	localparam REMOVE_NODE_1					= 8'd23;
-	localparam IS_SHORTER_1						= 8'd24;
-	localparam INCREMENT_CHILD_1_COST		= 8'd25;
-	localparam ADD_CHILD_1_TO_QUEUE			= 8'd26;
-	localparam REMOVE_CHILD_1					= 8'd27;
-	localparam INCREMENT_CHILD_INDEX_1 		= 8'd28;
-	
-	localparam GET_CHILD_2						= 8'd29;
-	localparam IS_CHILD_2_QUEUED_HIGH		= 8'd30;
-	localparam IS_CHILD_2_QUEUED_LOW			= 8'd31;
-	localparam IS_CHILD_2_QUEUED_DONE		= 8'd32;
-	localparam GET_CHILD_2_FROM_QUEUE		= 8'd33;
-	localparam IS_CHILD_2_EXPLORED_HIGH		= 8'd34;
-	localparam IS_CHILD_2_EXPLORED_LOW 		= 8'd35;
-	localparam IS_CHILD_2_EXPLORED_DONE 	= 8'd36;
-	localparam IS_SHORTER_2						= 8'd37;
-	localparam INCREMENT_CHILD_2_COST		= 8'd38;
-	localparam ADD_CHILD_2_TO_QUEUE			= 8'd39;
-	localparam REMOVE_CHILD_2					= 8'd40;
-	localparam INCREMENT_CHILD_INDEX_2 		= 8'd41;
-	
-	localparam GET_CHILD_3						= 8'd42;
-	localparam IS_CHILD_3_QUEUED_HIGH		= 8'd43;
-	localparam IS_CHILD_3_QUEUED_LOW			= 8'd44;
-	localparam IS_CHILD_3_QUEUED_DONE 		= 8'd45;
-	localparam GET_CHILD_3_FROM_QUEUE		= 8'd46;
-	localparam IS_CHILD_3_EXPLORED_HIGH		= 8'd47;
-	localparam IS_CHILD_3_EXPLORED_LOW 		= 8'd48;
-	localparam IS_CHILD_3_EXPLORED_DONE		= 8'd49;
-	localparam IS_SHORTER_3						= 8'd50;
-	localparam INCREMENT_CHILD_3_COST		= 8'd51;
-	localparam ADD_CHILD_3_TO_QUEUE			= 8'd52;
-	localparam REMOVE_CHILD_3					= 8'd53;
-	localparam INCREMENT_CHILD_INDEX_3 		= 8'd54;
-	
-	localparam GET_CHILD_4						= 8'd55;
-	localparam IS_CHILD_4_QUEUED_HIGH		= 8'd56;
-	localparam IS_CHILD_4_QUEUED_LOW			= 8'd57;
-	localparam IS_CHILD_4_QUEUED_DONE		= 8'd58;
-	localparam GET_CHILD_4_FROM_QUEUE		= 8'd59;
-	localparam IS_CHILD_4_EXPLORED_HIGH		= 8'd60;
-	localparam IS_CHILD_4_EXPLORED_LOW 		= 8'd61;
-	localparam IS_CHILD_4_EXPLORED_DONE		= 8'd62;
-	localparam IS_SHORTER_4						= 8'd63;
-	localparam INCREMENT_CHILD_4_COST		= 8'd64;
-	localparam ADD_CHILD_4_TO_QUEUE			= 8'd65;
-	localparam REMOVE_CHILD_4					= 8'd66;
-	localparam INCREMENT_CHILD_INDEX_4 		= 8'd67;
-	
-	localparam CHECK_CHILD_1					= 8'd68;
-	localparam CHECK_CHILD_2					= 8'd69;
-	localparam CHECK_CHILD_3					= 8'd70;
-	localparam CHECK_CHILD_4					= 8'd71;
-	
-	localparam RECONSTRUCT_PATH				= 8'd72;
-	localparam GET_PARENT_HIGH					= 8'd73;
-	localparam GET_PARENT_LOW					= 8'd74;
-	localparam GET_PARENT_DONE					= 8'd75;
-	localparam PATH_DONE							= 8'd76;
-	localparam ADD_START							= 8'd77;
-	
-	localparam ERASE								= 8'd78;
-	localparam ERASE_HIGH						= 8'd79;
-	localparam ERASE_LOW							= 8'd80;
-	
-	localparam DONE								= 8'd81;
-	
-	localparam SUCCESS							= 8'd82;
-	
-	localparam WRITE_START 						= 8'd83;
-	localparam WRITE_GOAL						= 8'd84;
+	enum logic [7:0] {
+			IDLE,
+			START,
+			WRITE_START,
+			WRITE_GOAL,
+			LOW_FIND,
+			INIT_QUEUE,
+			LOOP,
+			FIND_MINIMUM_HIGH,
+			FIND_MINIMUM_LOW,
+			FIND_MINIMUM_DONE,
+			POP,
+			FIND_NODE_HIGH,
+			FIND_NODE_LOW,
+			FIND_NODE_DONE,
+			IS_GOAL,
+			EXPLORE,
+			INCREMENT_EXPLORE_INDEX,
 
+			CHECK_CHILD_1,
+			GET_CHILD_1,
+			IS_CHILD_1_QUEUED_HIGH,
+			IS_CHILD_1_QUEUED_LOW,
+			IS_CHILD_1_QUEUED_DONE,
+			GET_CHILD_1_FROM_QUEUE,
+			IS_CHILD_1_EXPLORED_HIGH,
+			IS_CHILD_1_EXPLORED_LOW,
+			IS_CHILD_1_EXPLORED_DONE,
+			REMOVE_NODE_1,
+			IS_SHORTER_1,
+			INCREMENT_CHILD_1_COST,
+			ADD_CHILD_1_TO_QUEUE,
+			REMOVE_CHILD_1,
+			INCREMENT_CHILD_INDEX_1,
+
+			CHECK_CHILD_2,
+			GET_CHILD_2,
+			IS_CHILD_2_QUEUED_HIGH,
+			IS_CHILD_2_QUEUED_LOW,
+			IS_CHILD_2_QUEUED_DONE,
+			GET_CHILD_2_FROM_QUEUE,
+			IS_CHILD_2_EXPLORED_HIGH,
+			IS_CHILD_2_EXPLORED_LOW,
+			IS_CHILD_2_EXPLORED_DONE,
+			IS_SHORTER_2,
+			INCREMENT_CHILD_2_COST,
+			ADD_CHILD_2_TO_QUEUE,
+			REMOVE_CHILD_2,
+			INCREMENT_CHILD_INDEX_2,
+
+			CHECK_CHILD_3,
+			GET_CHILD_3,
+			IS_CHILD_3_QUEUED_HIGH,
+			IS_CHILD_3_QUEUED_LOW,
+			IS_CHILD_3_QUEUED_DONE,
+			GET_CHILD_3_FROM_QUEUE,
+			IS_CHILD_3_EXPLORED_HIGH,
+			IS_CHILD_3_EXPLORED_LOW,
+			IS_CHILD_3_EXPLORED_DONE,
+			IS_SHORTER_3,
+			INCREMENT_CHILD_3_COST,
+			ADD_CHILD_3_TO_QUEUE,
+			REMOVE_CHILD_3,
+			INCREMENT_CHILD_INDEX_3,
+
+			CHECK_CHILD_4,
+			GET_CHILD_4,
+			IS_CHILD_4_QUEUED_HIGH,
+			IS_CHILD_4_QUEUED_LOW,
+			IS_CHILD_4_QUEUED_DONE,
+			GET_CHILD_4_FROM_QUEUE,
+			IS_CHILD_4_EXPLORED_HIGH,
+			IS_CHILD_4_EXPLORED_LOW,
+			IS_CHILD_4_EXPLORED_DONE,
+			IS_SHORTER_4,
+			INCREMENT_CHILD_4_COST,
+			ADD_CHILD_4_TO_QUEUE,
+			REMOVE_CHILD_4,
+			INCREMENT_CHILD_INDEX_4,
+
+			CHECK_CHILD_5,
+			GET_CHILD_5,
+			IS_CHILD_5_QUEUED_HIGH,
+			IS_CHILD_5_QUEUED_LOW,
+			IS_CHILD_5_QUEUED_DONE,
+			GET_CHILD_5_FROM_QUEUE,
+			IS_CHILD_5_EXPLORED_HIGH,
+			IS_CHILD_5_EXPLORED_LOW,
+			IS_CHILD_5_EXPLORED_DONE,
+			IS_SHORTER_5,
+			INCREMENT_CHILD_5_COST,
+			ADD_CHILD_5_TO_QUEUE,
+			REMOVE_CHILD_5,
+			INCREMENT_CHILD_INDEX_5,
+
+			CHECK_CHILD_6,
+			GET_CHILD_6,
+			IS_CHILD_6_QUEUED_HIGH,
+			IS_CHILD_6_QUEUED_LOW,
+			IS_CHILD_6_QUEUED_DONE,
+			GET_CHILD_6_FROM_QUEUE,
+			IS_CHILD_6_EXPLORED_HIGH,
+			IS_CHILD_6_EXPLORED_LOW,
+			IS_CHILD_6_EXPLORED_DONE,
+			IS_SHORTER_6,
+			INCREMENT_CHILD_6_COST,
+			ADD_CHILD_6_TO_QUEUE,
+			REMOVE_CHILD_6,
+			INCREMENT_CHILD_INDEX_6,
+
+			RECONSTRUCT_PATH,
+			GET_PARENT_HIGH,
+			GET_PARENT_LOW,
+			GET_PARENT_DONE,
+			PATH_DONE,
+			ADD_START,
+
+			ERASE,
+			ERASE_HIGH,
+			ERASE_LOW,
+
+			DONE,
+			SUCCESS
+	} state;
+	
 	localparam node_info initial_node = '{16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0, 16'd0};
-
-	logic [7:0] state;
 	
 	node_info current_node;
 	node_info current_child;
@@ -149,7 +181,7 @@ module Dijkstra
 	logic [6:0] node_mem_read_address;
 	node_info mem_node_temp;
 	
-	Determined_Nodes_Mem nodes_mem(
+	Determined_Nodes_Mem #(.MAX_NODES(MAX_NODES)) nodes_mem(
 		.clk(clk),
 		.write_enable(node_mem_write),
 		.write_address(node_mem_write_address),
@@ -171,7 +203,7 @@ module Dijkstra
 	node_info mem_child_six;
 	logic found_node_and_children;
 	
-	Dijkstra_Mem_Reader nodes_mem_reader(
+	Dijkstra_Mem_Reader #(.MAX_NODES(MAX_NODES)) nodes_mem_reader(
 		.clk(clk),
 		.reset(reset),
 		.node_id(current_node_id),
@@ -197,7 +229,7 @@ module Dijkstra
 	logic [6:0] queue_read_address;
 	node_info queue_node;
 	
-	Queue_RAM queue_mem(
+	Queue_RAM #(.MAX_NODES(MAX_NODES)) queue_mem(
 		.clk(clk),
 		.write_enable(queue_write),
 		.write_address(queue_write_address),
@@ -215,7 +247,7 @@ module Dijkstra
 	logic [6:0] minimum_address;
 	logic found_minimum;
 	
-	Queue_Minimum_Node queue_min(
+	Queue_Minimum_Node #(.MAX_NODES(MAX_NODES)) queue_min(
 		.clk(clk),
 		.reset(reset),
 		.find(find_minimum),
@@ -239,7 +271,7 @@ module Dijkstra
 	
 	logic [6:0] child_write_address;
 	
-	Queue_Child child_queue(
+	Queue_Child #(.MAX_NODES(MAX_NODES)) child_queue(
 		.clk(clk),
 		.reset(reset),
 		.find(find_child_from_queue),
@@ -262,7 +294,7 @@ module Dijkstra
 	logic [6:0] explored_read_address;
 	node_info explored_node;
 	
-	Explored_RAM explored_mem(
+	Explored_RAM #(.MAX_NODES(MAX_NODES)) explored_mem(
 		.clk(clk),
 		.write_enable(explored_write),
 		.write_address(explored_write_address),
@@ -277,7 +309,7 @@ module Dijkstra
 	logic explored_done;
 	logic [6:0] explored_child_read_address;
 	
-	Explored_Child explored_child_mem(
+	Explored_Child #(.MAX_NODES(MAX_NODES)) explored_child_mem(
 		.clk(clk),
 		.reset(reset),
 		.find(explored_child_find),
@@ -295,7 +327,7 @@ module Dijkstra
 	logic [6:0] explored_parent_read_address;
 	logic explored_parent_done;
 	
-	Explored_Parent explored_parent_mem(
+	Explored_Parent #(.MAX_NODES(MAX_NODES)) explored_parent_mem(
 		.clk(clk),
 		.reset(reset),
 		.find(explored_parent_find),
@@ -351,7 +383,7 @@ module Dijkstra
 				EXPLORE: state <= INCREMENT_EXPLORE_INDEX;
 				INCREMENT_EXPLORE_INDEX: state <= CHECK_CHILD_1;
 				
-				//
+				//CHILD 1
 				CHECK_CHILD_1:
 					if (mem_child_one.node_id == 16'd800)
 						state <= CHECK_CHILD_2;
@@ -393,7 +425,7 @@ module Dijkstra
 				INCREMENT_CHILD_INDEX_1: state <= CHECK_CHILD_2;
 				
 				
-				//
+				//CHILD 2
 				CHECK_CHILD_2:
 					if (mem_child_two.node_id == 16'd800)
 						state <= CHECK_CHILD_3;
@@ -433,7 +465,7 @@ module Dijkstra
 				INCREMENT_CHILD_INDEX_2: state <= CHECK_CHILD_3;
 				
 				
-				//
+				//CHILD 3
 				CHECK_CHILD_3:
 					if (mem_child_three.node_id == 16'd800)
 						state <= CHECK_CHILD_4;
@@ -452,17 +484,17 @@ module Dijkstra
 				
 				GET_CHILD_3_FROM_QUEUE: state <= IS_SHORTER_3;
 				IS_SHORTER_3:
-					if (current_child.current_cost > (current_node.current_cost + current_node.distance_child_two))
+					if (current_child.current_cost > (current_node.current_cost + current_node.distance_child_three))
 						state <= REMOVE_CHILD_3;
 					else
-						state <= GET_CHILD_4;
+						state <= CHECK_CHILD_4;
 						
 				IS_CHILD_3_EXPLORED_HIGH: state <= IS_CHILD_3_EXPLORED_LOW;
 				IS_CHILD_3_EXPLORED_LOW: state <= IS_CHILD_3_EXPLORED_DONE;
 				IS_CHILD_3_EXPLORED_DONE:
 					if (explored_done) begin
 						if (explored_child || current_child.node_id == 16'd800)
-							state <= GET_CHILD_4;
+							state <= CHECK_CHILD_4;
 						else
 							state <= INCREMENT_CHILD_3_COST;
 					end
@@ -470,13 +502,13 @@ module Dijkstra
 				REMOVE_CHILD_3: state <= INCREMENT_CHILD_3_COST;
 				INCREMENT_CHILD_3_COST: state <= ADD_CHILD_3_TO_QUEUE;
 				ADD_CHILD_3_TO_QUEUE: state <= INCREMENT_CHILD_INDEX_3;
-				INCREMENT_CHILD_INDEX_3: state <= GET_CHILD_4;
+				INCREMENT_CHILD_INDEX_3: state <= CHECK_CHILD_4;
 				
-				
-				//
+								
+				//CHILD 4
 				CHECK_CHILD_4:
 					if (mem_child_four.node_id == 16'd800)
-						state <= LOOP;
+						state <= CHECK_CHILD_5;
 					else
 						state <= GET_CHILD_4;
 				GET_CHILD_4: state <= IS_CHILD_4_QUEUED_HIGH;
@@ -492,17 +524,17 @@ module Dijkstra
 				
 				GET_CHILD_4_FROM_QUEUE: state <= IS_SHORTER_4;
 				IS_SHORTER_4:
-					if (current_child.current_cost > (current_node.current_cost + current_node.distance_child_two))
+					if (current_child.current_cost > (current_node.current_cost + current_node.distance_child_four))
 						state <= REMOVE_CHILD_4;
 					else
-						state <= LOOP;
+						state <= CHECK_CHILD_5;
 						
 				IS_CHILD_4_EXPLORED_HIGH: state <= IS_CHILD_4_EXPLORED_LOW;
 				IS_CHILD_4_EXPLORED_LOW: state <= IS_CHILD_4_EXPLORED_DONE;
 				IS_CHILD_4_EXPLORED_DONE:
 					if (explored_done) begin
 						if (explored_child || current_child.node_id == 16'd800)
-							state <= LOOP;
+							state <= CHECK_CHILD_5;
 						else
 							state <= INCREMENT_CHILD_4_COST;
 					end
@@ -510,7 +542,87 @@ module Dijkstra
 				REMOVE_CHILD_4: state <= INCREMENT_CHILD_4_COST;
 				INCREMENT_CHILD_4_COST: state <= ADD_CHILD_4_TO_QUEUE;
 				ADD_CHILD_4_TO_QUEUE: state <= INCREMENT_CHILD_INDEX_4;
-				INCREMENT_CHILD_INDEX_4: state <= LOOP;
+				INCREMENT_CHILD_INDEX_4: state <= CHECK_CHILD_5;
+				
+								
+				//CHILD 5
+				CHECK_CHILD_5:
+					if (mem_child_five.node_id == 16'd800)
+						state <= CHECK_CHILD_6;
+					else
+						state <= GET_CHILD_5;
+				GET_CHILD_5: state <= IS_CHILD_5_QUEUED_HIGH;
+				IS_CHILD_5_QUEUED_HIGH: state <= IS_CHILD_5_QUEUED_LOW;
+				IS_CHILD_5_QUEUED_LOW: state <= IS_CHILD_5_QUEUED_DONE;
+				IS_CHILD_5_QUEUED_DONE:
+					if (found_child) begin
+						if (child_queued)
+							state <= GET_CHILD_5_FROM_QUEUE;
+						else
+							state <= IS_CHILD_5_EXPLORED_HIGH;
+					end
+				
+				GET_CHILD_5_FROM_QUEUE: state <= IS_SHORTER_5;
+				IS_SHORTER_5:
+					if (current_child.current_cost > (current_node.current_cost + current_node.distance_child_five))
+						state <= REMOVE_CHILD_5;
+					else
+						state <= CHECK_CHILD_6;
+						
+				IS_CHILD_5_EXPLORED_HIGH: state <= IS_CHILD_5_EXPLORED_LOW;
+				IS_CHILD_5_EXPLORED_LOW: state <= IS_CHILD_5_EXPLORED_DONE;
+				IS_CHILD_5_EXPLORED_DONE:
+					if (explored_done) begin
+						if (explored_child || current_child.node_id == 16'd800)
+							state <= CHECK_CHILD_6;
+						else
+							state <= INCREMENT_CHILD_5_COST;
+					end
+				
+				REMOVE_CHILD_5: state <= INCREMENT_CHILD_5_COST;
+				INCREMENT_CHILD_5_COST: state <= ADD_CHILD_5_TO_QUEUE;
+				ADD_CHILD_5_TO_QUEUE: state <= INCREMENT_CHILD_INDEX_5;
+				INCREMENT_CHILD_INDEX_5: state <= CHECK_CHILD_6;
+
+
+				//CHILD 6
+				CHECK_CHILD_6:
+					if (mem_child_six.node_id == 16'd800)
+						state <= LOOP;
+					else
+						state <= GET_CHILD_6;
+				GET_CHILD_6: state <= IS_CHILD_6_QUEUED_HIGH;
+				IS_CHILD_6_QUEUED_HIGH: state <= IS_CHILD_6_QUEUED_LOW;
+				IS_CHILD_6_QUEUED_LOW: state <= IS_CHILD_6_QUEUED_DONE;
+				IS_CHILD_6_QUEUED_DONE:
+					if (found_child) begin
+						if (child_queued)
+							state <= GET_CHILD_6_FROM_QUEUE;
+						else
+							state <= IS_CHILD_6_EXPLORED_HIGH;
+					end
+				
+				GET_CHILD_6_FROM_QUEUE: state <= IS_SHORTER_6;
+				IS_SHORTER_6:
+					if (current_child.current_cost > (current_node.current_cost + current_node.distance_child_six))
+						state <= REMOVE_CHILD_6;
+					else
+						state <= LOOP;
+						
+				IS_CHILD_6_EXPLORED_HIGH: state <= IS_CHILD_6_EXPLORED_LOW;
+				IS_CHILD_6_EXPLORED_LOW: state <= IS_CHILD_6_EXPLORED_DONE;
+				IS_CHILD_6_EXPLORED_DONE:
+					if (explored_done) begin
+						if (explored_child || current_child.node_id == 16'd800)
+							state <= LOOP;
+						else
+							state <= INCREMENT_CHILD_6_COST;
+					end
+				
+				REMOVE_CHILD_6: state <= INCREMENT_CHILD_6_COST;
+				INCREMENT_CHILD_6_COST: state <= ADD_CHILD_6_TO_QUEUE;
+				ADD_CHILD_6_TO_QUEUE: state <= INCREMENT_CHILD_INDEX_6;
+				INCREMENT_CHILD_INDEX_6: state <= LOOP;
 				
 				SUCCESS: state <= RECONSTRUCT_PATH;
 				
@@ -741,7 +853,7 @@ module Dijkstra
 				child_write_address <= child_write_address + 1'b1;
 			end
 			
-			
+
 			//
 			GET_CHILD_4: begin
 				queue_write <= 1'b0;
@@ -772,7 +884,7 @@ module Dijkstra
 			
 			INCREMENT_CHILD_4_COST: begin
 				queue_write <= 1'b0;
-				current_child.current_cost <= current_node.current_cost + current_node.distance_child_three;
+				current_child.current_cost <= current_node.current_cost + current_node.distance_child_four;
 				current_child.parent_node_id <= current_node.node_id;
 			end
 			ADD_CHILD_4_TO_QUEUE: begin
@@ -784,9 +896,98 @@ module Dijkstra
 				queue_write <= 1'b0;
 				child_write_address <= child_write_address + 1'b1;
 			end
+
+
+			//
+			GET_CHILD_5: begin
+				queue_write <= 1'b0;
+				current_child <= mem_child_five;
+			end
+			IS_CHILD_5_QUEUED_HIGH: begin
+				find_child_from_queue <= 1'b1;
+			end
+			IS_CHILD_5_QUEUED_LOW: begin
+				find_child_from_queue <= 1'b0;
+			end
+			
+			GET_CHILD_5_FROM_QUEUE: begin
+				current_child <= child_from_queue;
+			end
+			REMOVE_CHILD_5: begin
+				queue_write <= 1'b1;
+				queue_write_address <= child_address;
+				queue_write_data <= removed_node;
+			end
+			
+			IS_CHILD_5_EXPLORED_HIGH: begin
+				explored_child_find <= 1'b1;
+			end
+			IS_CHILD_5_EXPLORED_LOW: begin
+				explored_child_find <= 1'b0;
+			end
+			
+			INCREMENT_CHILD_5_COST: begin
+				queue_write <= 1'b0;
+				current_child.current_cost <= current_node.current_cost + current_node.distance_child_five;
+				current_child.parent_node_id <= current_node.node_id;
+			end
+			ADD_CHILD_5_TO_QUEUE: begin
+				queue_write <= 1'b1;
+				queue_write_address <= child_write_address;
+				queue_write_data <= current_child;
+			end
+			INCREMENT_CHILD_INDEX_5: begin
+				queue_write <= 1'b0;
+				child_write_address <= child_write_address + 1'b1;
+			end
+
+
+			//
+			GET_CHILD_6: begin
+				queue_write <= 1'b0;
+				current_child <= mem_child_six;
+			end
+			IS_CHILD_6_QUEUED_HIGH: begin
+				find_child_from_queue <= 1'b1;
+			end
+			IS_CHILD_6_QUEUED_LOW: begin
+				find_child_from_queue <= 1'b0;
+			end
+			
+			GET_CHILD_6_FROM_QUEUE: begin
+				current_child <= child_from_queue;
+			end
+			REMOVE_CHILD_6: begin
+				queue_write <= 1'b1;
+				queue_write_address <= child_address;
+				queue_write_data <= removed_node;
+			end
+			
+			IS_CHILD_6_EXPLORED_HIGH: begin
+				explored_child_find <= 1'b1;
+			end
+			IS_CHILD_6_EXPLORED_LOW: begin
+				explored_child_find <= 1'b0;
+			end
+			
+			INCREMENT_CHILD_6_COST: begin
+				queue_write <= 1'b0;
+				current_child.current_cost <= current_node.current_cost + current_node.distance_child_six;
+				current_child.parent_node_id <= current_node.node_id;
+			end
+			ADD_CHILD_6_TO_QUEUE: begin
+				queue_write <= 1'b1;
+				queue_write_address <= child_write_address;
+				queue_write_data <= current_child;
+			end
+			INCREMENT_CHILD_INDEX_6: begin
+				queue_write <= 1'b0;
+				child_write_address <= child_write_address + 1'b1;
+			end
+
 			
 			RECONSTRUCT_PATH: begin
-				path[i] <= current_node;
+				path[i] <= '{current_node.x, current_node.y};
 			end
 			GET_PARENT_HIGH: begin
 				explored_parent_find <= 1'b1;
@@ -799,7 +1000,7 @@ module Dijkstra
 				current_node <= parent_node;
 			end
 			ADD_START: begin
-				path[i] <= current_node;
+				path[i] <= '{current_node.x , current_node.y};
 			end
 			
 			ERASE: begin
