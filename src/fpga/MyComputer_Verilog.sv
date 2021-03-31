@@ -6,6 +6,11 @@ typedef struct {
 typedef struct packed {
 	logic [15:0] x;
 	logic [15:0] y;
+} coord;
+
+typedef struct packed {
+	logic [15:0] x;
+	logic [15:0] y;
 	logic [15:0] node_id;
 	logic [15:0] current_cost;
 	logic [15:0] child_one_id;
@@ -198,6 +203,9 @@ module MyComputer_Verilog (
  
 	logic path_goal_set;
 	logic get_goal_node;
+	logic received_coord;
+	logic gave_coord;
+	logic [31:0] actual_coord;
 	
 	logic path_start;
 	logic start_pulse;
@@ -225,7 +233,7 @@ module MyComputer_Verilog (
 		.start_pulse(start_pulse)
 	);
 	
-	node_info path [100];
+	coord path [100];
 	integer index;
 	logic success;
 	
@@ -240,6 +248,20 @@ module MyComputer_Verilog (
 		.success(success)
 	);
 	
+	logic writer_finished;
+
+	Path_Writer writer(
+		.clk                 (CLOCK_50),
+		.reset               (~KEY[2]),
+		.start 				 (success),
+		.path 				 (path),
+		.length              (index),
+		.received_coord   	 (received_coord),
+		.gave_coord 		 (gave_coord),
+		.coord 				 (actual_coord),
+		.finished 			 (writer_finished)
+	);
+
 	//logic sram_write;
 	
 	logic [15:0] sram_readdata;
@@ -260,7 +282,9 @@ module MyComputer_Verilog (
 			.sram_goal_byteenable				(2'b11),
 			.path_finished_export				(path_finished),
 			.path_goal_set_export				(path_goal_set),
-			.path_start_export			 		(path_start),
+			.received_coord_export				(received_coord),
+			.actual_coord_export            (actual_coord),
+			.gave_coord_export					(gave_coord),
 			.hx711_sck_export						(hx711_sck),
 			.hx711_dt_export						(hx711_dt),
 			.wifi_rst_export						(wifi_rst),

@@ -658,6 +658,7 @@ module Dijkstra
 				current_node_id <= start_node.node_id;
 				node_mem_write_address <= 7'b0;
 				node_mem_write_data <= initial_node;
+				success <= 1'b0;
 			end
 			
 			START: begin
@@ -665,7 +666,6 @@ module Dijkstra
 				explored_write_address <= 7'b0;
 				child_write_address <= 7'b1;
 				i <= 0;
-				success <= 1'b0;
 			end
 			WRITE_START: begin
 				node_mem_write <= 1'b1;
