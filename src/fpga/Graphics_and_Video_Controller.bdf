@@ -164,72 +164,8 @@ refer to the applicable agreement for further details.
 	(text "VCC" (rect 136 7 156 17)(font "Arial" (font_size 6)))
 )
 (pin
-	(input)
-	(rect 320 1160 488 1176)
-	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "PathX[15..0]" (rect 5 0 64 17)(font "Intel Clear" ))
-	(pt 168 8)
-	(drawing
-		(line (pt 84 12)(pt 109 12))
-		(line (pt 84 4)(pt 109 4))
-		(line (pt 113 8)(pt 168 8))
-		(line (pt 84 12)(pt 84 4))
-		(line (pt 109 4)(pt 113 8))
-		(line (pt 109 12)(pt 113 8))
-	)
-	(text "VCC" (rect 128 7 148 17)(font "Arial" (font_size 6)))
-)
-(pin
-	(input)
-	(rect 320 1176 488 1192)
-	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "PathY[15..0]" (rect 5 0 64 17)(font "Intel Clear" ))
-	(pt 168 8)
-	(drawing
-		(line (pt 84 12)(pt 109 12))
-		(line (pt 84 4)(pt 109 4))
-		(line (pt 113 8)(pt 168 8))
-		(line (pt 84 12)(pt 84 4))
-		(line (pt 109 4)(pt 113 8))
-		(line (pt 109 12)(pt 113 8))
-	)
-	(text "VCC" (rect 128 7 148 17)(font "Arial" (font_size 6)))
-)
-(pin
-	(input)
-	(rect 320 1208 488 1224)
-	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "Success" (rect 5 0 41 17)(font "Intel Clear" ))
-	(pt 168 8)
-	(drawing
-		(line (pt 84 12)(pt 109 12))
-		(line (pt 84 4)(pt 109 4))
-		(line (pt 113 8)(pt 168 8))
-		(line (pt 84 12)(pt 84 4))
-		(line (pt 109 4)(pt 113 8))
-		(line (pt 109 12)(pt 113 8))
-	)
-	(text "VCC" (rect 128 7 148 17)(font "Arial" (font_size 6)))
-)
-(pin
-	(input)
-	(rect 320 1192 488 1208)
-	(text "INPUT" (rect 125 0 153 10)(font "Arial" (font_size 6)))
-	(text "MaxIndex[6..0]" (rect 5 0 73 17)(font "Intel Clear" ))
-	(pt 168 8)
-	(drawing
-		(line (pt 84 12)(pt 109 12))
-		(line (pt 84 4)(pt 109 4))
-		(line (pt 113 8)(pt 168 8))
-		(line (pt 84 12)(pt 84 4))
-		(line (pt 109 4)(pt 113 8))
-		(line (pt 109 12)(pt 113 8))
-	)
-	(text "VCC" (rect 128 7 148 17)(font "Arial" (font_size 6)))
-)
-(pin
 	(output)
-	(rect 1472 1032 1648 1048)
+	(rect 1432 1016 1608 1032)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "DataOut[15..0]" (rect 90 0 163 12)(font "Arial" ))
 	(pt 0 8)
@@ -360,22 +296,6 @@ refer to the applicable agreement for further details.
 	(rect 2320 176 2496 192)
 	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
 	(text "VGA_Sync" (rect 90 0 144 12)(font "Arial" ))
-	(pt 0 8)
-	(drawing
-		(line (pt 0 8)(pt 52 8))
-		(line (pt 52 4)(pt 78 4))
-		(line (pt 52 12)(pt 78 12))
-		(line (pt 52 12)(pt 52 4))
-		(line (pt 78 4)(pt 82 8))
-		(line (pt 82 8)(pt 78 12))
-		(line (pt 78 12)(pt 82 8))
-	)
-)
-(pin
-	(output)
-	(rect 1472 1192 1648 1208)
-	(text "OUTPUT" (rect 1 0 39 10)(font "Arial" (font_size 6)))
-	(text "Index[6..0]" (rect 90 0 138 17)(font "Intel Clear" ))
 	(pt 0 8)
 	(drawing
 		(line (pt 0 8)(pt 52 8))
@@ -943,9 +863,9 @@ refer to the applicable agreement for further details.
 	)
 )
 (symbol
-	(rect 848 960 1144 1264)
+	(rect 848 960 1144 1200)
 	(text "GraphicsController_Verilog" (rect 5 0 134 12)(font "Arial" ))
-	(text "inst" (rect 8 288 25 300)(font "Arial" ))
+	(text "inst" (rect 8 224 25 236)(font "Arial" ))
 	(port
 		(pt 0 32)
 		(input)
@@ -1024,116 +944,81 @@ refer to the applicable agreement for further details.
 		(line (pt 0 192)(pt 16 192)(line_width 3))
 	)
 	(port
-		(pt 0 208)
-		(input)
-		(text "path_x[15..0]" (rect 0 0 64 12)(font "Arial" ))
-		(text "path_x[15..0]" (rect 21 203 85 215)(font "Arial" ))
-		(line (pt 0 208)(pt 16 208)(line_width 3))
-	)
-	(port
-		(pt 0 224)
-		(input)
-		(text "path_y[15..0]" (rect 0 0 66 12)(font "Arial" ))
-		(text "path_y[15..0]" (rect 21 219 87 231)(font "Arial" ))
-		(line (pt 0 224)(pt 16 224)(line_width 3))
-	)
-	(port
-		(pt 0 240)
-		(input)
-		(text "max_index[6..0]" (rect 0 0 79 12)(font "Arial" ))
-		(text "max_index[6..0]" (rect 21 235 100 247)(font "Arial" ))
-		(line (pt 0 240)(pt 16 240)(line_width 3))
-	)
-	(port
-		(pt 0 256)
-		(input)
-		(text "success" (rect 0 0 41 12)(font "Arial" ))
-		(text "success" (rect 21 251 62 263)(font "Arial" ))
-		(line (pt 0 256)(pt 16 256))
-	)
-	(port
 		(pt 296 32)
 		(output)
-		(text "index[6..0]" (rect 0 0 51 12)(font "Arial" ))
-		(text "index[6..0]" (rect 232 27 283 39)(font "Arial" ))
+		(text "VScrollValue[9..0]" (rect 0 0 87 12)(font "Arial" ))
+		(text "VScrollValue[9..0]" (rect 202 27 289 39)(font "Arial" ))
 		(line (pt 296 32)(pt 280 32)(line_width 3))
 	)
 	(port
 		(pt 296 48)
 		(output)
-		(text "VScrollValue[9..0]" (rect 0 0 87 12)(font "Arial" ))
-		(text "VScrollValue[9..0]" (rect 202 43 289 55)(font "Arial" ))
+		(text "HScrollValue[9..0]" (rect 0 0 88 12)(font "Arial" ))
+		(text "HScrollValue[9..0]" (rect 201 43 289 55)(font "Arial" ))
 		(line (pt 296 48)(pt 280 48)(line_width 3))
 	)
 	(port
 		(pt 296 64)
 		(output)
-		(text "HScrollValue[9..0]" (rect 0 0 88 12)(font "Arial" ))
-		(text "HScrollValue[9..0]" (rect 201 59 289 71)(font "Arial" ))
+		(text "DataOutToCPU[15..0]" (rect 0 0 108 12)(font "Arial" ))
+		(text "DataOutToCPU[15..0]" (rect 184 59 292 71)(font "Arial" ))
 		(line (pt 296 64)(pt 280 64)(line_width 3))
 	)
 	(port
 		(pt 296 80)
 		(output)
-		(text "DataOutToCPU[15..0]" (rect 0 0 108 12)(font "Arial" ))
-		(text "DataOutToCPU[15..0]" (rect 184 75 292 87)(font "Arial" ))
+		(text "Sram_AddressOut[17..0]" (rect 0 0 121 12)(font "Arial" ))
+		(text "Sram_AddressOut[17..0]" (rect 173 75 294 87)(font "Arial" ))
 		(line (pt 296 80)(pt 280 80)(line_width 3))
 	)
 	(port
 		(pt 296 96)
 		(output)
-		(text "Sram_AddressOut[17..0]" (rect 0 0 121 12)(font "Arial" ))
-		(text "Sram_AddressOut[17..0]" (rect 173 91 294 103)(font "Arial" ))
+		(text "Sram_DataOut[15..0]" (rect 0 0 105 12)(font "Arial" ))
+		(text "Sram_DataOut[15..0]" (rect 187 91 292 103)(font "Arial" ))
 		(line (pt 296 96)(pt 280 96)(line_width 3))
 	)
 	(port
 		(pt 296 112)
 		(output)
-		(text "Sram_DataOut[15..0]" (rect 0 0 105 12)(font "Arial" ))
-		(text "Sram_DataOut[15..0]" (rect 187 107 292 119)(font "Arial" ))
-		(line (pt 296 112)(pt 280 112)(line_width 3))
+		(text "Sram_UDS_Out_L" (rect 0 0 90 12)(font "Arial" ))
+		(text "Sram_UDS_Out_L" (rect 199 107 289 119)(font "Arial" ))
+		(line (pt 296 112)(pt 280 112))
 	)
 	(port
 		(pt 296 128)
 		(output)
-		(text "Sram_UDS_Out_L" (rect 0 0 90 12)(font "Arial" ))
-		(text "Sram_UDS_Out_L" (rect 199 123 289 135)(font "Arial" ))
+		(text "Sram_LDS_Out_L" (rect 0 0 88 12)(font "Arial" ))
+		(text "Sram_LDS_Out_L" (rect 201 123 289 135)(font "Arial" ))
 		(line (pt 296 128)(pt 280 128))
 	)
 	(port
 		(pt 296 144)
 		(output)
-		(text "Sram_LDS_Out_L" (rect 0 0 88 12)(font "Arial" ))
-		(text "Sram_LDS_Out_L" (rect 201 139 289 151)(font "Arial" ))
+		(text "Sram_RW_Out" (rect 0 0 74 12)(font "Arial" ))
+		(text "Sram_RW_Out" (rect 213 139 287 151)(font "Arial" ))
 		(line (pt 296 144)(pt 280 144))
 	)
 	(port
 		(pt 296 160)
 		(output)
-		(text "Sram_RW_Out" (rect 0 0 74 12)(font "Arial" ))
-		(text "Sram_RW_Out" (rect 213 155 287 167)(font "Arial" ))
-		(line (pt 296 160)(pt 280 160))
+		(text "ColourPalletteAddr[5..0]" (rect 0 0 116 12)(font "Arial" ))
+		(text "ColourPalletteAddr[5..0]" (rect 177 155 293 167)(font "Arial" ))
+		(line (pt 296 160)(pt 280 160)(line_width 3))
 	)
 	(port
 		(pt 296 176)
 		(output)
-		(text "ColourPalletteAddr[5..0]" (rect 0 0 116 12)(font "Arial" ))
-		(text "ColourPalletteAddr[5..0]" (rect 177 171 293 183)(font "Arial" ))
+		(text "ColourPalletteData[23..0]" (rect 0 0 123 12)(font "Arial" ))
+		(text "ColourPalletteData[23..0]" (rect 171 171 294 183)(font "Arial" ))
 		(line (pt 296 176)(pt 280 176)(line_width 3))
 	)
 	(port
 		(pt 296 192)
 		(output)
-		(text "ColourPalletteData[23..0]" (rect 0 0 123 12)(font "Arial" ))
-		(text "ColourPalletteData[23..0]" (rect 171 187 294 199)(font "Arial" ))
-		(line (pt 296 192)(pt 280 192)(line_width 3))
-	)
-	(port
-		(pt 296 208)
-		(output)
 		(text "ColourPallette_WE_H" (rect 0 0 106 12)(font "Arial" ))
-		(text "ColourPallette_WE_H" (rect 186 203 292 215)(font "Arial" ))
-		(line (pt 296 208)(pt 280 208))
+		(text "ColourPallette_WE_H" (rect 186 187 292 199)(font "Arial" ))
+		(line (pt 296 192)(pt 280 192))
 	)
 	(parameter
 		"Idle"
@@ -1201,26 +1086,6 @@ refer to the applicable agreement for further details.
 		""
 		(type "PARAMETER_UNSIGNED_BIN")	)
 	(parameter
-		"PathStoreStart"
-		"00001100"
-		""
-		(type "PARAMETER_UNSIGNED_BIN")	)
-	(parameter
-		"PathStoreGoal"
-		"00001101"
-		""
-		(type "PARAMETER_UNSIGNED_BIN")	)
-	(parameter
-		"DrawPath"
-		"00001110"
-		""
-		(type "PARAMETER_UNSIGNED_BIN")	)
-	(parameter
-		"WaitPathSuccess"
-		"00001111"
-		""
-		(type "PARAMETER_UNSIGNED_BIN")	)
-	(parameter
 		"Hline"
 		"0000000000000001"
 		""
@@ -1256,11 +1121,6 @@ refer to the applicable agreement for further details.
 		""
 		(type "PARAMETER_UNSIGNED_BIN")	)
 	(parameter
-		"Path"
-		"0000000000000101"
-		""
-		(type "PARAMETER_UNSIGNED_BIN")	)
-	(parameter
 		"X_min"
 		"0"
 		""
@@ -1281,9 +1141,9 @@ refer to the applicable agreement for further details.
 		""
 		(type "PARAMETER_SIGNED_DEC")	)
 	(drawing
-		(rectangle (rect 16 16 280 288))
+		(rectangle (rect 16 16 280 224))
 	)
-	(annotation_block (parameter)(rect 1144 1264 1456 1840))
+	(annotation_block (parameter)(rect 1144 1216 1456 1696))
 )
 (connector
 	(text "H_Sync_L" (rect 2250 296 2301 308)(font "Arial" ))
@@ -1472,20 +1332,6 @@ refer to the applicable agreement for further details.
 (connector
 	(pt 1664 928)
 	(pt 1744 928)
-	(bus)
-)
-(connector
-	(pt 1272 424)
-	(pt 1336 424)
-)
-(connector
-	(pt 1256 408)
-	(pt 1336 408)
-	(bus)
-)
-(connector
-	(pt 1240 392)
-	(pt 1336 392)
 	(bus)
 )
 (connector
@@ -1695,118 +1541,6 @@ refer to the applicable agreement for further details.
 	(pt 728 272)
 )
 (connector
-	(pt 1728 992)
-	(pt 1728 1120)
-)
-(connector
-	(pt 1712 976)
-	(pt 1712 1104)
-)
-(connector
-	(pt 1696 960)
-	(pt 1696 1088)
-)
-(connector
-	(pt 1680 944)
-	(pt 1680 1072)
-	(bus)
-)
-(connector
-	(pt 1664 928)
-	(pt 1664 1056)
-	(bus)
-)
-(connector
-	(pt 1272 424)
-	(pt 1272 1168)
-)
-(connector
-	(pt 1240 392)
-	(pt 1240 1152)
-	(bus)
-)
-(connector
-	(pt 1256 408)
-	(pt 1256 1136)
-	(bus)
-)
-(connector
-	(pt 1416 656)
-	(pt 1416 1008)
-	(bus)
-)
-(connector
-	(pt 1432 672)
-	(pt 1432 1024)
-	(bus)
-)
-(connector
-	(pt 1416 1008)
-	(pt 1144 1008)
-	(bus)
-)
-(connector
-	(pt 1432 1024)
-	(pt 1144 1024)
-	(bus)
-)
-(connector
-	(pt 1664 1056)
-	(pt 1144 1056)
-	(bus)
-)
-(connector
-	(pt 1680 1072)
-	(pt 1144 1072)
-	(bus)
-)
-(connector
-	(pt 1696 1088)
-	(pt 1144 1088)
-)
-(connector
-	(pt 1712 1104)
-	(pt 1144 1104)
-)
-(connector
-	(pt 1728 1120)
-	(pt 1144 1120)
-)
-(connector
-	(pt 1256 1136)
-	(pt 1144 1136)
-	(bus)
-)
-(connector
-	(pt 1240 1152)
-	(pt 1144 1152)
-	(bus)
-)
-(connector
-	(pt 1272 1168)
-	(pt 1144 1168)
-)
-(connector
-	(pt 1144 1040)
-	(pt 1472 1040)
-	(bus)
-)
-(connector
-	(pt 1144 992)
-	(pt 1176 992)
-	(bus)
-)
-(connector
-	(pt 1176 992)
-	(pt 1176 1200)
-	(bus)
-)
-(connector
-	(pt 1176 1200)
-	(pt 1472 1200)
-	(bus)
-)
-(connector
 	(pt 496 1056)
 	(pt 848 1056)
 )
@@ -1849,23 +1583,115 @@ refer to the applicable agreement for further details.
 	(bus)
 )
 (connector
-	(pt 488 1168)
-	(pt 848 1168)
+	(pt 1336 424)
+	(pt 1232 424)
+)
+(connector
+	(pt 1336 408)
+	(pt 1216 408)
 	(bus)
 )
 (connector
-	(pt 488 1184)
-	(pt 848 1184)
+	(pt 1336 392)
+	(pt 1200 392)
 	(bus)
 )
 (connector
-	(pt 488 1200)
-	(pt 848 1200)
+	(pt 1728 992)
+	(pt 1728 1104)
+)
+(connector
+	(pt 1712 976)
+	(pt 1712 1088)
+)
+(connector
+	(pt 1696 960)
+	(pt 1696 1072)
+)
+(connector
+	(pt 1680 944)
+	(pt 1680 1056)
 	(bus)
 )
 (connector
-	(pt 488 1216)
-	(pt 848 1216)
+	(pt 1664 928)
+	(pt 1664 1040)
+	(bus)
+)
+(connector
+	(pt 1232 424)
+	(pt 1232 1152)
+)
+(connector
+	(pt 1200 392)
+	(pt 1200 1136)
+	(bus)
+)
+(connector
+	(pt 1216 408)
+	(pt 1216 1120)
+	(bus)
+)
+(connector
+	(pt 1416 656)
+	(pt 1416 992)
+	(bus)
+)
+(connector
+	(pt 1432 672)
+	(pt 1432 1008)
+	(bus)
+)
+(connector
+	(pt 1144 992)
+	(pt 1416 992)
+	(bus)
+)
+(connector
+	(pt 1144 1008)
+	(pt 1432 1008)
+	(bus)
+)
+(connector
+	(pt 1144 1040)
+	(pt 1664 1040)
+	(bus)
+)
+(connector
+	(pt 1144 1056)
+	(pt 1680 1056)
+	(bus)
+)
+(connector
+	(pt 1144 1072)
+	(pt 1696 1072)
+)
+(connector
+	(pt 1144 1088)
+	(pt 1712 1088)
+)
+(connector
+	(pt 1144 1104)
+	(pt 1728 1104)
+)
+(connector
+	(pt 1144 1120)
+	(pt 1216 1120)
+	(bus)
+)
+(connector
+	(pt 1144 1136)
+	(pt 1200 1136)
+	(bus)
+)
+(connector
+	(pt 1144 1152)
+	(pt 1232 1152)
+)
+(connector
+	(pt 1144 1024)
+	(pt 1432 1024)
+	(bus)
 )
 (junction (pt 1640 504))
 (junction (pt 1640 520))
