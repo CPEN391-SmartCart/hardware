@@ -1,14 +1,14 @@
 typedef struct packed {
 	logic [15:0] x;
 	logic [15:0] y;
-} coord_t;
+} coord;
 
 module Path_Writer(
 	input logic clk,
 	input logic reset,
 	input logic start,
 
-	input coord_t path[100],
+	input coord path[100],
 	input integer length,
 
 	input logic received_coord,
@@ -60,7 +60,6 @@ module Path_Writer(
 		case (state)
 			IDLE: begin
 				finished <= 1'b0;
-				gave_coord <= 1'b0;
 			end
 
 			START: begin

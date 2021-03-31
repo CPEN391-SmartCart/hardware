@@ -37,7 +37,7 @@ module Determined_Nodes_Mem
 	logic [271:0] read_data;
 	
 	initial begin
-		$readmemh("nodes.mem", mem);
+		$readmemh("/home/jared/Desktop/smartcart/hardware/src/fpga/pathfinding/nodes.mem", mem);
 	end
 	
 	always_ff @(posedge clk)

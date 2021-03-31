@@ -283,7 +283,7 @@ module MyComputer_Verilog (
 			.path_finished_export				(path_finished),
 			.path_goal_set_export				(path_goal_set),
 			.received_coord_export				(received_coord),
-			.actual_coord_export            (actual_coord),
+			.actual_coord_export             (actual_coord),
 			.gave_coord_export					(gave_coord),
 			.hx711_sck_export						(hx711_sck),
 			.hx711_dt_export						(hx711_dt),
@@ -428,6 +428,7 @@ module MyComputer_Verilog (
 	  // Instantiate an instance of the graphics and video controller circuit drawn as a schematic
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 
+	  /*
 		Graphics_and_Video_Controller		GraphicsController1 ( 
 				.Reset_L						(RESET_L_WIRE),
 				.Clock_50Mhz 					(CLOCK_50),
@@ -449,6 +450,7 @@ module MyComputer_Verilog (
 				.VGA_Blanking 					(VGA_BLANK_N),
 				.VGA_SYNC						(VGA_SYNC_N),
 		 );
+		 */
 		 
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		// create an instance of the IO port with serial ports

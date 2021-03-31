@@ -24,7 +24,7 @@ typedef struct packed {
 } node_info;
 
 
-module dijsktra_real_tb;
+module pathwriter_tb;
 
 	logic clk;
 	logic reset;
@@ -35,7 +35,7 @@ module dijsktra_real_tb;
 	
 	node_info start = '{16'h0010, 16'h0010,16'h0013,16'h0000,16'h0000,16'h0016,16'h0004,16'h0017,16'h0002,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000};
 	node_info goal = '{16'h0082, 16'h0043,16'h0045,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000,16'h0000};
-	
+
 	Dijkstra dijkstra(
 		.clk(clk), 
 		.reset(reset), 
@@ -45,6 +45,24 @@ module dijsktra_real_tb;
 		.path(path),
 		.i(index),
 		.success(success)
+	);
+
+
+	logic received_coord;
+
+	logic gave_coord;
+	logic [31:0] current_coord;
+
+	Path_Writer writer(
+		.clk                 (clk),
+		.reset               (reset),
+		.start 				 (success),
+		.path 				 (path),
+		.length  			 (index),
+		.received_coord      (received_coord),
+		.gave_coord          (gave_coord),
+		.coord               (current_coord),
+		.finished            ()
 	);
 	
 	initial
@@ -69,6 +87,10 @@ module dijsktra_real_tb;
 		start_pulse = 1;
 		#20;
 		start_pulse = 0;
+
+		#36000;
+
+		received_coord = 1;
 		
 		
 		#500000;
