@@ -11,7 +11,6 @@ c5_pin_model_dump.txt
 *.qdb
 *.qpg
 *.qtl
-*.qpf
 *.sof
 *.bak
 *.rpt
