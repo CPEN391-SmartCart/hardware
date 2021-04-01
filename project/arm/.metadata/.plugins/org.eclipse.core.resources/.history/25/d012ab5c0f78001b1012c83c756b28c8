@@ -1,3 +1,0 @@
-
-#define SCK (volatile unsigned int *)(0xFF200080)
-#define DT (volatile unsigned int *)(0xFF200090)

@@ -1,9 +1,0 @@
-
-#include <stdint.h>
-
-#define LOW 0
-#define HIGH 1
-
-int digitalRead(volatile uint8_t *address);
-
-void digitalWrite(volatile uint8_t *address, int value);
