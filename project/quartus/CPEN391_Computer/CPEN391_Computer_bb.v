@@ -82,9 +82,7 @@ module CPEN391_Computer (
 	memory_mem_odt,
 	memory_mem_dm,
 	memory_oct_rzqin,
-	path_finished_export,
 	path_goal_set_export,
-	path_start_export,
 	sdram_addr,
 	sdram_ba,
 	sdram_cas_n,
@@ -97,14 +95,7 @@ module CPEN391_Computer (
 	system_pll_ref_clk_clk,
 	system_pll_ref_reset_reset,
 	wifi_cts_export,
-	wifi_rst_export,
-	sram_goal_address,
-	sram_goal_chipselect,
-	sram_goal_clken,
-	sram_goal_write,
-	sram_goal_readdata,
-	sram_goal_writedata,
-	sram_goal_byteenable);	
+	wifi_rst_export);	
 
 	output		hps_io_hps_io_emac1_inst_TX_CLK;
 	output		hps_io_hps_io_emac1_inst_TXD0;
@@ -188,9 +179,7 @@ module CPEN391_Computer (
 	output		memory_mem_odt;
 	output	[3:0]	memory_mem_dm;
 	input		memory_oct_rzqin;
-	input		path_finished_export;
 	output		path_goal_set_export;
-	output		path_start_export;
 	output	[12:0]	sdram_addr;
 	output	[1:0]	sdram_ba;
 	output		sdram_cas_n;
@@ -204,11 +193,4 @@ module CPEN391_Computer (
 	input		system_pll_ref_reset_reset;
 	output		wifi_cts_export;
 	output		wifi_rst_export;
-	input	[5:0]	sram_goal_address;
-	input		sram_goal_chipselect;
-	input		sram_goal_clken;
-	input		sram_goal_write;
-	output	[15:0]	sram_goal_readdata;
-	input	[15:0]	sram_goal_writedata;
-	input	[1:0]	sram_goal_byteenable;
 endmodule

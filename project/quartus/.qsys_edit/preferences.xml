@@ -10,7 +10,7 @@
    <inputclock preferredWidth="149" />
   </columns>
  </systemtable>
- <library expandedCategories="Library,Project" />
- <window width="1848" height="1053" x="79" y="27" />
+ <library expandedCategories="Project,Library" />
+ <window width="1920" height="1080" x="0" y="0" />
  <generation synthesis="VERILOG" path="_PROJECT_NAME_" simulation="NONE" />
 </preferences>

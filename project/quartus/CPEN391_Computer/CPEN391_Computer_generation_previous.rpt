@@ -22,12 +22,8 @@ Progress: Adding JTAG_UART_for_ARM_1 [altera_avalon_jtag_uart 15.0]
 Progress: Parameterizing module JTAG_UART_for_ARM_1
 Progress: Adding Onchip_SRAM_GOAL [altera_avalon_onchip_memory2 15.0]
 Progress: Parameterizing module Onchip_SRAM_GOAL
-Progress: Adding PATH_FINISHED [altera_avalon_pio 15.0]
-Progress: Parameterizing module PATH_FINISHED
 Progress: Adding PATH_GOAL_SET [altera_avalon_pio 15.0]
 Progress: Parameterizing module PATH_GOAL_SET
-Progress: Adding PATH_START [altera_avalon_pio 15.0]
-Progress: Parameterizing module PATH_START
 Progress: Adding SDRAM [altera_avalon_new_sdram_controller 15.0]
 Progress: Parameterizing module SDRAM
 Progress: Adding SysID [altera_avalon_sysid_qsys 15.0]
@@ -48,9 +44,10 @@ Warning: CPEN391_Computer.ARM_A9_HPS: "Configuration/HPS-to-FPGA user 0 clock fr
 Warning: CPEN391_Computer.ARM_A9_HPS: "QSPI clock frequency" (desired_qspi_clk_mhz) requested 400.0 MHz, but only achieved 370.0 MHz
 Warning: CPEN391_Computer.ARM_A9_HPS: 1 or more output clock frequencies cannot be achieved precisely, consider revising desired output clock frequencies.
 Info: CPEN391_Computer.HX711_DT: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
-Info: CPEN391_Computer.PATH_FINISHED: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
 Info: CPEN391_Computer.SysID: System ID is not assigned automatically. Edit the System ID parameter to provide a unique ID
 Info: CPEN391_Computer.SysID: Time stamp will be automatically updated when this component is generated.
+Warning: CPEN391_Computer.: You have exported the interface Onchip_SRAM_GOAL.s2 but not its associated clock interface.  Export the driver of Onchip_SRAM_GOAL.clk1
+Warning: CPEN391_Computer.: You have exported the interface Onchip_SRAM_GOAL.s2 but not its associated reset interface.  Export the driver(s) of Onchip_SRAM_GOAL.reset1
 Info: ip-generate succeeded.
 Info: Finished: Create block symbol file (.bsf)
 Info: 
@@ -78,12 +75,8 @@ Progress: Adding JTAG_UART_for_ARM_1 [altera_avalon_jtag_uart 15.0]
 Progress: Parameterizing module JTAG_UART_for_ARM_1
 Progress: Adding Onchip_SRAM_GOAL [altera_avalon_onchip_memory2 15.0]
 Progress: Parameterizing module Onchip_SRAM_GOAL
-Progress: Adding PATH_FINISHED [altera_avalon_pio 15.0]
-Progress: Parameterizing module PATH_FINISHED
 Progress: Adding PATH_GOAL_SET [altera_avalon_pio 15.0]
 Progress: Parameterizing module PATH_GOAL_SET
-Progress: Adding PATH_START [altera_avalon_pio 15.0]
-Progress: Parameterizing module PATH_START
 Progress: Adding SDRAM [altera_avalon_new_sdram_controller 15.0]
 Progress: Parameterizing module SDRAM
 Progress: Adding SysID [altera_avalon_sysid_qsys 15.0]
@@ -104,9 +97,10 @@ Warning: CPEN391_Computer.ARM_A9_HPS: "Configuration/HPS-to-FPGA user 0 clock fr
 Warning: CPEN391_Computer.ARM_A9_HPS: "QSPI clock frequency" (desired_qspi_clk_mhz) requested 400.0 MHz, but only achieved 370.0 MHz
 Warning: CPEN391_Computer.ARM_A9_HPS: 1 or more output clock frequencies cannot be achieved precisely, consider revising desired output clock frequencies.
 Info: CPEN391_Computer.HX711_DT: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
-Info: CPEN391_Computer.PATH_FINISHED: PIO inputs are not hardwired in test bench. Undefined values will be read from PIO inputs during simulation.
 Info: CPEN391_Computer.SysID: System ID is not assigned automatically. Edit the System ID parameter to provide a unique ID
 Info: CPEN391_Computer.SysID: Time stamp will be automatically updated when this component is generated.
+Warning: CPEN391_Computer.: You have exported the interface Onchip_SRAM_GOAL.s2 but not its associated clock interface.  Export the driver of Onchip_SRAM_GOAL.clk1
+Warning: CPEN391_Computer.: You have exported the interface Onchip_SRAM_GOAL.s2 but not its associated reset interface.  Export the driver(s) of Onchip_SRAM_GOAL.reset1
 Info: CPEN391_Computer: Generating CPEN391_Computer "CPEN391_Computer" for QUARTUS_SYNTH
 Info: Interconnect is inserted between master JTAG_To_HPS_Bridge.master and slave ARM_A9_HPS.f2h_axi_slave because the master is of type avalon and the slave is of type axi.
 Warning: ARM_A9_HPS.f2h_irq0: Cannot connect clock for irq_mapper.sender
@@ -121,30 +115,30 @@ Warning: ARM_A9_HPS: "QSPI clock frequency" (desired_qspi_clk_mhz) requested 400
 Warning: ARM_A9_HPS: 1 or more output clock frequencies cannot be achieved precisely, consider revising desired output clock frequencies.
 Info: ARM_A9_HPS: "CPEN391_Computer" instantiated altera_hps "ARM_A9_HPS"
 Info: HX711_DT: Starting RTL generation for module 'CPEN391_Computer_HX711_DT'
-Info: HX711_DT:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=CPEN391_Computer_HX711_DT --dir=/tmp/alt8715_3446890196031580552.dir/0001_HX711_DT_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8715_3446890196031580552.dir/0001_HX711_DT_gen//CPEN391_Computer_HX711_DT_component_configuration.pl  --do_build_sim=0  ]
+Info: HX711_DT:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=CPEN391_Computer_HX711_DT --dir=/tmp/alt8718_1540980602305612730.dir/0001_HX711_DT_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8718_1540980602305612730.dir/0001_HX711_DT_gen//CPEN391_Computer_HX711_DT_component_configuration.pl  --do_build_sim=0  ]
 Info: HX711_DT: Done RTL generation for module 'CPEN391_Computer_HX711_DT'
 Info: HX711_DT: "CPEN391_Computer" instantiated altera_avalon_pio "HX711_DT"
 Info: HX711_SCK: Starting RTL generation for module 'CPEN391_Computer_HX711_SCK'
-Info: HX711_SCK:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=CPEN391_Computer_HX711_SCK --dir=/tmp/alt8715_3446890196031580552.dir/0002_HX711_SCK_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8715_3446890196031580552.dir/0002_HX711_SCK_gen//CPEN391_Computer_HX711_SCK_component_configuration.pl  --do_build_sim=0  ]
+Info: HX711_SCK:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_pio/generate_rtl.pl --name=CPEN391_Computer_HX711_SCK --dir=/tmp/alt8718_1540980602305612730.dir/0002_HX711_SCK_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8718_1540980602305612730.dir/0002_HX711_SCK_gen//CPEN391_Computer_HX711_SCK_component_configuration.pl  --do_build_sim=0  ]
 Info: HX711_SCK: Done RTL generation for module 'CPEN391_Computer_HX711_SCK'
 Info: HX711_SCK: "CPEN391_Computer" instantiated altera_avalon_pio "HX711_SCK"
 Info: IO_Bridge: Starting Generation of Avalon to External Bus Bridge
 Info: IO_Bridge: "CPEN391_Computer" instantiated altera_up_avalon_to_external_bus_bridge "IO_Bridge"
 Info: Interval_Timer: Starting RTL generation for module 'CPEN391_Computer_Interval_Timer'
-Info: Interval_Timer:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64//perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64//perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer/generate_rtl.pl --name=CPEN391_Computer_Interval_Timer --dir=/tmp/alt8715_3446890196031580552.dir/0004_Interval_Timer_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8715_3446890196031580552.dir/0004_Interval_Timer_gen//CPEN391_Computer_Interval_Timer_component_configuration.pl  --do_build_sim=0  ]
+Info: Interval_Timer:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64//perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64//perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_timer/generate_rtl.pl --name=CPEN391_Computer_Interval_Timer --dir=/tmp/alt8718_1540980602305612730.dir/0004_Interval_Timer_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8718_1540980602305612730.dir/0004_Interval_Timer_gen//CPEN391_Computer_Interval_Timer_component_configuration.pl  --do_build_sim=0  ]
 Info: Interval_Timer: Done RTL generation for module 'CPEN391_Computer_Interval_Timer'
 Info: Interval_Timer: "CPEN391_Computer" instantiated altera_avalon_timer "Interval_Timer"
 Info: JTAG_To_FPGA_Bridge: "CPEN391_Computer" instantiated altera_jtag_avalon_master "JTAG_To_FPGA_Bridge"
 Info: JTAG_UART_for_ARM_0: Starting RTL generation for module 'CPEN391_Computer_JTAG_UART_for_ARM_0'
-Info: JTAG_UART_for_ARM_0:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=CPEN391_Computer_JTAG_UART_for_ARM_0 --dir=/tmp/alt8715_3446890196031580552.dir/0005_JTAG_UART_for_ARM_0_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8715_3446890196031580552.dir/0005_JTAG_UART_for_ARM_0_gen//CPEN391_Computer_JTAG_UART_for_ARM_0_component_configuration.pl  --do_build_sim=0  ]
+Info: JTAG_UART_for_ARM_0:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_jtag_uart/generate_rtl.pl --name=CPEN391_Computer_JTAG_UART_for_ARM_0 --dir=/tmp/alt8718_1540980602305612730.dir/0005_JTAG_UART_for_ARM_0_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8718_1540980602305612730.dir/0005_JTAG_UART_for_ARM_0_gen//CPEN391_Computer_JTAG_UART_for_ARM_0_component_configuration.pl  --do_build_sim=0  ]
 Info: JTAG_UART_for_ARM_0: Done RTL generation for module 'CPEN391_Computer_JTAG_UART_for_ARM_0'
 Info: JTAG_UART_for_ARM_0: "CPEN391_Computer" instantiated altera_avalon_jtag_uart "JTAG_UART_for_ARM_0"
 Info: Onchip_SRAM_GOAL: Starting RTL generation for module 'CPEN391_Computer_Onchip_SRAM_GOAL'
-Info: Onchip_SRAM_GOAL:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=CPEN391_Computer_Onchip_SRAM_GOAL --dir=/tmp/alt8715_3446890196031580552.dir/0006_Onchip_SRAM_GOAL_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8715_3446890196031580552.dir/0006_Onchip_SRAM_GOAL_gen//CPEN391_Computer_Onchip_SRAM_GOAL_component_configuration.pl  --do_build_sim=0  ]
+Info: Onchip_SRAM_GOAL:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2 -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_onchip_memory2/generate_rtl.pl --name=CPEN391_Computer_Onchip_SRAM_GOAL --dir=/tmp/alt8718_1540980602305612730.dir/0006_Onchip_SRAM_GOAL_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8718_1540980602305612730.dir/0006_Onchip_SRAM_GOAL_gen//CPEN391_Computer_Onchip_SRAM_GOAL_component_configuration.pl  --do_build_sim=0  ]
 Info: Onchip_SRAM_GOAL: Done RTL generation for module 'CPEN391_Computer_Onchip_SRAM_GOAL'
 Info: Onchip_SRAM_GOAL: "CPEN391_Computer" instantiated altera_avalon_onchip_memory2 "Onchip_SRAM_GOAL"
 Info: SDRAM: Starting RTL generation for module 'CPEN391_Computer_SDRAM'
-Info: SDRAM:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller/generate_rtl.pl --name=CPEN391_Computer_SDRAM --dir=/tmp/alt8715_3446890196031580552.dir/0007_SDRAM_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8715_3446890196031580552.dir/0007_SDRAM_gen//CPEN391_Computer_SDRAM_component_configuration.pl  --do_build_sim=0  ]
+Info: SDRAM:   Generation command is [exec /home/jared/Desktop/Quartus_15/quartus/linux64/perl/bin/perl -I /home/jared/Desktop/Quartus_15/quartus/linux64/perl/lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/europa -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin/perl_lib -I /home/jared/Desktop/Quartus_15/quartus/sopc_builder/bin -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/common -I /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller -- /home/jared/Desktop/Quartus_15/quartus/../ip/altera/sopc_builder_ip/altera_avalon_new_sdram_controller/generate_rtl.pl --name=CPEN391_Computer_SDRAM --dir=/tmp/alt8718_1540980602305612730.dir/0007_SDRAM_gen/ --quartus_dir=/home/jared/Desktop/Quartus_15/quartus --verilog --config=/tmp/alt8718_1540980602305612730.dir/0007_SDRAM_gen//CPEN391_Computer_SDRAM_component_configuration.pl  --do_build_sim=0  ]
 Info: SDRAM: Done RTL generation for module 'CPEN391_Computer_SDRAM'
 Info: SDRAM: "CPEN391_Computer" instantiated altera_avalon_new_sdram_controller "SDRAM"
 Info: SysID: "CPEN391_Computer" instantiated altera_avalon_sysid_qsys "SysID"
@@ -161,8 +155,6 @@ Info: avalon_st_adapter_008: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_009: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_010: Inserting error_adapter: error_adapter_0
 Info: avalon_st_adapter_011: Inserting error_adapter: error_adapter_0
-Info: avalon_st_adapter_012: Inserting error_adapter: error_adapter_0
-Info: avalon_st_adapter_013: Inserting error_adapter: error_adapter_0
 Info: mm_interconnect_0: "CPEN391_Computer" instantiated altera_mm_interconnect "mm_interconnect_0"
 Info: mm_interconnect_1: "CPEN391_Computer" instantiated altera_mm_interconnect "mm_interconnect_1"
 Info: irq_mapper: "CPEN391_Computer" instantiated altera_irq_mapper "irq_mapper"
@@ -191,7 +183,7 @@ Info: router_003: "mm_interconnect_0" instantiated altera_merlin_router "router_
 Info: router_005: "mm_interconnect_0" instantiated altera_merlin_router "router_005"
 Info: router_007: "mm_interconnect_0" instantiated altera_merlin_router "router_007"
 Info: router_008: "mm_interconnect_0" instantiated altera_merlin_router "router_008"
-Info: router_017: "mm_interconnect_0" instantiated altera_merlin_router "router_017"
+Info: router_015: "mm_interconnect_0" instantiated altera_merlin_router "router_015"
 Info: ARM_A9_HPS_h2f_axi_master_wr_limiter: "mm_interconnect_0" instantiated altera_merlin_traffic_limiter "ARM_A9_HPS_h2f_axi_master_wr_limiter"
 Info: Reusing file /home/jared/Desktop/smartcart/hardware/project/quartus/CPEN391_Computer/synthesis/submodules/altera_avalon_sc_fifo.v
 Info: Reusing file /home/jared/Desktop/smartcart/hardware/project/quartus/CPEN391_Computer/synthesis/submodules/altera_avalon_st_pipeline_base.v
@@ -204,11 +196,11 @@ Info: cmd_demux_002: "mm_interconnect_0" instantiated altera_merlin_demultiplexe
 Info: cmd_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux"
 Info: cmd_mux_003: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_003"
 Info: Reusing file /home/jared/Desktop/smartcart/hardware/project/quartus/CPEN391_Computer/synthesis/submodules/altera_merlin_arbitrator.sv
-Info: cmd_mux_012: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_012"
+Info: cmd_mux_010: "mm_interconnect_0" instantiated altera_merlin_multiplexer "cmd_mux_010"
 Info: Reusing file /home/jared/Desktop/smartcart/hardware/project/quartus/CPEN391_Computer/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_demux: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux"
 Info: rsp_demux_003: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_003"
-Info: rsp_demux_012: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_012"
+Info: rsp_demux_010: "mm_interconnect_0" instantiated altera_merlin_demultiplexer "rsp_demux_010"
 Info: rsp_mux: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux"
 Info: Reusing file /home/jared/Desktop/smartcart/hardware/project/quartus/CPEN391_Computer/synthesis/submodules/altera_merlin_arbitrator.sv
 Info: rsp_mux_002: "mm_interconnect_0" instantiated altera_merlin_multiplexer "rsp_mux_002"

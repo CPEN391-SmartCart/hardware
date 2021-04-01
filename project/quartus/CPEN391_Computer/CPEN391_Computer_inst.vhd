@@ -82,9 +82,7 @@
 			memory_mem_odt                  : out   std_logic;                                        -- mem_odt
 			memory_mem_dm                   : out   std_logic_vector(3 downto 0);                     -- mem_dm
 			memory_oct_rzqin                : in    std_logic                     := 'X';             -- oct_rzqin
-			path_finished_export            : in    std_logic                     := 'X';             -- export
 			path_goal_set_export            : out   std_logic;                                        -- export
-			path_start_export               : out   std_logic;                                        -- export
 			sdram_addr                      : out   std_logic_vector(12 downto 0);                    -- addr
 			sdram_ba                        : out   std_logic_vector(1 downto 0);                     -- ba
 			sdram_cas_n                     : out   std_logic;                                        -- cas_n
@@ -97,14 +95,7 @@
 			system_pll_ref_clk_clk          : in    std_logic                     := 'X';             -- clk
 			system_pll_ref_reset_reset      : in    std_logic                     := 'X';             -- reset
 			wifi_cts_export                 : out   std_logic;                                        -- export
-			wifi_rst_export                 : out   std_logic;                                        -- export
-			sram_goal_address               : in    std_logic_vector(5 downto 0)  := (others => 'X'); -- address
-			sram_goal_chipselect            : in    std_logic                     := 'X';             -- chipselect
-			sram_goal_clken                 : in    std_logic                     := 'X';             -- clken
-			sram_goal_write                 : in    std_logic                     := 'X';             -- write
-			sram_goal_readdata              : out   std_logic_vector(15 downto 0);                    -- readdata
-			sram_goal_writedata             : in    std_logic_vector(15 downto 0) := (others => 'X'); -- writedata
-			sram_goal_byteenable            : in    std_logic_vector(1 downto 0)  := (others => 'X')  -- byteenable
+			wifi_rst_export                 : out   std_logic                                         -- export
 		);
 	end component CPEN391_Computer;
 
@@ -192,9 +183,7 @@
 			memory_mem_odt                  => CONNECTED_TO_memory_mem_odt,                  --                     .mem_odt
 			memory_mem_dm                   => CONNECTED_TO_memory_mem_dm,                   --                     .mem_dm
 			memory_oct_rzqin                => CONNECTED_TO_memory_oct_rzqin,                --                     .oct_rzqin
-			path_finished_export            => CONNECTED_TO_path_finished_export,            --        path_finished.export
 			path_goal_set_export            => CONNECTED_TO_path_goal_set_export,            --        path_goal_set.export
-			path_start_export               => CONNECTED_TO_path_start_export,               --           path_start.export
 			sdram_addr                      => CONNECTED_TO_sdram_addr,                      --                sdram.addr
 			sdram_ba                        => CONNECTED_TO_sdram_ba,                        --                     .ba
 			sdram_cas_n                     => CONNECTED_TO_sdram_cas_n,                     --                     .cas_n
@@ -207,13 +196,6 @@
 			system_pll_ref_clk_clk          => CONNECTED_TO_system_pll_ref_clk_clk,          --   system_pll_ref_clk.clk
 			system_pll_ref_reset_reset      => CONNECTED_TO_system_pll_ref_reset_reset,      -- system_pll_ref_reset.reset
 			wifi_cts_export                 => CONNECTED_TO_wifi_cts_export,                 --             wifi_cts.export
-			wifi_rst_export                 => CONNECTED_TO_wifi_rst_export,                 --             wifi_rst.export
-			sram_goal_address               => CONNECTED_TO_sram_goal_address,               --            sram_goal.address
-			sram_goal_chipselect            => CONNECTED_TO_sram_goal_chipselect,            --                     .chipselect
-			sram_goal_clken                 => CONNECTED_TO_sram_goal_clken,                 --                     .clken
-			sram_goal_write                 => CONNECTED_TO_sram_goal_write,                 --                     .write
-			sram_goal_readdata              => CONNECTED_TO_sram_goal_readdata,              --                     .readdata
-			sram_goal_writedata             => CONNECTED_TO_sram_goal_writedata,             --                     .writedata
-			sram_goal_byteenable            => CONNECTED_TO_sram_goal_byteenable             --                     .byteenable
+			wifi_rst_export                 => CONNECTED_TO_wifi_rst_export                  --             wifi_rst.export
 		);
 

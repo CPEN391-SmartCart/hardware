@@ -81,9 +81,7 @@
 		.memory_mem_odt                  (<connected-to-memory_mem_odt>),                  //                     .mem_odt
 		.memory_mem_dm                   (<connected-to-memory_mem_dm>),                   //                     .mem_dm
 		.memory_oct_rzqin                (<connected-to-memory_oct_rzqin>),                //                     .oct_rzqin
-		.path_finished_export            (<connected-to-path_finished_export>),            //        path_finished.export
 		.path_goal_set_export            (<connected-to-path_goal_set_export>),            //        path_goal_set.export
-		.path_start_export               (<connected-to-path_start_export>),               //           path_start.export
 		.sdram_addr                      (<connected-to-sdram_addr>),                      //                sdram.addr
 		.sdram_ba                        (<connected-to-sdram_ba>),                        //                     .ba
 		.sdram_cas_n                     (<connected-to-sdram_cas_n>),                     //                     .cas_n
@@ -96,13 +94,6 @@
 		.system_pll_ref_clk_clk          (<connected-to-system_pll_ref_clk_clk>),          //   system_pll_ref_clk.clk
 		.system_pll_ref_reset_reset      (<connected-to-system_pll_ref_reset_reset>),      // system_pll_ref_reset.reset
 		.wifi_cts_export                 (<connected-to-wifi_cts_export>),                 //             wifi_cts.export
-		.wifi_rst_export                 (<connected-to-wifi_rst_export>),                 //             wifi_rst.export
-		.sram_goal_address               (<connected-to-sram_goal_address>),               //            sram_goal.address
-		.sram_goal_chipselect            (<connected-to-sram_goal_chipselect>),            //                     .chipselect
-		.sram_goal_clken                 (<connected-to-sram_goal_clken>),                 //                     .clken
-		.sram_goal_write                 (<connected-to-sram_goal_write>),                 //                     .write
-		.sram_goal_readdata              (<connected-to-sram_goal_readdata>),              //                     .readdata
-		.sram_goal_writedata             (<connected-to-sram_goal_writedata>),             //                     .writedata
-		.sram_goal_byteenable            (<connected-to-sram_goal_byteenable>)             //                     .byteenable
+		.wifi_rst_export                 (<connected-to-wifi_rst_export>)                  //             wifi_rst.export
 	);
 

@@ -234,7 +234,7 @@ module MyComputer_Verilog (
 	);
 	
 	coord path [100];
-	integer index;
+	logic [15:0] index;
 	logic success;
 	
 	Dijkstra dijkstra(
@@ -248,8 +248,21 @@ module MyComputer_Verilog (
 		.success(success)
 	);
 	
-	logic writer_finished;
+	Path_Writer writer(
+		.success(success),
+		.path(path),
+		.length(index),
+		.address(IO_Address_WIRE),
+		.io_enable(IO_Enable_L_WIRE),
+		.write_enable(IO_RW_WIRE),
+		.data_out(IO_Read_Data_WIRE)
+	);
+	
+	/*
+	logic received_coord_pulse;
 
+	Edge_Detector received_edge(.clk(CLOCK_50), .async_sig(received_coord), .out_sync_sig(received_coord_pulse));
+	
 	Path_Writer writer(
 		.clk                 (CLOCK_50),
 		.reset               (~KEY[2]),
@@ -259,8 +272,9 @@ module MyComputer_Verilog (
 		.received_coord   	 (received_coord),
 		.gave_coord 		 (gave_coord),
 		.coord 				 (actual_coord),
-		.finished 			 (writer_finished)
+		.finished 			 (path_finished)
 	);
+	*/
 
 	//logic sram_write;
 	
@@ -280,11 +294,7 @@ module MyComputer_Verilog (
 			.sram_goal_readdata					(sram_readdata),
 			.sram_goal_writedata					(sram_writedata),
 			.sram_goal_byteenable				(2'b11),
-			.path_finished_export				(path_finished),
 			.path_goal_set_export				(path_goal_set),
-			.received_coord_export				(received_coord),
-			.actual_coord_export             (actual_coord),
-			.gave_coord_export					(gave_coord),
 			.hx711_sck_export						(hx711_sck),
 			.hx711_dt_export						(hx711_dt),
 			.wifi_rst_export						(wifi_rst),
@@ -428,7 +438,7 @@ module MyComputer_Verilog (
 	  // Instantiate an instance of the graphics and video controller circuit drawn as a schematic
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 
-	  /*
+	  
 		Graphics_and_Video_Controller		GraphicsController1 ( 
 				.Reset_L						(RESET_L_WIRE),
 				.Clock_50Mhz 					(CLOCK_50),
@@ -450,7 +460,7 @@ module MyComputer_Verilog (
 				.VGA_Blanking 					(VGA_BLANK_N),
 				.VGA_SYNC						(VGA_SYNC_N),
 		 );
-		 */
+		 
 		 
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		// create an instance of the IO port with serial ports

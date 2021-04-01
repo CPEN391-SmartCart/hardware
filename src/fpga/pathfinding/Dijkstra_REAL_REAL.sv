@@ -30,7 +30,7 @@ typedef struct packed {
 
 module Dijkstra
 #(
-	parameter MAX_NODES = 10
+	parameter MAX_NODES = 100
 )
 (
 	input logic clk,
@@ -39,7 +39,7 @@ module Dijkstra
 	input node_info start_node,
 	input node_info goal_node,
 	output coord path [100],
-	output integer i,
+	output logic [15:0] i,
 	output logic success
 );
 
@@ -658,14 +658,14 @@ module Dijkstra
 				current_node_id <= start_node.node_id;
 				node_mem_write_address <= 7'b0;
 				node_mem_write_data <= initial_node;
-				success <= 1'b0;
 			end
 			
 			START: begin
 				find_node <= 1'b1;
 				explored_write_address <= 7'b0;
 				child_write_address <= 7'b1;
-				i <= 0;
+				i <= 16'b0;
+				success <= 1'b0;
 			end
 			WRITE_START: begin
 				node_mem_write <= 1'b1;
@@ -996,7 +996,7 @@ module Dijkstra
 				explored_parent_find <= 1'b0;
 			end
 			PATH_DONE: begin
-				i <= i + 1;
+				i <= i + 1'b1;
 				current_node <= parent_node;
 			end
 			ADD_START: begin

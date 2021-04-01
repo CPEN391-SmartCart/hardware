@@ -86,9 +86,7 @@ module CPEN391_Computer (
 		output wire        memory_mem_odt,                  //                     .mem_odt
 		output wire [3:0]  memory_mem_dm,                   //                     .mem_dm
 		input  wire        memory_oct_rzqin,                //                     .oct_rzqin
-		input  wire        path_finished_export,            //        path_finished.export
 		output wire        path_goal_set_export,            //        path_goal_set.export
-		output wire        path_start_export,               //           path_start.export
 		output wire [12:0] sdram_addr,                      //                sdram.addr
 		output wire [1:0]  sdram_ba,                        //                     .ba
 		output wire        sdram_cas_n,                     //                     .cas_n
@@ -98,20 +96,13 @@ module CPEN391_Computer (
 		output wire [1:0]  sdram_dqm,                       //                     .dqm
 		output wire        sdram_ras_n,                     //                     .ras_n
 		output wire        sdram_we_n,                      //                     .we_n
-		input  wire [5:0]  sram_goal_address,               //            sram_goal.address
-		input  wire        sram_goal_chipselect,            //                     .chipselect
-		input  wire        sram_goal_clken,                 //                     .clken
-		input  wire        sram_goal_write,                 //                     .write
-		output wire [15:0] sram_goal_readdata,              //                     .readdata
-		input  wire [15:0] sram_goal_writedata,             //                     .writedata
-		input  wire [1:0]  sram_goal_byteenable,            //                     .byteenable
 		input  wire        system_pll_ref_clk_clk,          //   system_pll_ref_clk.clk
 		input  wire        system_pll_ref_reset_reset,      // system_pll_ref_reset.reset
 		output wire        wifi_cts_export,                 //             wifi_cts.export
 		output wire        wifi_rst_export                  //             wifi_rst.export
 	);
 
-	wire         system_pll_sys_clk_clk;                                              // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HX711_DT:clk, HX711_SCK:clk, IO_Bridge:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, Onchip_SRAM_GOAL:clk, PATH_FINISHED:clk, PATH_GOAL_SET:clk, PATH_START:clk, SDRAM:clk, SysID:clock, WIFI_CTS:clk, WIFI_RST:clk, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rst_controller:clk, rst_controller_003:clk]
+	wire         system_pll_sys_clk_clk;                                              // System_PLL:sys_clk_clk -> [ARM_A9_HPS:f2h_axi_clk, ARM_A9_HPS:h2f_axi_clk, ARM_A9_HPS:h2f_lw_axi_clk, HX711_DT:clk, HX711_SCK:clk, IO_Bridge:clk, Interval_Timer:clk, JTAG_To_FPGA_Bridge:clk_clk, JTAG_To_HPS_Bridge:clk_clk, JTAG_UART_for_ARM_0:clk, JTAG_UART_for_ARM_1:clk, PATH_GOAL_SET:clk, SDRAM:clk, SysID:clock, WIFI_CTS:clk, WIFI_RST:clk, mm_interconnect_0:System_PLL_sys_clk_clk, mm_interconnect_1:System_PLL_sys_clk_clk, rst_controller:clk, rst_controller_003:clk]
 	wire   [1:0] arm_a9_hps_h2f_axi_master_awburst;                                   // ARM_A9_HPS:h2f_AWBURST -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_awburst
 	wire   [3:0] arm_a9_hps_h2f_axi_master_arlen;                                     // ARM_A9_HPS:h2f_ARLEN -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_arlen
 	wire   [7:0] arm_a9_hps_h2f_axi_master_wstrb;                                     // ARM_A9_HPS:h2f_WSTRB -> mm_interconnect_0:ARM_A9_HPS_h2f_axi_master_wstrb
@@ -201,13 +192,6 @@ module CPEN391_Computer (
 	wire         mm_interconnect_0_sdram_s1_readdatavalid;                            // SDRAM:za_valid -> mm_interconnect_0:SDRAM_s1_readdatavalid
 	wire         mm_interconnect_0_sdram_s1_write;                                    // mm_interconnect_0:SDRAM_s1_write -> SDRAM:az_wr_n
 	wire  [15:0] mm_interconnect_0_sdram_s1_writedata;                                // mm_interconnect_0:SDRAM_s1_writedata -> SDRAM:az_data
-	wire         mm_interconnect_0_onchip_sram_goal_s1_chipselect;                    // mm_interconnect_0:Onchip_SRAM_GOAL_s1_chipselect -> Onchip_SRAM_GOAL:chipselect
-	wire  [15:0] mm_interconnect_0_onchip_sram_goal_s1_readdata;                      // Onchip_SRAM_GOAL:readdata -> mm_interconnect_0:Onchip_SRAM_GOAL_s1_readdata
-	wire   [5:0] mm_interconnect_0_onchip_sram_goal_s1_address;                       // mm_interconnect_0:Onchip_SRAM_GOAL_s1_address -> Onchip_SRAM_GOAL:address
-	wire   [1:0] mm_interconnect_0_onchip_sram_goal_s1_byteenable;                    // mm_interconnect_0:Onchip_SRAM_GOAL_s1_byteenable -> Onchip_SRAM_GOAL:byteenable
-	wire         mm_interconnect_0_onchip_sram_goal_s1_write;                         // mm_interconnect_0:Onchip_SRAM_GOAL_s1_write -> Onchip_SRAM_GOAL:write
-	wire  [15:0] mm_interconnect_0_onchip_sram_goal_s1_writedata;                     // mm_interconnect_0:Onchip_SRAM_GOAL_s1_writedata -> Onchip_SRAM_GOAL:writedata
-	wire         mm_interconnect_0_onchip_sram_goal_s1_clken;                         // mm_interconnect_0:Onchip_SRAM_GOAL_s1_clken -> Onchip_SRAM_GOAL:clken
 	wire         mm_interconnect_0_io_bridge_avalon_slave_chipselect;                 // mm_interconnect_0:IO_Bridge_avalon_slave_chipselect -> IO_Bridge:avalon_chipselect
 	wire  [15:0] mm_interconnect_0_io_bridge_avalon_slave_readdata;                   // IO_Bridge:avalon_readdata -> mm_interconnect_0:IO_Bridge_avalon_slave_readdata
 	wire         mm_interconnect_0_io_bridge_avalon_slave_waitrequest;                // IO_Bridge:avalon_waitrequest -> mm_interconnect_0:IO_Bridge_avalon_slave_waitrequest
@@ -240,13 +224,6 @@ module CPEN391_Computer (
 	wire  [31:0] mm_interconnect_0_hx711_sck_s1_writedata;                            // mm_interconnect_0:HX711_SCK_s1_writedata -> HX711_SCK:writedata
 	wire  [31:0] mm_interconnect_0_hx711_dt_s1_readdata;                              // HX711_DT:readdata -> mm_interconnect_0:HX711_DT_s1_readdata
 	wire   [1:0] mm_interconnect_0_hx711_dt_s1_address;                               // mm_interconnect_0:HX711_DT_s1_address -> HX711_DT:address
-	wire         mm_interconnect_0_path_start_s1_chipselect;                          // mm_interconnect_0:PATH_START_s1_chipselect -> PATH_START:chipselect
-	wire  [31:0] mm_interconnect_0_path_start_s1_readdata;                            // PATH_START:readdata -> mm_interconnect_0:PATH_START_s1_readdata
-	wire   [1:0] mm_interconnect_0_path_start_s1_address;                             // mm_interconnect_0:PATH_START_s1_address -> PATH_START:address
-	wire         mm_interconnect_0_path_start_s1_write;                               // mm_interconnect_0:PATH_START_s1_write -> PATH_START:write_n
-	wire  [31:0] mm_interconnect_0_path_start_s1_writedata;                           // mm_interconnect_0:PATH_START_s1_writedata -> PATH_START:writedata
-	wire  [31:0] mm_interconnect_0_path_finished_s1_readdata;                         // PATH_FINISHED:readdata -> mm_interconnect_0:PATH_FINISHED_s1_readdata
-	wire   [1:0] mm_interconnect_0_path_finished_s1_address;                          // mm_interconnect_0:PATH_FINISHED_s1_address -> PATH_FINISHED:address
 	wire         mm_interconnect_0_path_goal_set_s1_chipselect;                       // mm_interconnect_0:PATH_GOAL_SET_s1_chipselect -> PATH_GOAL_SET:chipselect
 	wire  [31:0] mm_interconnect_0_path_goal_set_s1_readdata;                         // PATH_GOAL_SET:readdata -> mm_interconnect_0:PATH_GOAL_SET_s1_readdata
 	wire   [1:0] mm_interconnect_0_path_goal_set_s1_address;                          // mm_interconnect_0:PATH_GOAL_SET_s1_address -> PATH_GOAL_SET:address
@@ -318,8 +295,7 @@ module CPEN391_Computer (
 	wire  [31:0] arm_a9_hps_f2h_irq0_irq;                                             // irq_mapper:sender_irq -> ARM_A9_HPS:f2h_irq_p0
 	wire         irq_mapper_001_receiver0_irq;                                        // JTAG_UART_for_ARM_1:av_irq -> irq_mapper_001:receiver0_irq
 	wire  [31:0] arm_a9_hps_f2h_irq1_irq;                                             // irq_mapper_001:sender_irq -> ARM_A9_HPS:f2h_irq_p1
-	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [HX711_DT:reset_n, HX711_SCK:reset_n, IO_Bridge:reset, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, Onchip_SRAM_GOAL:reset, PATH_FINISHED:reset_n, PATH_GOAL_SET:reset_n, PATH_START:reset_n, SDRAM:reset_n, SysID:reset_n, WIFI_CTS:reset_n, WIFI_RST:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset, rst_translator:in_reset]
-	wire         rst_controller_reset_out_reset_req;                                  // rst_controller:reset_req -> [Onchip_SRAM_GOAL:reset_req, rst_translator:reset_req_in]
+	wire         rst_controller_reset_out_reset;                                      // rst_controller:reset_out -> [HX711_DT:reset_n, HX711_SCK:reset_n, IO_Bridge:reset, Interval_Timer:reset_n, JTAG_UART_for_ARM_0:rst_n, JTAG_UART_for_ARM_1:rst_n, PATH_GOAL_SET:reset_n, SDRAM:reset_n, SysID:reset_n, WIFI_CTS:reset_n, WIFI_RST:reset_n, mm_interconnect_0:JTAG_To_FPGA_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_0:SDRAM_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_clk_reset_reset_bridge_in_reset_reset, mm_interconnect_1:JTAG_To_HPS_Bridge_master_translator_reset_reset_bridge_in_reset_reset]
 	wire         arm_a9_hps_h2f_reset_reset;                                          // ARM_A9_HPS:h2f_rst_n -> [rst_controller:reset_in0, rst_controller_001:reset_in0, rst_controller_002:reset_in0, rst_controller_003:reset_in0]
 	wire         system_pll_reset_source_reset;                                       // System_PLL:reset_source_reset -> [rst_controller:reset_in1, rst_controller_001:reset_in1, rst_controller_002:reset_in1]
 	wire         rst_controller_001_reset_out_reset;                                  // rst_controller_001:reset_out -> JTAG_To_FPGA_Bridge:clk_reset_reset
@@ -634,34 +610,6 @@ module CPEN391_Computer (
 		.av_irq         (irq_mapper_001_receiver0_irq)                                         //               irq.irq
 	);
 
-	CPEN391_Computer_Onchip_SRAM_GOAL onchip_sram_goal (
-		.address     (mm_interconnect_0_onchip_sram_goal_s1_address),    //     s1.address
-		.clken       (mm_interconnect_0_onchip_sram_goal_s1_clken),      //       .clken
-		.chipselect  (mm_interconnect_0_onchip_sram_goal_s1_chipselect), //       .chipselect
-		.write       (mm_interconnect_0_onchip_sram_goal_s1_write),      //       .write
-		.readdata    (mm_interconnect_0_onchip_sram_goal_s1_readdata),   //       .readdata
-		.writedata   (mm_interconnect_0_onchip_sram_goal_s1_writedata),  //       .writedata
-		.byteenable  (mm_interconnect_0_onchip_sram_goal_s1_byteenable), //       .byteenable
-		.address2    (sram_goal_address),                                //     s2.address
-		.chipselect2 (sram_goal_chipselect),                             //       .chipselect
-		.clken2      (sram_goal_clken),                                  //       .clken
-		.write2      (sram_goal_write),                                  //       .write
-		.readdata2   (sram_goal_readdata),                               //       .readdata
-		.writedata2  (sram_goal_writedata),                              //       .writedata
-		.byteenable2 (sram_goal_byteenable),                             //       .byteenable
-		.clk         (system_pll_sys_clk_clk),                           //   clk1.clk
-		.reset       (rst_controller_reset_out_reset),                   // reset1.reset
-		.reset_req   (rst_controller_reset_out_reset_req)                //       .reset_req
-	);
-
-	CPEN391_Computer_HX711_DT path_finished (
-		.clk      (system_pll_sys_clk_clk),                      //                 clk.clk
-		.reset_n  (~rst_controller_reset_out_reset),             //               reset.reset_n
-		.address  (mm_interconnect_0_path_finished_s1_address),  //                  s1.address
-		.readdata (mm_interconnect_0_path_finished_s1_readdata), //                    .readdata
-		.in_port  (path_finished_export)                         // external_connection.export
-	);
-
 	CPEN391_Computer_HX711_SCK path_goal_set (
 		.clk        (system_pll_sys_clk_clk),                        //                 clk.clk
 		.reset_n    (~rst_controller_reset_out_reset),               //               reset.reset_n
@@ -671,17 +619,6 @@ module CPEN391_Computer (
 		.chipselect (mm_interconnect_0_path_goal_set_s1_chipselect), //                    .chipselect
 		.readdata   (mm_interconnect_0_path_goal_set_s1_readdata),   //                    .readdata
 		.out_port   (path_goal_set_export)                           // external_connection.export
-	);
-
-	CPEN391_Computer_HX711_SCK path_start (
-		.clk        (system_pll_sys_clk_clk),                     //                 clk.clk
-		.reset_n    (~rst_controller_reset_out_reset),            //               reset.reset_n
-		.address    (mm_interconnect_0_path_start_s1_address),    //                  s1.address
-		.write_n    (~mm_interconnect_0_path_start_s1_write),     //                    .write_n
-		.writedata  (mm_interconnect_0_path_start_s1_writedata),  //                    .writedata
-		.chipselect (mm_interconnect_0_path_start_s1_chipselect), //                    .chipselect
-		.readdata   (mm_interconnect_0_path_start_s1_readdata),   //                    .readdata
-		.out_port   (path_start_export)                           // external_connection.export
 	);
 
 	CPEN391_Computer_SDRAM sdram (
@@ -863,25 +800,11 @@ module CPEN391_Computer (
 		.JTAG_UART_for_ARM_1_avalon_jtag_slave_writedata                       (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_writedata),   //                                                                .writedata
 		.JTAG_UART_for_ARM_1_avalon_jtag_slave_waitrequest                     (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_waitrequest), //                                                                .waitrequest
 		.JTAG_UART_for_ARM_1_avalon_jtag_slave_chipselect                      (mm_interconnect_0_jtag_uart_for_arm_1_avalon_jtag_slave_chipselect),  //                                                                .chipselect
-		.Onchip_SRAM_GOAL_s1_address                                           (mm_interconnect_0_onchip_sram_goal_s1_address),                       //                                             Onchip_SRAM_GOAL_s1.address
-		.Onchip_SRAM_GOAL_s1_write                                             (mm_interconnect_0_onchip_sram_goal_s1_write),                         //                                                                .write
-		.Onchip_SRAM_GOAL_s1_readdata                                          (mm_interconnect_0_onchip_sram_goal_s1_readdata),                      //                                                                .readdata
-		.Onchip_SRAM_GOAL_s1_writedata                                         (mm_interconnect_0_onchip_sram_goal_s1_writedata),                     //                                                                .writedata
-		.Onchip_SRAM_GOAL_s1_byteenable                                        (mm_interconnect_0_onchip_sram_goal_s1_byteenable),                    //                                                                .byteenable
-		.Onchip_SRAM_GOAL_s1_chipselect                                        (mm_interconnect_0_onchip_sram_goal_s1_chipselect),                    //                                                                .chipselect
-		.Onchip_SRAM_GOAL_s1_clken                                             (mm_interconnect_0_onchip_sram_goal_s1_clken),                         //                                                                .clken
-		.PATH_FINISHED_s1_address                                              (mm_interconnect_0_path_finished_s1_address),                          //                                                PATH_FINISHED_s1.address
-		.PATH_FINISHED_s1_readdata                                             (mm_interconnect_0_path_finished_s1_readdata),                         //                                                                .readdata
 		.PATH_GOAL_SET_s1_address                                              (mm_interconnect_0_path_goal_set_s1_address),                          //                                                PATH_GOAL_SET_s1.address
 		.PATH_GOAL_SET_s1_write                                                (mm_interconnect_0_path_goal_set_s1_write),                            //                                                                .write
 		.PATH_GOAL_SET_s1_readdata                                             (mm_interconnect_0_path_goal_set_s1_readdata),                         //                                                                .readdata
 		.PATH_GOAL_SET_s1_writedata                                            (mm_interconnect_0_path_goal_set_s1_writedata),                        //                                                                .writedata
 		.PATH_GOAL_SET_s1_chipselect                                           (mm_interconnect_0_path_goal_set_s1_chipselect),                       //                                                                .chipselect
-		.PATH_START_s1_address                                                 (mm_interconnect_0_path_start_s1_address),                             //                                                   PATH_START_s1.address
-		.PATH_START_s1_write                                                   (mm_interconnect_0_path_start_s1_write),                               //                                                                .write
-		.PATH_START_s1_readdata                                                (mm_interconnect_0_path_start_s1_readdata),                            //                                                                .readdata
-		.PATH_START_s1_writedata                                               (mm_interconnect_0_path_start_s1_writedata),                           //                                                                .writedata
-		.PATH_START_s1_chipselect                                              (mm_interconnect_0_path_start_s1_chipselect),                          //                                                                .chipselect
 		.SDRAM_s1_address                                                      (mm_interconnect_0_sdram_s1_address),                                  //                                                        SDRAM_s1.address
 		.SDRAM_s1_write                                                        (mm_interconnect_0_sdram_s1_write),                                    //                                                                .write
 		.SDRAM_s1_read                                                         (mm_interconnect_0_sdram_s1_read),                                     //                                                                .read
@@ -978,7 +901,7 @@ module CPEN391_Computer (
 		.NUM_RESET_INPUTS          (2),
 		.OUTPUT_RESET_SYNC_EDGES   ("deassert"),
 		.SYNC_DEPTH                (2),
-		.RESET_REQUEST_PRESENT     (1),
+		.RESET_REQUEST_PRESENT     (0),
 		.RESET_REQ_WAIT_TIME       (1),
 		.MIN_RST_ASSERTION_TIME    (3),
 		.RESET_REQ_EARLY_DSRT_TIME (1),
@@ -1000,41 +923,41 @@ module CPEN391_Computer (
 		.USE_RESET_REQUEST_IN15    (0),
 		.ADAPT_RESET_REQUEST       (0)
 	) rst_controller (
-		.reset_in0      (~arm_a9_hps_h2f_reset_reset),        // reset_in0.reset
-		.reset_in1      (system_pll_reset_source_reset),      // reset_in1.reset
-		.clk            (system_pll_sys_clk_clk),             //       clk.clk
-		.reset_out      (rst_controller_reset_out_reset),     // reset_out.reset
-		.reset_req      (rst_controller_reset_out_reset_req), //          .reset_req
-		.reset_req_in0  (1'b0),                               // (terminated)
-		.reset_req_in1  (1'b0),                               // (terminated)
-		.reset_in2      (1'b0),                               // (terminated)
-		.reset_req_in2  (1'b0),                               // (terminated)
-		.reset_in3      (1'b0),                               // (terminated)
-		.reset_req_in3  (1'b0),                               // (terminated)
-		.reset_in4      (1'b0),                               // (terminated)
-		.reset_req_in4  (1'b0),                               // (terminated)
-		.reset_in5      (1'b0),                               // (terminated)
-		.reset_req_in5  (1'b0),                               // (terminated)
-		.reset_in6      (1'b0),                               // (terminated)
-		.reset_req_in6  (1'b0),                               // (terminated)
-		.reset_in7      (1'b0),                               // (terminated)
-		.reset_req_in7  (1'b0),                               // (terminated)
-		.reset_in8      (1'b0),                               // (terminated)
-		.reset_req_in8  (1'b0),                               // (terminated)
-		.reset_in9      (1'b0),                               // (terminated)
-		.reset_req_in9  (1'b0),                               // (terminated)
-		.reset_in10     (1'b0),                               // (terminated)
-		.reset_req_in10 (1'b0),                               // (terminated)
-		.reset_in11     (1'b0),                               // (terminated)
-		.reset_req_in11 (1'b0),                               // (terminated)
-		.reset_in12     (1'b0),                               // (terminated)
-		.reset_req_in12 (1'b0),                               // (terminated)
-		.reset_in13     (1'b0),                               // (terminated)
-		.reset_req_in13 (1'b0),                               // (terminated)
-		.reset_in14     (1'b0),                               // (terminated)
-		.reset_req_in14 (1'b0),                               // (terminated)
-		.reset_in15     (1'b0),                               // (terminated)
-		.reset_req_in15 (1'b0)                                // (terminated)
+		.reset_in0      (~arm_a9_hps_h2f_reset_reset),    // reset_in0.reset
+		.reset_in1      (system_pll_reset_source_reset),  // reset_in1.reset
+		.clk            (system_pll_sys_clk_clk),         //       clk.clk
+		.reset_out      (rst_controller_reset_out_reset), // reset_out.reset
+		.reset_req      (),                               // (terminated)
+		.reset_req_in0  (1'b0),                           // (terminated)
+		.reset_req_in1  (1'b0),                           // (terminated)
+		.reset_in2      (1'b0),                           // (terminated)
+		.reset_req_in2  (1'b0),                           // (terminated)
+		.reset_in3      (1'b0),                           // (terminated)
+		.reset_req_in3  (1'b0),                           // (terminated)
+		.reset_in4      (1'b0),                           // (terminated)
+		.reset_req_in4  (1'b0),                           // (terminated)
+		.reset_in5      (1'b0),                           // (terminated)
+		.reset_req_in5  (1'b0),                           // (terminated)
+		.reset_in6      (1'b0),                           // (terminated)
+		.reset_req_in6  (1'b0),                           // (terminated)
+		.reset_in7      (1'b0),                           // (terminated)
+		.reset_req_in7  (1'b0),                           // (terminated)
+		.reset_in8      (1'b0),                           // (terminated)
+		.reset_req_in8  (1'b0),                           // (terminated)
+		.reset_in9      (1'b0),                           // (terminated)
+		.reset_req_in9  (1'b0),                           // (terminated)
+		.reset_in10     (1'b0),                           // (terminated)
+		.reset_req_in10 (1'b0),                           // (terminated)
+		.reset_in11     (1'b0),                           // (terminated)
+		.reset_req_in11 (1'b0),                           // (terminated)
+		.reset_in12     (1'b0),                           // (terminated)
+		.reset_req_in12 (1'b0),                           // (terminated)
+		.reset_in13     (1'b0),                           // (terminated)
+		.reset_req_in13 (1'b0),                           // (terminated)
+		.reset_in14     (1'b0),                           // (terminated)
+		.reset_req_in14 (1'b0),                           // (terminated)
+		.reset_in15     (1'b0),                           // (terminated)
+		.reset_req_in15 (1'b0)                            // (terminated)
 	);
 
 	altera_reset_controller #(
