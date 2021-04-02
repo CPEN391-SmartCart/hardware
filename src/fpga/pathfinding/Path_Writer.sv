@@ -426,7 +426,6 @@ module Path_Writer(
 			else if (address[15:1] == 15'b0000_0010_1001_000) //200
 				data_out = path[99].y;
 		end
-		
 	end
 
 endmodule
