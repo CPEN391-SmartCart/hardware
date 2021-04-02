@@ -12,6 +12,7 @@ typedef struct packed {
 	logic [15:0] x;
 	logic [15:0] y;
 	logic [15:0] node_id;
+	logic [15:0] parent_node_id;
 	logic [15:0] current_cost;
 	logic [15:0] child_one_id;
 	logic [15:0] distance_child_one;
@@ -225,10 +226,12 @@ module MyComputer_Verilog (
 	
 	HPS_Bridge_Mem_FSM bridge(
 		.clk(CLOCK_50), 
-		.get_goal_node(get_goal_node), 
-		.readdata(sram_readdata), 
-		.address(sram_address),
-		.start_data(start_data),
+		.reset(~KEY[2]),
+		.get_goal_node(get_goal_node),
+		.io_enable(IO_Enable_L_WIRE),
+		.write_enable(IO_RW_WIRE),
+		.address(IO_Address_WIRE),
+		.readdata(IO_Write_Data_WIRE),
 		.goal_data(goal_data),
 		.start_pulse(start_pulse)
 	);
@@ -258,24 +261,6 @@ module MyComputer_Verilog (
 		.data_out(IO_Read_Data_WIRE)
 	);
 	
-	/*
-	logic received_coord_pulse;
-
-	Edge_Detector received_edge(.clk(CLOCK_50), .async_sig(received_coord), .out_sync_sig(received_coord_pulse));
-	
-	Path_Writer writer(
-		.clk                 (CLOCK_50),
-		.reset               (~KEY[2]),
-		.start 				 (success),
-		.path 				 (path),
-		.length              (index),
-		.received_coord   	 (received_coord),
-		.gave_coord 		 (gave_coord),
-		.coord 				 (actual_coord),
-		.finished 			 (path_finished)
-	);
-	*/
-
 	//logic sram_write;
 	
 	logic [15:0] sram_readdata;
@@ -287,14 +272,6 @@ module MyComputer_Verilog (
 	 ///////////////////////////////////////////////////////////////////////////////////////
 	 
 		 CPEN391_Computer u0 (
-			.sram_goal_address					(sram_address),
-			.sram_goal_chipselect				(1'b1),
-			.sram_goal_clken						(1'b1),
-			.sram_goal_write						(1'b0),
-			.sram_goal_readdata					(sram_readdata),
-			.sram_goal_writedata					(sram_writedata),
-			.sram_goal_byteenable				(2'b11),
-			.path_goal_set_export				(path_goal_set),
 			.hx711_sck_export						(hx711_sck),
 			.hx711_dt_export						(hx711_dt),
 			.wifi_rst_export						(wifi_rst),
