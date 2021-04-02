@@ -8,9 +8,6 @@ c5_pin_model_dump.txt
 *.mti
 *.mpf
 *.wlf
-*.qdb
-*.qpg
-*.qtl
 *.sof
 *.bak
 *.rpt
@@ -23,7 +20,6 @@ c5_pin_model_dump.txt
 *.cdf
 *.done
 *.csv
-*.qdf
 *.jdi
 
 CPEN391_Computer/
