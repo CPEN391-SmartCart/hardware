@@ -232,8 +232,7 @@ module MyComputer_Verilog (
 		.write_enable(IO_RW_WIRE),
 		.address(IO_Address_WIRE),
 		.readdata(IO_Write_Data_WIRE),
-		.goal_data(goal_data),
-		.start_pulse(start_pulse)
+		.goal_data(goal_data)
 	);
 	
 	coord path [100];
