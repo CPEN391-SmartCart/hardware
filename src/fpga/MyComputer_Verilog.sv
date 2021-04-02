@@ -274,6 +274,7 @@ module MyComputer_Verilog (
 			.hx711_sck_export						(hx711_sck),
 			.hx711_dt_export						(hx711_dt),
 			.wifi_rst_export						(wifi_rst),
+			.path_goal_set_export				(path_goal_set),
 			.hps_io_hps_io_emac1_inst_TX_CLK (HPS_ENET_GTX_CLK), 					//               hps_io.hps_io_emac1_inst_TX_CLK
 			.hps_io_hps_io_emac1_inst_TXD0   (HPS_ENET_TX_DATA[0]),   			//                     .hps_io_emac1_inst_TXD0
 			.hps_io_hps_io_emac1_inst_TXD1   (HPS_ENET_TX_DATA[1]),   			//                     .hps_io_emac1_inst_TXD1
