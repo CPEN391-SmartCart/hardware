@@ -27,48 +27,49 @@ typedef struct packed {
 
 module Explored_RAM
 #(
-	parameter MAX_NODES = 100
+	parameter MAX_NODES = 255
 )
 (
 	input logic clk,
 	input logic write_enable,
-	input logic [6:0] write_address,
+	input logic [8:0] write_address,
 	input node_info write_data,
-	input logic [6:0] read_address,
+	input logic [8:0] read_address,
 	
 	output node_info explored_node
 );
 
 	logic [271:0] read_data;
 	
-	node_mem mem(
-		.clock(clk),
-		.data(write_data),
-		.rdaddress(read_address),
-		.wraddress(write_address),
-		.wren(write_enable),
-		.q(read_data)
-	);
-
-	/*
-	reg [271:0] mem [MAX_NODES-1:0] /* synthesis ramstyle = "no_rw_check, M10K" */
-	/*logic [271:0] read_data;
-	
-	always_ff @(posedge clk)
-	begin
-		if (write_enable) begin
-			mem[write_address] <= write_data;
+	`ifdef ALTERA_RESERVED_QIS
+		explored_node_mem mem(
+			.clock(clk),
+			.data(write_data),
+			.rdaddress(read_address),
+			.wraddress(write_address),
+			.wren(write_enable),
+			.q(read_data)
+		);
+	`else
+		reg [271:0] mem [MAX_NODES-1:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
+		
+		always_ff @(posedge clk)
+		begin
+			if (write_enable) begin
+				mem[write_address] <= write_data;
+			end
+			read_data <= mem[read_address];
 		end
-		read_data <= mem[read_address];
-	end
-	*/
+	`endif
 	
+	
+
 	assign explored_node = '{read_data[271:256], read_data[255:240], read_data[239:224], read_data[223:208], read_data[207:192], read_data[191:176], read_data[175:160], read_data[159:144], read_data[143:128], read_data[127:112], read_data[111:96], read_data[95:80], read_data[79:64], read_data[63:48], read_data[47:32], read_data[31:16], read_data[15:0]};
 endmodule
 
 module Explored_Child
 #(
-	parameter MAX_NODES = 100
+	parameter MAX_NODES = 255
 )
 (
 	input logic clk,
@@ -77,7 +78,7 @@ module Explored_Child
 	input node_info current_child,
 	input node_info read_node,
 	
-	output logic [6:0] read_address,
+	output logic [8:0] read_address,
 	output logic explored_child,
 	output logic done
 );
@@ -144,7 +145,7 @@ endmodule
 
 module Explored_Parent
 #(
-	parameter MAX_NODES = 100
+	parameter MAX_NODES = 255
 )
 (
 	input logic clk,
@@ -154,7 +155,7 @@ module Explored_Parent
 	input node_info read_node,
 	
 	output logic finding_parent,
-	output logic [6:0] read_address,
+	output logic [8:0] read_address,
 	output node_info parent_node,
 	output logic done
 );

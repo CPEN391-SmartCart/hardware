@@ -30,7 +30,7 @@ typedef struct packed {
 
 module Dijkstra
 #(
-	parameter MAX_NODES = 10
+	parameter MAX_NODES = 100
 )
 (
 	input logic clk,
@@ -55,6 +55,8 @@ module Dijkstra
 			FIND_MINIMUM_LOW,
 			FIND_MINIMUM_DONE,
 			POP,
+			REMOVE_FROM_QUEUE,
+			REMOVE_FROM_QUEUE_WAIT,
 			FIND_NODE_HIGH,
 			FIND_NODE_LOW,
 			FIND_NODE_DONE,
@@ -80,7 +82,9 @@ module Dijkstra
 			WAIT_CHILD_1_QUEUE,
 			REMOVE_CHILD_1,
 			WAIT_REMOVE_CHILD_1,
-			INCREMENT_CHILD_INDEX_1,
+			FIND_NEXT_CHILD_1_INDEX_HIGH,
+			FIND_NEXT_CHILD_1_INDEX_LOW,
+			FIND_NEXT_CHILD_1_INDEX_DONE,
 
 			CHECK_CHILD_2,
 			GET_CHILD_2,
@@ -97,7 +101,9 @@ module Dijkstra
 			WAIT_CHILD_2_QUEUE,
 			REMOVE_CHILD_2,
 			WAIT_REMOVE_CHILD_2,
-			INCREMENT_CHILD_INDEX_2,
+			FIND_NEXT_CHILD_2_INDEX_HIGH,
+			FIND_NEXT_CHILD_2_INDEX_LOW,
+			FIND_NEXT_CHILD_2_INDEX_DONE,
 
 			CHECK_CHILD_3,
 			GET_CHILD_3,
@@ -114,7 +120,9 @@ module Dijkstra
 			WAIT_CHILD_3_QUEUE,
 			REMOVE_CHILD_3,
 			WAIT_REMOVE_CHILD_3,
-			INCREMENT_CHILD_INDEX_3,
+			FIND_NEXT_CHILD_3_INDEX_HIGH,
+			FIND_NEXT_CHILD_3_INDEX_LOW,
+			FIND_NEXT_CHILD_3_INDEX_DONE,
 
 			CHECK_CHILD_4,
 			GET_CHILD_4,
@@ -131,7 +139,9 @@ module Dijkstra
 			WAIT_CHILD_4_QUEUE,
 			REMOVE_CHILD_4,
 			WAIT_REMOVE_CHILD_4,
-			INCREMENT_CHILD_INDEX_4,
+			FIND_NEXT_CHILD_4_INDEX_HIGH,
+			FIND_NEXT_CHILD_4_INDEX_LOW,
+			FIND_NEXT_CHILD_4_INDEX_DONE,
 
 			CHECK_CHILD_5,
 			GET_CHILD_5,
@@ -148,7 +158,9 @@ module Dijkstra
 			WAIT_CHILD_5_QUEUE,
 			REMOVE_CHILD_5,
 			WAIT_REMOVE_CHILD_5,
-			INCREMENT_CHILD_INDEX_5,
+			FIND_NEXT_CHILD_5_INDEX_HIGH,
+			FIND_NEXT_CHILD_5_INDEX_LOW,
+			FIND_NEXT_CHILD_5_INDEX_DONE,
 
 			CHECK_CHILD_6,
 			GET_CHILD_6,
@@ -165,7 +177,9 @@ module Dijkstra
 			WAIT_CHILD_6_QUEUE,
 			REMOVE_CHILD_6,
 			WAIT_REMOVE_CHILD_6,
-			INCREMENT_CHILD_INDEX_6,
+			FIND_NEXT_CHILD_6_INDEX_HIGH,
+			FIND_NEXT_CHILD_6_INDEX_LOW,
+			FIND_NEXT_CHILD_6_INDEX_DONE,
 
 			RECONSTRUCT_PATH,
 			GET_PARENT_HIGH,
@@ -267,6 +281,7 @@ module Dijkstra
 		.reset(reset),
 		.find(find_minimum),
 		.read_node(queue_node),
+		.current_node(current_node),
 		.finding_minimum(finding_minimum),
 		.read_address(min_queue_read_address),
 		.minimum_node(minimum_node),
@@ -299,17 +314,33 @@ module Dijkstra
 		.child_address(child_address),
 		.done(found_child)
 	);
+
+	logic find_child_index;
+	logic finding_child_index;
+	logic found_child_index;
+	logic [6:0] child_index_queue_read_address;
+
+	Queue_Child_Index #(.MAX_NODES(MAX_NODES)) child_index(
+		.clk(clk),
+		.reset(reset),
+		.find(find_child_index),
+		.read_node(queue_node),
+		.finding_child_index(finding_child_index),
+		.read_address(child_index_queue_read_address),
+		.child_address(child_write_address),
+		.done(found_child_index)
+	);
 	
-	assign queue_read_address = finding_minimum ? min_queue_read_address : child_queue_read_address;
+	assign queue_read_address = finding_child_index ? child_index_queue_read_address : finding_minimum ? min_queue_read_address : child_queue_read_address;
 	
 	
 	logic explored_write;
-	logic [6:0] explored_write_address;
+	logic [8:0] explored_write_address;
 	node_info explored_write_data;
-	logic [6:0] explored_read_address;
+	logic [8:0] explored_read_address;
 	node_info explored_node;
 	
-	Explored_RAM #(.MAX_NODES(MAX_NODES)) explored_mem(
+	Explored_RAM #(.MAX_NODES(511)) explored_mem(
 		.clk(clk),
 		.write_enable(explored_write),
 		.write_address(explored_write_address),
@@ -322,9 +353,9 @@ module Dijkstra
 	logic explored_child_find;
 	logic explored_child;
 	logic explored_done;
-	logic [6:0] explored_child_read_address;
+	logic [8:0] explored_child_read_address;
 	
-	Explored_Child #(.MAX_NODES(MAX_NODES)) explored_child_mem(
+	Explored_Child #(.MAX_NODES(511)) explored_child_mem(
 		.clk(clk),
 		.reset(reset),
 		.find(explored_child_find),
@@ -339,10 +370,10 @@ module Dijkstra
 	logic explored_parent_find;
 	node_info parent_node;
 	logic finding_parent;
-	logic [6:0] explored_parent_read_address;
+	logic [8:0] explored_parent_read_address;
 	logic explored_parent_done;
 	
-	Explored_Parent #(.MAX_NODES(MAX_NODES)) explored_parent_mem(
+	Explored_Parent #(.MAX_NODES(511)) explored_parent_mem(
 		.clk(clk),
 		.reset(reset),
 		.find(explored_parent_find),
@@ -381,7 +412,9 @@ module Dijkstra
 					if (found_minimum)
 						state <= POP;
 				
-				POP: state <= FIND_NODE_HIGH;
+				POP: state <= REMOVE_FROM_QUEUE;
+				REMOVE_FROM_QUEUE: state <= REMOVE_FROM_QUEUE_WAIT;
+				REMOVE_FROM_QUEUE_WAIT: state <= FIND_NODE_HIGH;
 				
 				FIND_NODE_HIGH: state <= FIND_NODE_LOW;
 				FIND_NODE_LOW: state <= FIND_NODE_DONE;
@@ -438,10 +471,14 @@ module Dijkstra
 				
 				REMOVE_CHILD_1: state <= WAIT_REMOVE_CHILD_1;
 				WAIT_REMOVE_CHILD_1: state <= INCREMENT_CHILD_1_COST;
-				INCREMENT_CHILD_1_COST: state <= ADD_CHILD_1_TO_QUEUE;
+				INCREMENT_CHILD_1_COST: state <= FIND_NEXT_CHILD_1_INDEX_HIGH;
+				FIND_NEXT_CHILD_1_INDEX_HIGH: state <= FIND_NEXT_CHILD_1_INDEX_LOW;
+				FIND_NEXT_CHILD_1_INDEX_LOW: state <= FIND_NEXT_CHILD_1_INDEX_DONE;
+				FIND_NEXT_CHILD_1_INDEX_DONE:
+					if (found_child_index)
+						state <= ADD_CHILD_1_TO_QUEUE;
 				ADD_CHILD_1_TO_QUEUE: state <= WAIT_CHILD_1_QUEUE;
-				WAIT_CHILD_1_QUEUE: state <= INCREMENT_CHILD_INDEX_1;
-				INCREMENT_CHILD_INDEX_1: state <= CHECK_CHILD_2;
+				WAIT_CHILD_1_QUEUE: state <= CHECK_CHILD_2;
 				
 				
 				//CHILD 2
@@ -480,10 +517,14 @@ module Dijkstra
 				
 				REMOVE_CHILD_2: state <= WAIT_REMOVE_CHILD_2;
 				WAIT_REMOVE_CHILD_2: state <= INCREMENT_CHILD_2_COST;
-				INCREMENT_CHILD_2_COST: state <= ADD_CHILD_2_TO_QUEUE;
+				INCREMENT_CHILD_2_COST: state <= FIND_NEXT_CHILD_2_INDEX_HIGH;
+				FIND_NEXT_CHILD_2_INDEX_HIGH: state <= FIND_NEXT_CHILD_2_INDEX_LOW;
+				FIND_NEXT_CHILD_2_INDEX_LOW: state <= FIND_NEXT_CHILD_2_INDEX_DONE;
+				FIND_NEXT_CHILD_2_INDEX_DONE:
+					if (found_child_index)
+						state <= ADD_CHILD_2_TO_QUEUE;
 				ADD_CHILD_2_TO_QUEUE: state <= WAIT_CHILD_2_QUEUE;
-				WAIT_CHILD_2_QUEUE: state <= INCREMENT_CHILD_INDEX_2;
-				INCREMENT_CHILD_INDEX_2: state <= CHECK_CHILD_3;
+				WAIT_CHILD_2_QUEUE: state <= CHECK_CHILD_3;
 				
 				
 				//CHILD 3
@@ -522,10 +563,14 @@ module Dijkstra
 				
 				REMOVE_CHILD_3: state <= WAIT_REMOVE_CHILD_3;
 				WAIT_REMOVE_CHILD_3: state <= INCREMENT_CHILD_3_COST;
-				INCREMENT_CHILD_3_COST: state <= ADD_CHILD_3_TO_QUEUE;
+				INCREMENT_CHILD_3_COST: state <= FIND_NEXT_CHILD_3_INDEX_HIGH;
+				FIND_NEXT_CHILD_3_INDEX_HIGH: state <= FIND_NEXT_CHILD_3_INDEX_LOW;
+				FIND_NEXT_CHILD_3_INDEX_LOW: state <= FIND_NEXT_CHILD_3_INDEX_DONE;
+				FIND_NEXT_CHILD_3_INDEX_DONE:
+					if (found_child_index)
+						state <= ADD_CHILD_3_TO_QUEUE;
 				ADD_CHILD_3_TO_QUEUE: state <= WAIT_CHILD_3_QUEUE;
-				WAIT_CHILD_3_QUEUE: state <= INCREMENT_CHILD_INDEX_3;
-				INCREMENT_CHILD_INDEX_3: state <= CHECK_CHILD_4;
+				WAIT_CHILD_3_QUEUE: state <= CHECK_CHILD_4;
 				
 								
 				//CHILD 4
@@ -564,10 +609,14 @@ module Dijkstra
 				
 				REMOVE_CHILD_4: state <= WAIT_REMOVE_CHILD_4;
 				WAIT_REMOVE_CHILD_4: state <= INCREMENT_CHILD_4_COST;
-				INCREMENT_CHILD_4_COST: state <= ADD_CHILD_4_TO_QUEUE;
+				INCREMENT_CHILD_4_COST: state <= FIND_NEXT_CHILD_4_INDEX_HIGH;
+				FIND_NEXT_CHILD_4_INDEX_HIGH: state <= FIND_NEXT_CHILD_4_INDEX_LOW;
+				FIND_NEXT_CHILD_4_INDEX_LOW: state <= FIND_NEXT_CHILD_4_INDEX_DONE;
+				FIND_NEXT_CHILD_4_INDEX_DONE:
+					if (found_child_index)
+						state <= ADD_CHILD_4_TO_QUEUE;
 				ADD_CHILD_4_TO_QUEUE: state <= WAIT_CHILD_4_QUEUE;
-				WAIT_CHILD_4_QUEUE: state <= INCREMENT_CHILD_INDEX_4;
-				INCREMENT_CHILD_INDEX_4: state <= CHECK_CHILD_5;
+				WAIT_CHILD_4_QUEUE: state <= CHECK_CHILD_5;
 				
 								
 				//CHILD 5
@@ -606,10 +655,14 @@ module Dijkstra
 				
 				REMOVE_CHILD_5: state <= WAIT_REMOVE_CHILD_5;
 				WAIT_REMOVE_CHILD_5: state <= INCREMENT_CHILD_5_COST;
-				INCREMENT_CHILD_5_COST: state <= ADD_CHILD_5_TO_QUEUE;
+				INCREMENT_CHILD_5_COST: state <= FIND_NEXT_CHILD_5_INDEX_HIGH;
+				FIND_NEXT_CHILD_5_INDEX_HIGH: state <= FIND_NEXT_CHILD_5_INDEX_LOW;
+				FIND_NEXT_CHILD_5_INDEX_LOW: state <= FIND_NEXT_CHILD_5_INDEX_DONE;
+				FIND_NEXT_CHILD_5_INDEX_DONE:
+					if (found_child_index)
+						state <= ADD_CHILD_5_TO_QUEUE;
 				ADD_CHILD_5_TO_QUEUE: state <= WAIT_CHILD_5_QUEUE;
-				WAIT_CHILD_5_QUEUE: state <= INCREMENT_CHILD_INDEX_5;
-				INCREMENT_CHILD_INDEX_5: state <= CHECK_CHILD_6;
+				WAIT_CHILD_5_QUEUE: state <= CHECK_CHILD_6;
 
 
 				//CHILD 6
@@ -648,10 +701,14 @@ module Dijkstra
 				
 				REMOVE_CHILD_6: state <= INCREMENT_CHILD_6_COST;
 				WAIT_REMOVE_CHILD_6: state <= INCREMENT_CHILD_6_COST;
-				INCREMENT_CHILD_6_COST: state <= ADD_CHILD_6_TO_QUEUE;
+				INCREMENT_CHILD_6_COST: state <= FIND_NEXT_CHILD_6_INDEX_HIGH;
+				FIND_NEXT_CHILD_6_INDEX_HIGH: state <= FIND_NEXT_CHILD_6_INDEX_LOW;
+				FIND_NEXT_CHILD_6_INDEX_LOW: state <= FIND_NEXT_CHILD_6_INDEX_DONE;
+				FIND_NEXT_CHILD_6_INDEX_DONE:
+					if (found_child_index)
+						state <= ADD_CHILD_6_TO_QUEUE;
 				ADD_CHILD_6_TO_QUEUE: state <= WAIT_CHILD_6_QUEUE;
-				WAIT_CHILD_6_QUEUE: state <= INCREMENT_CHILD_INDEX_6;
-				INCREMENT_CHILD_INDEX_6: state <= LOOP;
+				WAIT_CHILD_6_QUEUE: state <= LOOP;
 				
 				SUCCESS: state <= RECONSTRUCT_PATH;
 				
@@ -693,18 +750,17 @@ module Dijkstra
 			START: begin
 				find_node <= 1'b1;
 				explored_write_address <= 7'b0;
-				child_write_address <= 7'b1;
 				i <= 16'b0;
 				success <= 1'b0;
 			end
 			WRITE_START: begin
 				node_mem_write <= 1'b1;
-				node_mem_write_address <= 7'd7;
+				node_mem_write_address <= 7'd81;
 				node_mem_write_data <= start_node;
 			end
 			WRITE_GOAL: begin
 				node_mem_write <= 1'b1;
-				node_mem_write_address <= 7'd8;
+				node_mem_write_address <= 7'd82;
 				node_mem_write_data <= goal_node;
 			end
 			
@@ -731,6 +787,14 @@ module Dijkstra
 			POP: begin
 				current_node <= minimum_node;
 				current_node_id <= minimum_node.node_id;
+			end
+			REMOVE_FROM_QUEUE: begin
+				queue_write <= 1'b1;
+				queue_write_address <= minimum_address;
+				queue_write_data <= removed_node;
+			end
+			REMOVE_FROM_QUEUE_WAIT: begin
+				queue_write <= 1'b0;
 			end
 			FIND_NODE_HIGH: begin
 				find_node <= 1'b1;
@@ -802,8 +866,12 @@ module Dijkstra
 			WAIT_CHILD_1_QUEUE: begin
 				queue_write <= 1'b0;
 			end
-			INCREMENT_CHILD_INDEX_1: begin
+			FIND_NEXT_CHILD_1_INDEX_HIGH: begin
 				queue_write <= 1'b0;
+				find_child_index <= 1'b1;
+			end
+			FIND_NEXT_CHILD_1_INDEX_LOW: begin
+				find_child_index <= 1'b0;
 			end
 			
 			
@@ -851,9 +919,12 @@ module Dijkstra
 			WAIT_CHILD_2_QUEUE: begin
 				queue_write <= 1'b0;
 			end
-			INCREMENT_CHILD_INDEX_2: begin
+			FIND_NEXT_CHILD_2_INDEX_HIGH: begin
 				queue_write <= 1'b0;
-				child_write_address <= child_write_address + 1'b1;
+				find_child_index <= 1'b1;
+			end
+			FIND_NEXT_CHILD_2_INDEX_LOW: begin
+				find_child_index <= 1'b0;
 			end
 			
 			
@@ -902,9 +973,12 @@ module Dijkstra
 			WAIT_CHILD_3_QUEUE: begin
 				queue_write <= 1'b0;
 			end
-			INCREMENT_CHILD_INDEX_3: begin
+			FIND_NEXT_CHILD_3_INDEX_HIGH: begin
 				queue_write <= 1'b0;
-				child_write_address <= child_write_address + 1'b1;
+				find_child_index <= 1'b1;
+			end
+			FIND_NEXT_CHILD_3_INDEX_LOW: begin
+				find_child_index <= 1'b0;
 			end
 			
 
@@ -952,9 +1026,12 @@ module Dijkstra
 			WAIT_CHILD_4_QUEUE: begin
 				queue_write <= 1'b0;
 			end
-			INCREMENT_CHILD_INDEX_4: begin
+			FIND_NEXT_CHILD_4_INDEX_HIGH: begin
 				queue_write <= 1'b0;
-				child_write_address <= child_write_address + 1'b1;
+				find_child_index <= 1'b1;
+			end
+			FIND_NEXT_CHILD_4_INDEX_LOW: begin
+				find_child_index <= 1'b0;
 			end
 
 
@@ -1002,11 +1079,13 @@ module Dijkstra
 			WAIT_CHILD_5_QUEUE: begin
 				queue_write <= 1'b0;
 			end
-			INCREMENT_CHILD_INDEX_5: begin
+			FIND_NEXT_CHILD_5_INDEX_HIGH: begin
 				queue_write <= 1'b0;
-				child_write_address <= child_write_address + 1'b1;
+				find_child_index <= 1'b1;
 			end
-
+			FIND_NEXT_CHILD_5_INDEX_LOW: begin
+				find_child_index <= 1'b0;
+			end
 
 			//
 			GET_CHILD_6: begin
@@ -1052,9 +1131,12 @@ module Dijkstra
 			WAIT_CHILD_6_QUEUE: begin
 				queue_write <= 1'b0;
 			end
-			INCREMENT_CHILD_INDEX_6: begin
+			FIND_NEXT_CHILD_6_INDEX_HIGH: begin
 				queue_write <= 1'b0;
-				child_write_address <= child_write_address + 1'b1;
+				find_child_index <= 1'b1;
+			end
+			FIND_NEXT_CHILD_6_INDEX_LOW: begin
+				find_child_index <= 1'b0;
 			end
 
 			

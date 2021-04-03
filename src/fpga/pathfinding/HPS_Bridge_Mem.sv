@@ -49,11 +49,11 @@ module HPS_Bridge_Mem_FSM
 		else
 			case (state)
 			IDLE:
-				if (get_goal_node)
+				if (!write_enable && address[15:1] == 15'b0000_0011_1001_100)
 					state <= READING;
 					
 			READING:
-				if (address[15:1] == 15'b0000_0100_0100_001 || readdata == 15'hFFFF)
+				if (address[15:1] == 15'b0000_0100_0100_001 || readdata == 16'hFFFF)
 					state <= FINISH;
 					
 			FINISH: state <= IDLE;

@@ -227,19 +227,21 @@ module MyComputer_Verilog (
 	HPS_Bridge_Mem_FSM bridge(
 		.clk(CLOCK_50), 
 		.reset(~KEY[2]),
-		.get_goal_node(get_goal_node),
+		.get_goal_node(get_goal_node), 
 		.io_enable(IO_Enable_L_WIRE),
 		.write_enable(IO_RW_WIRE),
 		.address(IO_Address_WIRE),
-		.readdata(IO_Write_Data_WIRE),
-		.goal_data(goal_data)
+		.readdata(IO_Write_Data_WIRE), 
+		.start_data(start_data),
+		.goal_data(goal_data),
+		.finished(start_pulse)
 	);
 	
 	coord path [100];
 	logic [15:0] index;
 	logic success;
 	
-	Dijkstra dijkstra(
+	Dijkstra #(.MAX_NODES(100)) dijkstra(
 		.clk(CLOCK_50), 
 		.reset(~KEY[2]), 
 		.start(start_pulse), 
@@ -271,10 +273,18 @@ module MyComputer_Verilog (
 	 ///////////////////////////////////////////////////////////////////////////////////////
 	 
 		 CPEN391_Computer u0 (
+		 /*
+			.sram_goal_address					(sram_address),
+			.sram_goal_chipselect				(1'b1),
+			.sram_goal_clken						(1'b1),
+			.sram_goal_write						(1'b0),
+			.sram_goal_readdata					(sram_readdata),
+			.sram_goal_writedata					(sram_writedata),
+			.sram_goal_byteenable				(2'b11),*/
+			.path_goal_set_export				(path_goal_set),
 			.hx711_sck_export						(hx711_sck),
 			.hx711_dt_export						(hx711_dt),
 			.wifi_rst_export						(wifi_rst),
-			.path_goal_set_export				(path_goal_set),
 			.hps_io_hps_io_emac1_inst_TX_CLK (HPS_ENET_GTX_CLK), 					//               hps_io.hps_io_emac1_inst_TX_CLK
 			.hps_io_hps_io_emac1_inst_TXD0   (HPS_ENET_TX_DATA[0]),   			//                     .hps_io_emac1_inst_TXD0
 			.hps_io_hps_io_emac1_inst_TXD1   (HPS_ENET_TX_DATA[1]),   			//                     .hps_io_emac1_inst_TXD1
@@ -413,8 +423,7 @@ module MyComputer_Verilog (
 		
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 	  // Instantiate an instance of the graphics and video controller circuit drawn as a schematic
-	  ///////////////////////////////////////////////////////////////////////////////////////////////
-
+	  //////////////////////////////////////////////////////////////////////////////////////////////
 	  
 		Graphics_and_Video_Controller		GraphicsController1 ( 
 				.Reset_L						(RESET_L_WIRE),
@@ -437,7 +446,7 @@ module MyComputer_Verilog (
 				.VGA_Blanking 					(VGA_BLANK_N),
 				.VGA_SYNC						(VGA_SYNC_N),
 		 );
-		 
+
 		 
 		///////////////////////////////////////////////////////////////////////////////////////////////
 		// create an instance of the IO port with serial ports
