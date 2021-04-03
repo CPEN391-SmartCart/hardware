@@ -10,7 +10,7 @@
 #define SIDEPANEL_SPLITTER_X 576
 #define SIDEPANEL_TEXT_WIDTH 224
 
-typedef struct Path
+typedef struct path_t
 {
     short x;
     short y;
@@ -26,5 +26,7 @@ void HideItem(Item item);
 void HideAllItems(int listSize, Item shoppingList[]);
 void ShowNextItem(char* itemName);
 void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour);
+void DrawItemPathHelper(int pathSize, path_t path[], int colour);
+void DrawArrowHead(int pathSize, path_t path[], int colour);
 //void DrawPathOnMap();
 

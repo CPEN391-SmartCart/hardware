@@ -93,27 +93,91 @@ void ShowNextItem(char* itemName){
 }
 
 void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour){
-    int i;
-    path_t corner0, corner1;
+	// Current location on map
+	FilledRectangle(newPath[newPathSize - 1].x - 3, newPath[newPathSize - 1].y - 3, 8, 8, colour);
 
-    // Clear old path
-    for(i = 0; i < oldPathSize - 1; i++){
-        corner0 = oldPath[i];
-        corner1 = oldPath[i + 1];
-
-        DrawAnyLine(corner0.x, corner0.y, corner1.x, corner1.y, WHITE);
-        DrawAnyLine(corner0.x + 1, corner0.y + 1, corner1.x + 1, corner1.y + 1, WHITE);
-    }
+	// Clear old path
+	DrawItemPathHelper(oldPathSize, oldPath, WHITE);
 
     // Draw new path
-    for(i = 0; i < newPathSize - 1; i++){
-        corner0 = newPath[i];
-        corner1 = newPath[i + 1];
-
-        DrawAnyLine(corner0.x, corner0.y, corner1.x, corner1.y, colour);
-        DrawAnyLine(corner0.x + 1, corner0.y + 1, corner1.x + 1, corner1.y + 1, colour);
-    }
+	DrawItemPathHelper(newPathSize, newPath, colour);
 }
+
+void DrawItemPathHelper(int pathSize, path_t path[], int colour){
+	int i;
+	path_t corner0, corner1;
+
+	for(i = 0; i < pathSize - 1; i++){
+		corner0 = path[i];
+		corner1 = path[i + 1];
+
+		DrawAnyLine(corner0.x, corner0.y, corner1.x, corner1.y, colour);
+		DrawAnyLine(corner0.x + 1, corner0.y + 1, corner1.x + 1, corner1.y + 1, colour);
+	}
+
+	DrawArrowHead(pathSize, path, colour);
+}
+
+void DrawArrowHead(int pathSize, path_t path[], int colour){
+	int i;
+	double arrowLength = 5;
+	double grad;
+	double gradPerpendicular;
+	double coordArrowBaseX;
+	double coordArrowBaseY;
+	double coordArrow1X;
+	double coordArrow1Y;
+	double coordArrow2X;
+	double coordArrow2Y;
+	double deltaX;
+	double deltaY;
+
+	path_t goal = path[0];
+	path_t goalPrev = path[1];
+
+	deltaX = goal.x - goalPrev.x;
+	deltaY = goal.y - goalPrev.y;
+
+	if(goalPrev.x < goal.x){
+		coordArrowBaseX = goal.x - arrowLength;
+	} else {
+		coordArrowBaseX = goal.x + arrowLength;
+	}
+
+	if(!deltaX && !deltaY){
+		return;
+
+	} else if(!deltaY){ // Horizontal
+		coordArrow1X = coordArrowBaseX;
+		coordArrow1Y = goal.y + arrowLength;
+		coordArrow2X = coordArrowBaseX;
+		coordArrow2Y = goal.y - arrowLength;
+
+	} else if(!deltaX){ // Vertical
+		coordArrow1X = goal.x + arrowLength;
+		coordArrow1Y = coordArrowBaseY;
+		coordArrow2X = goal.x - arrowLength;
+		coordArrow2Y = coordArrowBaseY;
+
+	} else {
+		grad = deltaY/deltaX;
+		gradPerpendicular = -1/grad;
+
+		coordArrowBaseY = grad * (coordArrowBaseX - goal.x) + goal.y;
+		coordArrow1X = coordArrowBaseX - grad * arrowLength;
+		coordArrow1Y = gradPerpendicular * (coordArrow1X - coordArrowBaseX) + coordArrowBaseY;
+		coordArrow2X = coordArrowBaseX + grad * arrowLength;
+		coordArrow2Y = gradPerpendicular * (coordArrow2X - coordArrowBaseX) + coordArrowBaseY;
+
+	}
+
+	for(i = 0; i < 3; i++){
+		DrawAnyLine(coordArrow1X + i, coordArrow1Y, goal.x + i, goal.y, colour);
+		DrawAnyLine(coordArrow2X + i, coordArrow2Y, goal.x + i, goal.y, colour);
+	}
+}
+
+
 
 //void DrawPathOnMap(){
 //    DrawShortestPath(RED);
