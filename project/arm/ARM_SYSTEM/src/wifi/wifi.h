@@ -28,6 +28,11 @@
 #define LUA_MSG_START "STRT\n"
 #define LUA_MSG_END_SUCCESS "EXIT0\0" //lua will explicitly send a null terminated character at the end, which is included here
 
+#define LUA_EXIT_SUCCESS 0
+#define LUA_HTTP_ERROR 1
+#define LUA_RESPONSE_ITERATION_OVERFLOW 2
+#define LUA_RESPONSE_TBC 9
+
 typedef struct wifi_context {
 	char *BUFFER;
 	int index;

@@ -1,3 +1,7 @@
+
+#ifndef MAP_H_
+#define MAP_H_
+
 #include "graphics.h"
 #include "../common.h"
 
@@ -37,3 +41,4 @@ void HideAllItems(int listSize, Item shoppingList[]);
 void ShowNextItem(char* itemName);
 void DrawItemPath(int oldPathSize, PathVertex oldPath[], int newPathSize, PathVertex newPath[]);
 
+#endif /* MAP_H_ */

@@ -5,7 +5,7 @@
 
 #include "../vga/map.h"
 
-#define BARCODE_SCRIPT_CMD_FORMAT "dofile('getBarcodeMsg.lua')\r\n" //TODO : add args
+#define BARCODE_SCRIPT_CMD_FORMAT "args={'%s'}\ndofile('getItem.lua')\r\n" //args={barcode}
 
 static Item getItemFromResponse(char *response);
 Item requestItem(char *barcode);

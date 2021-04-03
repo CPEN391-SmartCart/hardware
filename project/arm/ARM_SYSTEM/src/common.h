@@ -11,14 +11,16 @@
 #define TRUE 1
 #define FALSE 0
 
+#define MAX_CHARS 30
+
 typedef struct Item
 {
-	char *barcode;
+	char barcode[MAX_CHARS];
 	int section_id;
-    char *name;
+    char name[MAX_CHARS];
 	double cost;
-    char *description;
-    char requires_weighing;
+    char description[MAX_CHARS];
+    int requires_weighing;
     int x;
     int y;
     int aisleColor;
@@ -26,19 +28,29 @@ typedef struct Item
 
 typedef struct Legend
 {
-    char *key;
+    char key[MAX_CHARS];
     int color;
 } Legend;
 
+typedef struct LegendArr
+{
+	int size;
+    Legend *legends;
+} LegendArr;
+
 typedef struct Section
 {
-	int id;
     int originX;
     int originY;
     int sectionWidth;
     int sectionHeight;
     int aisleColor;
-    char* key;
 } Section;
+
+typedef struct SectionArr
+{
+    int size;
+    Section* sections;
+} SectionArr;
 
 #endif /* COMMON_H_ */

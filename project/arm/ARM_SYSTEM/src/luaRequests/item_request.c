@@ -17,12 +17,15 @@ static Item getItemFromResponse(char *read){
 		return item;
 	}
 
-	item.barcode = strtok(read, "|");
+	strncpy(item.barcode, strtok(read, "|"), MAX_CHARS);
+	item.barcode[MAX_CHARS-1] = '\0';
 	item.section_id = atoi(strtok(NULL, "|"));
-	item.name = strtok(NULL, "|");
+	strncpy(item.name, strtok(NULL, "|"), MAX_CHARS);
+	item.name[MAX_CHARS-1] = '\0';
 	item.cost = atof(strtok(NULL, "|"));
-	item.description = strtok(NULL, "|");
-	item.requires_weighing = strtok(NULL, "|");
+	strncpy(item.description, strtok(NULL, "|"), MAX_CHARS);
+	item.description[MAX_CHARS-1] = '\0';
+	item.requires_weighing = atoi(strtok(NULL, "|"));
 	item.x = atoi(strtok(NULL, "|"));
 	item.y = atoi(strtok(NULL, "|"));
 	item.aisleColor = 0;
@@ -51,7 +54,7 @@ Item requestItem(char *barcode){
 
 	char response[500];
 
-	int status = writeAndReadResponse(BARCODE_SCRIPT_CMD_FORMAT, response);
+	int status = writeAndReadResponse(command, response);
 
 	if(status != 0){
 		printf("\n ERROR: Lua Script returned EXIT%c \n, status");

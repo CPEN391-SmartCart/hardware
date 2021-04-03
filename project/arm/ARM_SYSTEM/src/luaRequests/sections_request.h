@@ -5,11 +5,13 @@
 
 #include "../common.h"
 
-#define SECTIONS_SCRIPT_CMD_FORMAT "store_id = %d, dofile(requestSections.lua)"
+#define SECTIONS_SCRIPT_CMD_FORMAT "args = {'%d'}\ndofile('getSections.lua')\r\n" //args={store_id}
+#define NEXT_SECTION_CMD "print_iter()\r\n"
 
 
-static Section *getSectionsFromResponse(char *response);
-Section *requestSections(int store_id);
+static Section getSectionFromResponse(char *response);
+static int getFirstSectionFromResponse(char *read, Section *section_result);
+SectionArr requestSections(int store_id);
 
 
 #endif /* REQUESTS_SECTIONS_REQUEST_H_ */
