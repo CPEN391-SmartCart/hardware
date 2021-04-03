@@ -10,6 +10,13 @@
 #define SIDEPANEL_SPLITTER_X 576
 #define SIDEPANEL_TEXT_WIDTH 224
 
+typedef struct Path
+{
+    short x;
+    short y;
+} path_t;
+
+
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateSidePanel(int legendSize, Legend legends[]);
 void UpdateBalance(double subtotal, double gstRate);
@@ -18,5 +25,6 @@ void ShowItem(Item item);
 void HideItem(Item item);
 void HideAllItems(int listSize, Item shoppingList[]);
 void ShowNextItem(char* itemName);
-void DrawPathOnMap();
+void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour);
+//void DrawPathOnMap();
 
