@@ -9,14 +9,6 @@
    categories="System" />
  <parameter name="bonusData"><![CDATA[bonusData 
 {
-   element $${FILENAME}
-   {
-      datum _originalDeviceFamily
-      {
-         value = "Cyclone V";
-         type = "String";
-      }
-   }
    element ARM_A9_HPS
    {
       datum _sortIndex
@@ -299,7 +291,7 @@
    internal="WIFI_RST.external_connection"
    type="conduit"
    dir="end" />
- <module name="ARM_A9_HPS" kind="altera_hps" version="15.0" enabled="1">
+ <module name="ARM_A9_HPS" kind="altera_hps" version="18.1" enabled="1">
   <parameter name="ABSTRACT_REAL_COMPARE_TEST" value="false" />
   <parameter name="ABS_RAM_MEM_INIT_FILENAME" value="meminit" />
   <parameter name="ACV_PHY_CLK_ADD_FR_PHASE" value="0.0" />
@@ -374,8 +366,10 @@
   <parameter name="DUPLICATE_AC" value="false" />
   <parameter name="ED_EXPORT_SEQ_DEBUG" value="false" />
   <parameter name="EMAC0_Mode" value="N/A" />
+  <parameter name="EMAC0_PTP" value="false" />
   <parameter name="EMAC0_PinMuxing" value="Unused" />
   <parameter name="EMAC1_Mode" value="RGMII" />
+  <parameter name="EMAC1_PTP" value="false" />
   <parameter name="EMAC1_PinMuxing" value="HPS I/O Set 0" />
   <parameter name="ENABLE_ABS_RAM_MEM_INIT" value="false" />
   <parameter name="ENABLE_BONDING" value="false" />
@@ -411,6 +405,7 @@
   <parameter name="F2SDRAM_Width" value="" />
   <parameter name="F2SINTERRUPT_Enable" value="true" />
   <parameter name="F2S_Width" value="2" />
+  <parameter name="FIX_READ_LATENCY" value="8" />
   <parameter name="FORCED_NON_LDC_ADDR_CMD_MEM_CK_INVERT" value="false" />
   <parameter name="FORCED_NUM_WRITE_FR_CYCLE_SHIFTS" value="0" />
   <parameter name="FORCE_DQS_TRACKING" value="AUTO" />
@@ -429,7 +424,6 @@
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C1_SCL_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C2_SCL_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_I2C3_SCL_IN" value="100" />
-  <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SDIO_CLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SPIS0_SCLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_SPIS1_SCLK_IN" value="100" />
   <parameter name="FPGA_PERIPHERAL_INPUT_CLOCK_FREQ_USB0_CLK_IN" value="100" />
@@ -647,6 +641,7 @@
   <parameter name="S2FCLK_USER0CLK_Enable" value="false" />
   <parameter name="S2FCLK_USER1CLK_Enable" value="false" />
   <parameter name="S2FCLK_USER1CLK_FREQ" value="100.0" />
+  <parameter name="S2FCLK_USER2CLK" value="5" />
   <parameter name="S2FCLK_USER2CLK_Enable" value="false" />
   <parameter name="S2FCLK_USER2CLK_FREQ" value="100.0" />
   <parameter name="S2FINTERRUPT_CAN_Enable" value="false" />
@@ -803,6 +798,7 @@
   <parameter name="periph_pll_n" value="1" />
   <parameter name="periph_pll_source" value="0" />
   <parameter name="qspi_clk_source" value="1" />
+  <parameter name="quartus_ini_hps_emif_pll" value="false" />
   <parameter
      name="quartus_ini_hps_ip_enable_all_peripheral_fpga_interfaces"
      value="false" />
@@ -825,7 +821,7 @@
   <parameter name="usb_mp_clk_div" value="0" />
   <parameter name="use_default_mpu_clk" value="true" />
  </module>
- <module name="HX711_DT" kind="altera_avalon_pio" version="15.0" enabled="1">
+ <module name="HX711_DT" kind="altera_avalon_pio" version="18.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -839,7 +835,7 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="1" />
  </module>
- <module name="HX711_SCK" kind="altera_avalon_pio" version="15.0" enabled="1">
+ <module name="HX711_SCK" kind="altera_avalon_pio" version="18.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -856,7 +852,7 @@
  <module
    name="IO_Bridge"
    kind="altera_up_avalon_to_external_bus_bridge"
-   version="15.0"
+   version="18.0"
    enabled="1">
   <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -867,7 +863,7 @@
  <module
    name="Interval_Timer"
    kind="altera_avalon_timer"
-   version="15.0"
+   version="18.1"
    enabled="1">
   <parameter name="alwaysRun" value="false" />
   <parameter name="counterSize" value="32" />
@@ -883,7 +879,7 @@
  <module
    name="JTAG_To_FPGA_Bridge"
    kind="altera_jtag_avalon_master"
-   version="15.0"
+   version="18.1"
    enabled="1">
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -897,7 +893,7 @@
  <module
    name="JTAG_To_HPS_Bridge"
    kind="altera_jtag_avalon_master"
-   version="15.0"
+   version="18.1"
    enabled="1">
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
@@ -911,7 +907,7 @@
  <module
    name="JTAG_UART_for_ARM_0"
    kind="altera_avalon_jtag_uart"
-   version="15.0"
+   version="18.1"
    enabled="1">
   <parameter name="allowMultipleConnections" value="false" />
   <parameter name="avalonSpec" value="2.0" />
@@ -930,7 +926,7 @@
  <module
    name="JTAG_UART_for_ARM_1"
    kind="altera_avalon_jtag_uart"
-   version="15.0"
+   version="18.1"
    enabled="1">
   <parameter name="allowMultipleConnections" value="false" />
   <parameter name="avalonSpec" value="2.0" />
@@ -949,7 +945,7 @@
  <module
    name="PATH_GOAL_SET"
    kind="altera_avalon_pio"
-   version="15.0"
+   version="18.1"
    enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
@@ -967,7 +963,7 @@
  <module
    name="SDRAM"
    kind="altera_avalon_new_sdram_controller"
-   version="15.0"
+   version="18.1"
    enabled="1">
   <parameter name="TAC" value="5.5" />
   <parameter name="TMRD" value="3" />
@@ -996,27 +992,27 @@
  <module
    name="SysID"
    kind="altera_avalon_sysid_qsys"
-   version="15.0"
+   version="18.1"
    enabled="1">
-  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone V" />
   <parameter name="id" value="0" />
  </module>
  <module
    name="System_PLL"
    kind="altera_up_avalon_sys_sdram_pll"
-   version="15.0"
+   version="18.0"
    enabled="1">
   <parameter name="AUTO_DEVICE" value="5CSEMA5F31C6" />
   <parameter name="AUTO_DEVICE_SPEEDGRADE" value="6" />
   <parameter name="CIII_boards" value="DE0" />
   <parameter name="CIV_boards" value="DE2-115" />
   <parameter name="CV_boards" value="DE1-SoC" />
+  <parameter name="MAX10_boards" value="DE10-Lite" />
   <parameter name="device_family" value="Cyclone V" />
   <parameter name="gui_outclk" value="50.0" />
   <parameter name="gui_refclk" value="50.0" />
   <parameter name="other_boards" value="None" />
  </module>
- <module name="WIFI_CTS" kind="altera_avalon_pio" version="15.0" enabled="1">
+ <module name="WIFI_CTS" kind="altera_avalon_pio" version="18.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -1030,7 +1026,7 @@
   <parameter name="simDrivenValue" value="0" />
   <parameter name="width" value="1" />
  </module>
- <module name="WIFI_RST" kind="altera_avalon_pio" version="15.0" enabled="1">
+ <module name="WIFI_RST" kind="altera_avalon_pio" version="18.1" enabled="1">
   <parameter name="bitClearingEdgeCapReg" value="false" />
   <parameter name="bitModifyingOutReg" value="false" />
   <parameter name="captureEdge" value="false" />
@@ -1046,7 +1042,7 @@
  </module>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_axi_master"
    end="SDRAM.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1055,7 +1051,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="JTAG_UART_for_ARM_0.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1064,7 +1060,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="JTAG_UART_for_ARM_1.avalon_jtag_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1073,7 +1069,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="IO_Bridge.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1082,7 +1078,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="SysID.control_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1091,7 +1087,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="Interval_Timer.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1100,7 +1096,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="WIFI_RST.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1109,7 +1105,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="WIFI_CTS.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1118,7 +1114,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="HX711_SCK.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1127,7 +1123,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="HX711_DT.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1136,7 +1132,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_lw_axi_master"
    end="PATH_GOAL_SET.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1145,7 +1141,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="IO_Bridge.avalon_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1154,7 +1150,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="SysID.control_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1163,7 +1159,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_HPS_Bridge.master"
    end="ARM_A9_HPS.f2h_axi_slave">
   <parameter name="arbitrationPriority" value="1" />
@@ -1172,7 +1168,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="SDRAM.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1181,7 +1177,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="Interval_Timer.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1190,7 +1186,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="WIFI_RST.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1199,7 +1195,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="WIFI_CTS.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1208,7 +1204,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="HX711_SCK.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1217,7 +1213,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="HX711_DT.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1226,7 +1222,7 @@
  </connection>
  <connection
    kind="avalon"
-   version="15.0"
+   version="18.1"
    start="JTAG_To_FPGA_Bridge.master"
    end="PATH_GOAL_SET.s1">
   <parameter name="arbitrationPriority" value="1" />
@@ -1235,240 +1231,240 @@
  </connection>
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="JTAG_To_HPS_Bridge.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="JTAG_To_FPGA_Bridge.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="SDRAM.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="JTAG_UART_for_ARM_0.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="JTAG_UART_for_ARM_1.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="Interval_Timer.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="SysID.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="IO_Bridge.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="WIFI_RST.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="WIFI_CTS.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="HX711_SCK.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="HX711_DT.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="PATH_GOAL_SET.clk" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="ARM_A9_HPS.f2h_axi_clock" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="ARM_A9_HPS.h2f_axi_clock" />
  <connection
    kind="clock"
-   version="15.0"
+   version="18.1"
    start="System_PLL.sys_clk"
    end="ARM_A9_HPS.h2f_lw_axi_clock" />
  <connection
    kind="interrupt"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.f2h_irq0"
    end="IO_Bridge.interrupt">
   <parameter name="irqNumber" value="2" />
  </connection>
  <connection
    kind="interrupt"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.f2h_irq0"
    end="JTAG_UART_for_ARM_0.irq">
   <parameter name="irqNumber" value="8" />
  </connection>
  <connection
    kind="interrupt"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.f2h_irq0"
    end="Interval_Timer.irq">
   <parameter name="irqNumber" value="0" />
  </connection>
  <connection
    kind="interrupt"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.f2h_irq1"
    end="JTAG_UART_for_ARM_1.irq">
   <parameter name="irqNumber" value="24" />
  </connection>
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="JTAG_To_HPS_Bridge.clk_reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="JTAG_To_FPGA_Bridge.clk_reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="SDRAM.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="JTAG_UART_for_ARM_0.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="JTAG_UART_for_ARM_1.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="Interval_Timer.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="SysID.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="IO_Bridge.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="WIFI_RST.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="WIFI_CTS.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="HX711_SCK.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="HX711_DT.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="ARM_A9_HPS.h2f_reset"
    end="PATH_GOAL_SET.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="JTAG_To_HPS_Bridge.clk_reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="JTAG_To_FPGA_Bridge.clk_reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="SDRAM.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="JTAG_UART_for_ARM_0.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="JTAG_UART_for_ARM_1.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="Interval_Timer.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="SysID.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="IO_Bridge.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="WIFI_RST.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="WIFI_CTS.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="HX711_SCK.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="HX711_DT.reset" />
  <connection
    kind="reset"
-   version="15.0"
+   version="18.1"
    start="System_PLL.reset_source"
    end="PATH_GOAL_SET.reset" />
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />

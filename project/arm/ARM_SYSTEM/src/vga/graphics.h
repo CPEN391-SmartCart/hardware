@@ -57,11 +57,9 @@ int ReadAPixel(int x, int y);
 void ProgramPalette(int PaletteNumber, int RGB);
 void HLine(int x1, int y1, int length, int colour);
 void VLine(int x1, int y1, int length, int colour);
-// void DrawAnyLine(int x1, int y1, int x2, int y2, int colour);
+ void DrawAnyLine(int x1, int y1, int x2, int y2, int colour);
 void Rectangle(int x, int y, int width, int height, int colour, int borderThickness);
 void FilledRectangle(int x, int y, int width, int height, int colour);
 void DrawFontCharacter(int x, int y, int fontColour, int backgroundcolour, int c, int erase);
 void DrawFontLine(int x, int y, int fontColour, int backgroundcolour, char *string, int bolded, int erase);
 void ClearTextField(int x, int y, int width, int height);
-void DrawShortestPath(int Colour);
-

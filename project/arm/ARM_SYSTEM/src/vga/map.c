@@ -92,6 +92,24 @@ void ShowNextItem(char* itemName){
     DrawFontLine(SIDEPANEL_HEADER_X, 368, BLACK, WHITE, itemName, 0, 0);
 }
 
-void DrawPathOnMap(){
-    DrawShortestPath(RED);
+void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[]){
+    int i;
+    path_t corner0, corner1;
+
+    // Clear old path
+    for(i = 0; i < oldPathSize - 1; i++){
+        corner0 = oldPath[i];
+        corner1 = oldPath[i + 1];
+
+        DrawAnyLine(corner0.x, corner0.y, corner1.x, corner1.y, WHITE);
+    }
+
+    // Draw new path
+    for(i = 0; i < newPathSize - 1; i++){
+        corner0 = newPath[i];
+        corner1 = newPath[i + 1];
+
+        DrawAnyLine(corner0.x, corner0.y, corner1.x, corner1.y, RED);
+    }
 }
+
