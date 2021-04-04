@@ -9,6 +9,7 @@
 #define SIDEPANEL_BALANCE_Y 410
 #define SIDEPANEL_SPLITTER_X 576
 #define SIDEPANEL_TEXT_WIDTH 224
+#define CARTSIZE 8
 
 typedef struct path_t
 {
@@ -16,17 +17,9 @@ typedef struct path_t
     short y;
 } path_t;
 
-
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateSidePanel(int legendSize, Legend legends[]);
-void UpdateBalance(double subtotal, double gstRate);
-void LoadItemColors(int listSize, Item shoppingList[]);
-void ShowItem(Item item);
-void HideItem(Item item);
-void HideAllItems(int listSize, Item shoppingList[]);
+void AddItemToCart(Item item);
 void ShowNextItem(char* itemName);
 void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour);
-void DrawItemPathHelper(int pathSize, path_t path[], int colour);
-void DrawArrowHead(int pathSize, path_t path[], int colour);
-//void DrawPathOnMap();
 
