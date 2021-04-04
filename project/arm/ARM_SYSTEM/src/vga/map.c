@@ -1,16 +1,20 @@
 #include <stdio.h>
 #include <string.h>
+#include <math.h>
 #include "map.h"
 
 Item cart[CARTSIZE];
 int numberOfItems = 0;
-double subtotal = 0;
+double subtotal = 0.0;
 double gstRate = 0.07;
 
 // private helper functions
-void UpdateBalance();
+void UpdateBalance(double itemCost);
 void DrawItemPathHelper(int pathSize, path_t path[], int colour);
 void DrawArrowHead(int pathSize, path_t path[], int colour);
+void FloatToCostString(float n, char* res, int afterpoint);
+void Reverse(char* str, int len);
+int IntegerToString(int x, char str[], int d, int dollarBool);
 
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[])
 {
@@ -39,10 +43,8 @@ void CreateSidePanel(int legendSize, Legend legends[])
 		DrawFontLine(SIDEPANEL_HEADER_X + 30, 31 + 15 * i, BLACK, WHITE, legends[i].key, 0, 0);
 	}
 
-	DrawFontLine(SIDEPANEL_HEADER_X, 180, BLACK, WHITE, "ITEMS IN CART:", 1, 0);
-
-	DrawFontLine(SIDEPANEL_HEADER_X, 350, BLACK, WHITE, "NEXT ITEM ALONG THE PATH:", 1, 0);
-
+	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y, BLACK, WHITE, "ITEMS IN CART (RECENT 15):", 1, 0);
+	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y, BLACK, WHITE, "NEXT ITEM ALONG THE PATH:", 1, 0);
 	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_BALANCE_Y, BLACK, WHITE, "BALANCE:", 1, 0);
 	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_BALANCE_Y + 20, BLACK, WHITE, "SUBTOTAL", 0, 0);
 	DrawFontLine(SIDEPANEL_BALANCE_X, SIDEPANEL_BALANCE_Y + 20, BLACK, WHITE, "$0.00", 0, 0);
@@ -66,6 +68,7 @@ void AddItemToCart(Item item)
 	cart[numberOfItems % CARTSIZE] = item;
 	numberOfItems++;
 	size = numberOfItems > CARTSIZE ? CARTSIZE : numberOfItems;
+	UpdateBalance(item.cost);
 
 	// Display items on vga
 	for (i = 0; i < size; i++) {
@@ -79,12 +82,11 @@ void AddItemToCart(Item item)
 			sprintf(name, "%d) %s...", vgaIndex, truncatedName);
 		}
 		
-		sprintf(cost, "$%.2f", cart[i].cost);
-		
+		FloatToCostString(cart[i].cost, cost, 2);
+
 		ClearTextField(SIDEPANEL_HEADER_X, 195 + 10 * i, SIDEPANEL_TEXT_WIDTH, 7);
 		DrawFontLine(SIDEPANEL_HEADER_X, 195 + 10 * i, BLACK, WHITE, name, 0, 0);
 		DrawFontLine(SIDEPANEL_BALANCE_X, 195 + 10 * i, BLACK, WHITE, cost, 0, 0);
-		UpdateBalance(cart[i].cost);
 	}
 }
 
@@ -98,9 +100,9 @@ void UpdateBalance(double itemCost)
 	double gst = subtotal * gstRate;
 	double total = subtotal + gst;
 
-	sprintf(subtotalStr, "$%.2f", subtotal);
-	sprintf(gstStr, "$%.2f", gst);
-	sprintf(totalStr, "$%.2f", total);
+	FloatToCostString(subtotal, subtotalStr, 2);
+	FloatToCostString(gst, gstStr, 2);
+	FloatToCostString(total, totalStr, 2);
 
 	// Clear out old balance
 	ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_BALANCE_Y + 20, SIDEPANEL_TEXT_WIDTH, 7);
@@ -213,4 +215,56 @@ void DrawArrowHead(int pathSize, path_t path[], int colour)
 		DrawAnyLine(coordArrow1X + i, coordArrow1Y, goal.x + i, goal.y, colour);
 		DrawAnyLine(coordArrow2X + i, coordArrow2Y, goal.x + i, goal.y, colour);
 	}
+}
+
+/*
+ * Code reference to convert floating point value to string 
+ * in C: https://www.geeksforgeeks.org/convert-floating-point-number-string/
+ */
+
+void Reverse(char* str, int len)
+{
+    int i = 0, j = len - 1, temp;
+    while (i < j) {
+        temp = str[i];
+        str[i] = str[j];
+        str[j] = temp;
+        i++;
+        j--;
+    }
+}
+
+int IntegerToString(int x, char str[], int d, int dollarBool)
+{
+    int i = 0;
+
+	if(!x && dollarBool) str[i++] = '0';
+
+    while (x) {
+        str[i++] = (x % 10) + '0';
+        x = x / 10;
+    }
+  
+    while (i < d)
+        str[i++] = '0';
+
+	if(dollarBool) str[i++] = '$';
+  
+    Reverse(str, i);
+    str[i] = '\0';
+    return i;
+}
+  
+void FloatToCostString(float n, char* res, int afterpoint)
+{
+    int ipart = (int)n;
+    float fpart = n - (float)ipart;
+    int i = IntegerToString(ipart, res, 0, 1);
+  
+    if (afterpoint != 0) {
+        res[i] = '.'; 
+        fpart = fpart * pow(10, afterpoint);
+  
+        IntegerToString((int)fpart, res + i + 1, afterpoint, 0);
+    }
 }
