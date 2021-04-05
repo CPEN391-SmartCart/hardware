@@ -63,23 +63,6 @@ void writeStringWIFI(char *string)
     writeStringUART(string, WiFi_LineStatusReg, WiFi_TransmitterFifo);
 }
 
-//traditional read string. you might not want to use this if wifi interrupts are enabled.
-void readStringWIFI(char *string)
-{
-    int i;
-    char c;
-
-    i = 0;
-    while (dataReadyUART(WiFi_LineStatusReg))
-    {
-        c = readCharUART(WiFi_LineStatusReg, WiFi_ReceiverFifo);
-        string[i++] = c;
-    }
-
-    string[i] = '\0';
-}
-
-//traditional read string. you might not want to use this if wifi interrupts are enabled.
 void readStringTillSizeWIFI(char *string, int size)
 {
     int i;
@@ -96,6 +79,25 @@ void readStringTillSizeWIFI(char *string, int size)
 			string[i++] = c;
 		}
 		j++;
+    }
+
+    string[i] = '\0';
+}
+
+//traditional read string. you might not want to use this if wifi interrupts are enabled.
+void readStringWIFI(char *string)
+{
+    int i;
+    char c = ' ';
+
+    i = 0;
+    while (c != '\r')
+    {
+		if (dataReadyUART(WiFi_LineStatusReg))
+		{
+			c = readCharUART(WiFi_LineStatusReg, WiFi_ReceiverFifo);
+			string[i++] = c;
+		}
     }
 
     string[i] = '\0';
@@ -190,4 +192,3 @@ void resetWifiIsrContext(void) {
 void freeWifi(){
 	free(WIFI_ISR_CONTEXT);
 }
-

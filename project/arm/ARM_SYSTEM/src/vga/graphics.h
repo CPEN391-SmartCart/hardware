@@ -27,6 +27,7 @@
 #define DrawVLine 2
 #define DrawLine 3
 #define DrawRectangle 4
+#define DrawPath 5 // TODO: include in verilog
 #define PutAPixel 0xA
 #define GetAPixel 0xB
 #define ProgramPaletteColour 0x10
@@ -62,3 +63,5 @@ void FilledRectangle(int x, int y, int width, int height, int colour);
 void DrawFontCharacter(int x, int y, int fontColour, int backgroundcolour, int c, int erase);
 void DrawFontLine(int x, int y, int fontColour, int backgroundcolour, char *string, int bolded, int erase);
 void ClearTextField(int x, int y, int width, int height);
+//void DrawShortestPath(int Colour);
+
