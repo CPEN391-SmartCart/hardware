@@ -13,6 +13,13 @@
 
 #define MAX_CHARS 30
 
+#define NODE_INFO_ARRAY_SIZE 17
+
+typedef struct NodeInfo {
+	short nodeInfo[NODE_INFO_ARRAY_SIZE];
+} NodeInfo;
+
+
 typedef struct Item
 {
 	char barcode[MAX_CHARS];
