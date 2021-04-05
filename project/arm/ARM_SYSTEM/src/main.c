@@ -41,12 +41,119 @@
 #define PATH_WRITE (volatile unsigned short int *)(0xFF210398)
 #define PATH_WRITE_START (volatile unsigned short int *)(0xFF210400)
 
-
-
 #define SRAM (void *) (0xC8000000)
 
 
+char* lastScannedBarcode;
+char* lastRequestedDestinationBarcode;
+
+void handleBTMessage(char*code, char*data);
+
 int main(void)
+{
+	initBluetooth();
+    char stringBT[1024];
+
+//	for (unsigned i = 0; i<1000; i++)
+//	{
+//		writeStringBT("Hi!");
+//	}
+
+    for(;;)
+    {
+    	//writeStringBT("Hi3!");
+    	readStringBT(stringBT);
+    	char* stringTok = stringBT;
+    	if(stringTok[0]!='\0'){
+    		printf ("original: %s\n",stringTok);
+    		char* code = strtok (stringTok,":");
+    		char* data;
+    		if (code != NULL)
+    		{
+    		  printf ("code: %s\n",code);
+    		  data = strtok (NULL,":");
+    		  if(data!=NULL){
+    			  printf ("data: %s\n",data);
+    			  handleBTMessage(code, data);
+    		  }
+    		}
+    	}
+    	for(unsigned int i = 0;i<10000;i++)
+    	{
+    		i*=3;
+    		i/=3;
+    	}
+    }
+
+	return 0;
+}
+
+void handleBTMessage(char*code, char*data)
+{
+	char scanCode[] = "sc";
+	char itemCostCode[] = "ic";
+	char pathPlanningCode[] = "pp";
+	if(!strcmp(code,scanCode)){
+
+		lastScannedBarcode = data;
+		// TODO: look up data and populate itemName and itemPrice
+		// itemLookup(data);
+		char* itemName;
+		char* itemPrice;
+		if(data[0]=='X') //TODO: change to if by weight
+		{
+			// TODO: refactor this to outside of the if statement
+			itemName = "Apple";
+			char itemMessage[16] = "in:";
+			strcat(itemMessage,itemName);
+
+			// TODO: remove this fake data
+			itemPrice = "129";
+
+			char priceMessage[16] = "pw:";
+			strcat(priceMessage,itemPrice);
+
+			printf("WriteBT: %s\n", itemMessage);
+			printf("WriteBT: %s\n", priceMessage);
+			writeStringBT(itemMessage);
+			writeStringBT(priceMessage);
+		}
+		else
+		{
+			// TODO: refactor this to outside of the if statement
+			itemName = "Cereal";
+			char itemMessage[16] = "in:";
+			strcat(itemMessage,itemName);
+
+			// TODO: remove this fake data
+			itemPrice = "499";
+
+			char priceMessage[16] = "pq:";
+			strcat(priceMessage,itemPrice);
+
+			writeStringBT("in:Cereal");
+			writeStringBT(priceMessage);
+		}
+
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if(!strcmp(code,itemCostCode)){
+		// TODO: add item to cart
+		// addItemToCart(lastScannedBarcode, data);
+	}
+
+	if(!strcmp(code,pathPlanningCode)){
+		lastRequestedDestinationBarcode = data;
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+
+}
+
+void pathPlanning()
 {
 	int i;
 	int j;
@@ -341,6 +448,4 @@ int main(void)
 	     }
 
 		 DrawItemPath(0, testw, length2 + 1, coordinates2, 22);
-	return 0;
 }
-

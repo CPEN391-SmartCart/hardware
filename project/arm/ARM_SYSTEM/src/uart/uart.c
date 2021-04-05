@@ -69,10 +69,12 @@ void writeStringUART(char *string, volatile unsigned char *LineStatusReg, volati
     int i;
     char c;
 
+    writeCharUART('\n', LineStatusReg, TransmitterFifo);
     for (i = 0; ((c = string[i]) != '\0'); i++)
     {
         writeCharUART(c, LineStatusReg, TransmitterFifo);
     }
+    writeCharUART('\n', LineStatusReg, TransmitterFifo);
 }
 
 void writeCharUART(char c, volatile unsigned char *LineStatusReg, volatile unsigned char *TransmitterFifo)
