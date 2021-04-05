@@ -70,6 +70,10 @@ void AddItemToCart(Item item)
 	size = numberOfItems > CARTSIZE ? CARTSIZE : numberOfItems;
 	UpdateBalance(item.cost);
 
+	// Clear weight commands
+	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y, SIDEPANEL_TEXT_WIDTH, 7);
+	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, SIDEPANEL_TEXT_WIDTH, 7);
+
 	// Display items on vga
 	for (i = 0; i < size; i++) {
 		vgaIndex = numberOfItems > CARTSIZE ? numberOfItems - CARTSIZE + i + 1 : i + 1;
@@ -84,9 +88,9 @@ void AddItemToCart(Item item)
 		
 		FloatToCostString(cart[i].cost, cost, 2);
 
-		ClearTextField(SIDEPANEL_HEADER_X, 195 + 10 * i, SIDEPANEL_TEXT_WIDTH, 7);
-		DrawFontLine(SIDEPANEL_HEADER_X, 195 + 10 * i, BLACK, WHITE, name, 0, 0);
-		DrawFontLine(SIDEPANEL_BALANCE_X, 195 + 10 * i, BLACK, WHITE, cost, 0, 0);
+		ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y + 15 + 10 * i, SIDEPANEL_TEXT_WIDTH, 7);
+		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y + 15 + 10 * i, BLACK, WHITE, name, 0, 0);
+		DrawFontLine(SIDEPANEL_BALANCE_X, SIDEPANEL_ITEMS_Y + 15 + 10 * i, BLACK, WHITE, cost, 0, 0);
 	}
 }
 
@@ -215,6 +219,36 @@ void DrawArrowHead(int pathSize, path_t path[], int colour)
 		DrawAnyLine(coordArrow1X + i, coordArrow1Y, goal.x + i, goal.y, colour);
 		DrawAnyLine(coordArrow2X + i, coordArrow2Y, goal.x + i, goal.y, colour);
 	}
+}
+
+// mode: 0 - request weighing, 1 - invalid weight
+void DisplayWeighCommand(int mode){
+	char *requestWeighing1 = "PLEASE PLACE ITEM IN CART";
+	char *requestWeighing2 = "TO WEIGH SCANNED ITEM!";
+
+	char *invalidWeight1 = "PLEASE REMOVE ITEM PLACED";
+	char *invalidWeight2 = "IN CART AND SCAN AGAIN!";
+
+	if(!mode){
+		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y, RED, WHITE, requestWeighing1, 1, 0);
+		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, RED, WHITE, requestWeighing2, 1, 0);
+	} else {
+		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y, RED, WHITE, invalidWeight1, 1, 0);
+		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, RED, WHITE, invalidWeight2, 1, 0);
+	}
+}
+
+void DisplayPaymentConfirmation(){
+	char *string1 = "We have processed and confirmed your transaction.";
+	char *string2 = "A copy of the receipt has been sent to your app.";
+	char *string3 = "Thank you for shopping with us. See you soon.";
+
+	FilledRectangle(PAYMENT_CONFIRMATION_X, PAYMENT_CONFIRMATION_Y, 400, 200, WHITE);
+	Rectangle(PAYMENT_CONFIRMATION_X, PAYMENT_CONFIRMATION_Y, 400, 200, BLACK, 2);
+
+	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 40, BLACK, WHITE, string1, 1, 0);
+	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 70, BLACK, WHITE, string2, 1, 0);
+	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 100, BLACK, WHITE, string3, 1, 0);
 }
 
 /*
