@@ -13,6 +13,65 @@
 #include "../hx711/hx711.h"
 #include "../vga/map.h"
 #include "tests.h"
+#include "../hx711/hx711.h"
+
+
+void addToCart(){
+
+    initWiFi(115200);
+    resetWiFi();
+
+    printf("hi\n");
+    enableUARTInterrupt(WiFi_InterruptEnableReg);
+
+    printf("\n 2setup interrupt complete \n");
+    printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
+
+    delay_us(100000);
+
+
+	char *barcodes[] = {
+		"XEAQ5424",
+		"XGAO9797",
+		"SCEU6683",
+		"THEY8635",
+		"NTSN6378",
+		"GNLK7691",
+		"ZTZZ2398",
+		"CXKC2105",
+		"SNBN0794",
+		"RCJJ7746",
+		"WBPG8611"
+	};
+
+	Item start_item = requestItem(barcodes[0]);
+	Item goal_item = requestItem(barcodes[1]);
+
+	short *start_node = requestNodeInfo(barcodes[0]).nodeInfo;
+	short *goal_node = requestNodeInfo(barcodes[1]).nodeInfo;
+
+
+	//draw vga stuff
+    SectionArr ss = requestSections(1);
+    Section *sections = ss.sections;
+
+    LegendArr l = requestLegends(1);
+    Legend *legends = l.legends;
+
+	int sectionSize = ss.size;
+	int legendSize = l.size;
+
+	printf("Clearing screen...\n");
+	Reset();
+
+	CreateStoreMap(sectionSize, sections, legendSize, legends);
+	CreateSidePanel(legendSize, legends);
+
+	AddItemToCart(start_item);
+	AddItemToCart(goal_item);
+
+}
+
 
 void vgaRoutine(){
 

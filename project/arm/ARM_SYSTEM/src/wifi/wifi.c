@@ -91,12 +91,16 @@ void readStringWIFI(char *string)
     char c = ' ';
 
     i = 0;
-    while (c != '\r')
+    int nodata = 0;
+    while (c != '\r' && nodata < 100)
     {
 		if (dataReadyUART(WiFi_LineStatusReg))
 		{
 			c = readCharUART(WiFi_LineStatusReg, WiFi_ReceiverFifo);
 			string[i++] = c;
+			nodata = 0;
+		} else{
+			nodata++;
 		}
     }
 
