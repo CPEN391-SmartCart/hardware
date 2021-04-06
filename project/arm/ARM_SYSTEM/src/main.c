@@ -111,8 +111,8 @@ void handleBTMessage(char*code, char*data)
 			strcat(priceMessage,itemPrice);
 
 			printf("WriteBT: %s\n", itemMessage);
-			printf("WriteBT: %s\n", priceMessage);
 			writeStringBT(itemMessage);
+			printf("WriteBT: %s\n", priceMessage);
 			writeStringBT(priceMessage);
 
 			// TODO: call a function to get the scale weight
@@ -137,6 +137,7 @@ void handleBTMessage(char*code, char*data)
 			itemName = "Cereal";
 			char itemMessage[16] = "in:";
 			strcat(itemMessage,itemName);
+			writeStringBT("in:Cereal");
 
 			// TODO: remove this fake data
 			itemPrice = "499";
@@ -144,7 +145,6 @@ void handleBTMessage(char*code, char*data)
 			char priceMessage[16] = "pq:";
 			strcat(priceMessage,itemPrice);
 
-			writeStringBT("in:Cereal");
 			writeStringBT(priceMessage);
 		}
 
