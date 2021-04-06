@@ -54,11 +54,6 @@ int main(void)
 	initBluetooth();
     char stringBT[1024];
 
-//	for (unsigned i = 0; i<1000; i++)
-//	{
-//		writeStringBT("Hi!");
-//	}
-
     for(;;)
     {
     	//writeStringBT("Hi3!");
@@ -78,8 +73,10 @@ int main(void)
     		  }
     		}
     	}
+
     	for(unsigned int i = 0;i<10000;i++)
     	{
+    		// delay
     		i*=3;
     		i/=3;
     	}
@@ -117,6 +114,22 @@ void handleBTMessage(char*code, char*data)
 			printf("WriteBT: %s\n", priceMessage);
 			writeStringBT(itemMessage);
 			writeStringBT(priceMessage);
+
+			// TODO: call a function to get the scale weight
+			for(unsigned int i = 0;i<100;i++)
+			{
+				for(unsigned int j = 0;j<10000;i++)
+				{
+					// delay
+					j*=3;
+					j/=3;
+				}
+				char* weightInGrams = "5500"; // weight in grams
+				char weightMessage[16] = "sw:";
+				strcat(weightMessage, weightInGrams);
+
+				writeStringBT(weightMessage);
+			}
 		}
 		else
 		{
