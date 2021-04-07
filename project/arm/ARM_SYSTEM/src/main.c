@@ -1,9 +1,3 @@
-/*
- * main.c
- *
- *  Created on: Feb 21, 2021
- *      Author: jared
- */
 
 #include "bluetooth/bluetooth.h"
 #include "wifi/wifi.h"
@@ -19,6 +13,10 @@
 #include "string.h"
 
 #include "objectFactory.h"
+#include "tests/tests.h"
+#include "luaRequests/item_request.h"
+#include "luaRequests/sections_request.h"
+#include "luaRequests/legends_request.h"
 
 #define PATH_GOAL_SET (volatile unsigned int *)(0xFF200200)
 #define PATH_FINISHED (volatile unsigned int *)(0xFF200210)
@@ -43,15 +41,23 @@
 
 #define SRAM (void *) (0xC8000000)
 
+#define DEBUG 0
 
-char* lastScannedBarcode;
+
 char* lastRequestedDestinationBarcode;
+Item lastScannedItem;
 
 void handleBTMessage(char*code, char*data);
+void initSystem();
+void displayStoreMap();
+
+
 
 int main(void)
 {
-	initBluetooth();
+	initSystem();
+	displayStoreMap();
+
     char stringBT[1024];
 
     for(;;)
@@ -74,12 +80,7 @@ int main(void)
     		}
     	}
 
-    	for(unsigned int i = 0;i<10000;i++)
-    	{
-    		// delay
-    		i*=3;
-    		i/=3;
-    	}
+    	delay_us(10000);
     }
 
 	return 0;
@@ -92,20 +93,15 @@ void handleBTMessage(char*code, char*data)
 	char pathPlanningCode[] = "pp";
 	if(!strcmp(code,scanCode)){
 
-		lastScannedBarcode = data;
-		// TODO: look up data and populate itemName and itemPrice
-		// itemLookup(data);
-		char* itemName;
-		char* itemPrice;
-		if(data[0]=='X') //TODO: change to if by weight
+		lastScannedItem = requestItem(data);
+		char* itemName = lastScannedItem.name;
+		char itemPrice[6];
+		sprintf(itemPrice, "%d",lastScannedItem.cost);
+		int isByWeight = lastScannedItem.requires_weighing;
+		if(isByWeight)
 		{
-			// TODO: refactor this to outside of the if statement
-			itemName = "Apple";
 			char itemMessage[16] = "in:";
 			strcat(itemMessage,itemName);
-
-			// TODO: remove this fake data
-			itemPrice = "129";
 
 			char priceMessage[16] = "pw:";
 			strcat(priceMessage,itemPrice);
@@ -118,12 +114,8 @@ void handleBTMessage(char*code, char*data)
 			// TODO: call a function to get the scale weight
 			for(unsigned int i = 0;i<100;i++)
 			{
-				for(unsigned int j = 0;j<10000;i++)
-				{
-					// delay
-					j*=3;
-					j/=3;
-				}
+				delay_us(10000);
+
 				char* weightInGrams = "5500"; // weight in grams
 				char weightMessage[16] = "sw:";
 				strcat(weightMessage, weightInGrams);
@@ -133,14 +125,9 @@ void handleBTMessage(char*code, char*data)
 		}
 		else
 		{
-			// TODO: refactor this to outside of the if statement
-			itemName = "Cereal";
 			char itemMessage[16] = "in:";
 			strcat(itemMessage,itemName);
-			writeStringBT("in:Cereal");
-
-			// TODO: remove this fake data
-			itemPrice = "499";
+			writeStringBT(itemMessage);
 
 			char priceMessage[16] = "pq:";
 			strcat(priceMessage,itemPrice);
@@ -153,8 +140,7 @@ void handleBTMessage(char*code, char*data)
 	}
 
 	if(!strcmp(code,itemCostCode)){
-		// TODO: add item to cart
-		// addItemToCart(lastScannedBarcode, data);
+		AddItemToCart(lastScannedItem);
 	}
 
 	if(!strcmp(code,pathPlanningCode)){
@@ -166,299 +152,41 @@ void handleBTMessage(char*code, char*data)
 
 }
 
-void pathPlanning()
+void initSystem()
 {
-	int i;
-	int j;
-	char test[512];
+	initBluetooth();
 
-	*PATH_GOAL_SET = 0;
+    initWiFi(115200);
+    resetWiFi();
 
-	char* SRAM_COPY = SRAM;
+    printf("Bluetooth, Wifi initialized");
+}
 
-//	short start_node[] = {
-//			0x0050,
-//			0x0030,
-//			0x0017,
-//			0x0000,
-//			0x0000,
-//			0x0023,
-//			0x000A,
-//			0x0013,
-//			0x0002,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
+void displayStoreMap()
+{
+    SectionArr ss = requestSections(1);
+    Section *sections = ss.sections;
 
-//	short start_node[] = {
-//			0x0010,
-//			0x0010,
-//			0x0013,
-//			0x0000,
-//			0x0000,
-//			0x0016,
-//			0x0004,
-//			0x0017,
-//			0x0002,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
+    LegendArr l = requestLegends(1);
+    Legend *legends = l.legends;
 
-	short start_node[] = {
-			0x0015,
-			0x0012,
-			0x003a,
-			0x0000,
-			0x0000,
-			0x0039,
-			0x001f,
-			0x0001,
-			0x0057,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	};
-
-	short goal_node[] = {0x0225,
-			0x01bd,
-			0x0051,
-			0x0000,
-			0x0000,
-			0x0049,
-			0x005f,
-			0x0050,
-			0x0028,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	};
-
-//	short start_node[] = {
-//			0x0000,
-//			0x0000,
-//			0x0050,
-//			0x0000,
-//			0x0000,
-//			0x000d,
-//			0x0026,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-//
-//	short goal_node[] = {
-//			0x0088,
-//			0x015c,
-//			0x0014,
-//			0x0000,
-//			0x0000,
-//			0x0013,
-//			0x0053,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-
-//	short goal_node[] = {
-//			0x0082,
-//			0x0043,
-//			0x0045,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-
-	*PATH_WRITE = 1;
-
-	for (i = 0, j = 0; i < 17; i++)
-	{
-		*(PATH_WRITE_START + i) = start_node[i];
-	}
-
-	for (i = 0, j = 0; i < 17; i++)
-	{
-		*(PATH_WRITE_START + 17 + i) = goal_node[i];
-	}
-
-	*PATH_GOAL_SET = 1;
-//
-//	int path_count = 0;
-//
-//	short x;
-//	short y;
-//
-
-//    int length = *PATH_LENGTH;
-//
-//    for(i = 0, j = 0; j < length * 2 + 2; j++) {
-//        // Get value from *address
-//        printf("t: %x\n", *(PATH_START + i));
-//
-//        if (j % 2 == 0)
-//        {
-//
-//        }
-//
-//        i++;
-//    }
-
-	 short length = *PATH_LENGTH;
-
-	 while (length & 0x8000)
-	 {
-		 length = *PATH_LENGTH;
-	 }
+	int sectionSize = ss.size;
+	int legendSize = l.size;
 
 
-	 path_t coordinates[length + 1];
-
-     for(i = 0, j = 0; i <= 2 * length + 2; i++){
-
-         if(i % 2 == 0) {
-             coordinates[j].x = *(PATH_START + i) + 3;
-         }
-         else {
-             coordinates[j].y = *(PATH_START + i) + 5;
-             j++;
-         }
-     }
-
-     int sectionSize = sizeof(sections) / sizeof(Section);
-	 int legendSize = sizeof(legends) / sizeof(Legend);
-	 int listSize = sizeof(shoppingList) / sizeof(Item);
-
-	 printf("Clearing screen...\n");
-	 Reset();
-
-	 printf("Creating store map...\n");
-	 CreateStoreMap(sectionSize, sections, legendSize, legends);
-	 CreateSidePanel(legendSize, legends);
-
-	 path_t testw[1];
-
-	 DrawItemPath(0, testw, length + 1, coordinates, 0);
-
-	 short goal[] = {
-			0x0088,
-			0x00E6,
-			0x0008,
-			0x0000,
-			0x0000,
-			0x0009,
-			0x0027,
-			0x0007,
-			0x001C,
-			0x0014,
-			0x0061,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	 };
-
-		*PATH_WRITE = 1;
-
-		for (i = 0, j = 0; i < 17; i++)
-		{
-			*(PATH_WRITE_START + i) = start_node[i];
-		}
-
-		for (i = 0, j = 0; i < 17; i++)
-		{
-			*(PATH_WRITE_START + 17 + i) = goal[i];
-		}
-
-		*PATH_GOAL_SET = 1;
-	//
-	//	int path_count = 0;
-	//
-	//	short x;
-	//	short y;
-	//
-
-	//    int length = *PATH_LENGTH;
-	//
-	//    for(i = 0, j = 0; j < length * 2 + 2; j++) {
-	//        // Get value from *address
-	//        printf("t: %x\n", *(PATH_START + i));
-	//
-	//        if (j % 2 == 0)
-	//        {
-	//
-	//        }
-	//
-	//        i++;
-	//    }
-
-		 short length2 = *PATH_LENGTH;
-
-		 while (length2 & 0x8000)
-		 {
-			 length2 = *PATH_LENGTH;
-		 }
+    if(DEBUG){
+        printf("   x      y    height width colour\n");
+        for(int i = 0; i < sectionSize; i++){
+            printf("%5d %5d %5d %5d %5d \n", sections[i].originX, sections[i].originY, sections[i].sectionWidth, sections[i].sectionHeight, sections[i].aisleColor);
+        }
+    }
 
 
-		 path_t coordinates2[length2 + 1];
+	printf("Clearing screen...\n");
+	Reset();
 
-	     for(i = 0, j = 0; i <= 2 * length2 + 2; i++){
+	printf("Creating store map...\n");
+	CreateStoreMap(sectionSize, sections, legendSize, legends);
+	CreateSidePanel(legendSize, legends);
 
-	         if(i % 2 == 0) {
-	             coordinates2[j].x = *(PATH_START + i) + 3;
-	         }
-	         else {
-	             coordinates2[j].y = *(PATH_START + i) + 5;
-	             j++;
-	         }
-	     }
-
-		 DrawItemPath(0, testw, length2 + 1, coordinates2, 22);
 }
