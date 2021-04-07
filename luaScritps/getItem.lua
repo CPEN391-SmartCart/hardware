@@ -28,7 +28,7 @@ end
 -- t = sjson.decode('{"barcode":"XGAO9797","section_id":5,"name":"oysters","cost":56.5,"description":"Snack","requires_weighing":1,"x":89,"y":196,"created_at":"2021-03-14T04:07:27.325Z","updated_at":"2021-03-14T04:07:27.325Z"}')
 
 print(args[1])--TODO : implement args
-http.get("http://cpen391-smartcart.herokuapp.com/items/"..args[1], nil, function(code, data)
+http.get("http://cpen391-smartcart.herokuapp.com/items/barcode"..args[1], nil, function(code, data)
     if (code < 0) then
 		uart.write(0, 'STRT\n')
 		uart.write(0,'EXIT1\0')
