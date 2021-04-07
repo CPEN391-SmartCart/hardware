@@ -58,7 +58,7 @@ int main(void)
 	initSystem();
 	displayStoreMap();
 
-    printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
+    if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
     char stringBT[1024];
 
@@ -161,7 +161,11 @@ void initSystem()
     initWiFi(115200);
     resetWiFi();
 
-    printf("Bluetooth, Wifi initialized");
+    //needs to be after wifi reset
+    enableUARTInterrupt(WiFi_InterruptEnableReg);
+
+
+    printf("Bluetooth, Wifi initialized\n");
 }
 
 void displayStoreMap()
