@@ -124,7 +124,7 @@ int writeAndReadResponse(char *write, char *read) {
 		if(WIFI_ISR_CONTEXT->doneRead == 1) {
 			done_or_timeout = 1;
 		} else if (num_waits++ >= 500) {
-			printf("\n TIMEOUT ON RECEIVING RESPONSE\N");
+			printf("\n TIMEOUT ON RECEIVING RESPONSE\n");
 			done_or_timeout = 1;
 			char error_resp[50];
 			memcpy(error_resp, WIFI_ISR_CONTEXT->BUFFER, 49);

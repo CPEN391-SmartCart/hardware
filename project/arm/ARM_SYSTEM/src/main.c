@@ -58,6 +58,8 @@ int main(void)
 	initSystem();
 	displayStoreMap();
 
+    printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
+
     char stringBT[1024];
 
     for(;;)
