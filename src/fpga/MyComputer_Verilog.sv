@@ -8,25 +8,6 @@ typedef struct packed {
 	logic [15:0] y;
 } coord;
 
-typedef struct packed {
-	logic [15:0] x;
-	logic [15:0] y;
-	logic [15:0] node_id;
-	logic [15:0] parent_node_id;
-	logic [15:0] current_cost;
-	logic [15:0] child_one_id;
-	logic [15:0] distance_child_one;
-	logic [15:0] child_two_id;
-	logic [15:0] distance_child_two;
-	logic [15:0] child_three_id;
-	logic [15:0] distance_child_three;
-	logic [15:0] child_four_id;
-	logic [15:0] distance_child_four;
-	logic [15:0] child_five_id;
-	logic [15:0] distance_child_five;
-	logic [15:0] child_six_id;
-	logic [15:0] distance_child_six;
-} node_info;
 
 //////////////////////////////////////////////////////////////////////////////////
 // Top level WHOLE system not just Qsys generated HPS system
@@ -164,6 +145,8 @@ module MyComputer_Verilog (
 		output HPS_USB_STP 
 	 );
 
+	localparam MAX_NODES = 100;
+
 ///////////////////////////////////////////////////////////////////////////////////////////
 //  signal declarations for temporary signals/wires to connect sub-systems together
 ///////////////////////////////////////////////////////////////////////////////////////////
@@ -214,53 +197,135 @@ module MyComputer_Verilog (
 	logic [5:0] sram_address;
 	Edge_Detector goal_edge(.clk(CLOCK_50), .async_sig(path_goal_set), .out_sync_sig(get_goal_node));
 	
-	logic [271:0] start_data;
-	logic [271:0] goal_data;
 	
-	node_info start_node;
-	node_info goal_node;
+	//DIJKSTARAA
 	
-	assign start_node = '{start_data[271:256], start_data[255:240], start_data[239:224], start_data[223:208], start_data[207:192], start_data[191:176], start_data[175:160], start_data[159:144], start_data[143:128], start_data[127:112], start_data[111:96], start_data[95:80], start_data[79:64], start_data[63:48], start_data[47:32], start_data[31:16], start_data[15:0]};
+	logic clk;
+	logic start;
+	logic reset;
+
+	assign clk = CLOCK_50;
+
+	assign reset = 1'b0;
+
+	logic [8:0] start_id;
+
+	logic [13:0] table_data [MAX_NODES-1:0];
+
+	logic write_enable [MAX_NODES-1:0];
+	logic [8:0] write_address [MAX_NODES-1:0];
+	logic [13:0] write_data [MAX_NODES-1:0];
+	logic [8:0] read_address [MAX_NODES-1:0];
+
+	logic [13:0] read_data [MAX_NODES-1:0];
+
+	Dijkstra_Table #(.MAX_NODES(MAX_NODES)) dijkstra_table(
+		.clk(clk),
+		.write_enable(write_enable),
+		.write_address(write_address),
+		.write_data(write_data),
+		.read_address(read_address),
+		.read_data(read_data)
+	);
+
+	logic table_initialized;
+
+	// HPS_Bridge_Map #(.MAX_NODES(MAX_NODES)) map_bridge(
+	// 	.clk(clk),
+	// 	.reset           (reset),
+	// 	.io_enable       (IO_Enable_L_WIRE),
+	// 	.write_enable    (IO_RW_WIRE),
+	// 	.address   		 (IO_Address_WIRE),
+	// 	.readdata        (IO_Write_Data_WIRE),
+	// 	.write_enable_out(write_enable),
+	// 	.write_address   (write_address),
+	// 	.write_data      (write_data),
+	// 	.finished        (table_initialized)
+	// );
+	Dijkstra_Table_Init #(.MAX_NODES(MAX_NODES)) dijkstra_table_init(
+		.clk(clk),
+		.reset(reset),
+		.start(get_goal_node),
+		.write_enable(write_enable),
+		.write_address(write_address),
+		.write_data(write_data),
+		.finished(table_initialized)
+	);
+
+
+	logic [13:0] distance [MAX_NODES-1:0];
+	logic shortest [MAX_NODES-1:0];
+	logic [8:0] neighbour [MAX_NODES-1:0];
+
+	logic init_finished;
+	logic [8:0] init_table_read_address [MAX_NODES-1:0];
 	
-	assign goal_node = '{goal_data[271:256], goal_data[255:240], goal_data[239:224], goal_data[223:208], goal_data[207:192], goal_data[191:176], goal_data[175:160], goal_data[159:144], goal_data[143:128], goal_data[127:112], goal_data[111:96], goal_data[95:80], goal_data[79:64], goal_data[63:48], goal_data[47:32], goal_data[31:16], goal_data[15:0]};
-	
-	HPS_Bridge_Mem_FSM bridge(
-		.clk(CLOCK_50), 
-		.reset(~KEY[2]),
-		.get_goal_node(get_goal_node), 
-		.io_enable(IO_Enable_L_WIRE),
-		.write_enable(IO_RW_WIRE),
-		.address(IO_Address_WIRE),
-		.readdata(IO_Write_Data_WIRE), 
-		.start_data(start_data),
-		.goal_data(goal_data),
-		.finished(start_pulse)
+	Dijkstra_Init #(.MAX_NODES(MAX_NODES)) init(
+		.clk(clk),
+		.reset(reset),
+		.start(table_initialized),
+		.start_id(start_id),
+		.table_data(read_data),
+		.distance(distance),
+		.shortest(shortest),
+		.neighbour(neighbour),
+		.read_address(init_table_read_address),
+		.in_progress(init_in_progress),
+		.finished(init_finished)
+	);
+
+	logic [8:0] loop_table_read_address [MAX_NODES-1:0];
+	logic [13:0] distance_out [MAX_NODES-1:0];
+	logic [8:0] neighbour_out [MAX_NODES-1:0];
+	logic loop_in_progress;
+	logic loop_finished;
+
+	Big_Loop #(.MAX_NODES(MAX_NODES)) loop(
+		.clk(clk),
+		.reset(reset),
+		.start(init_finished),
+		.table_data(read_data),
+		.shortest(shortest),
+		.distance(distance),
+		.neighbour(neighbour),
+		.table_read_address(loop_table_read_address),
+		.distance_out(distance_out),
+		.neighbour_out(neighbour_out),
+		.in_progress(loop_in_progress),
+		.finished(loop_finished)
 	);
 	
-	coord path [100];
-	logic [15:0] index;
-	logic success;
+	always_ff @(posedge clk)
+	begin
+		if (get_goal_node)
+			path_finished <= 1'b0;
+		else if (loop_finished)
+			path_finished <= 1'b1;
+	end
+
+	assign read_address = init_in_progress ? init_table_read_address : loop_table_read_address;
 	
-	Dijkstra #(.MAX_NODES(100)) dijkstra(
-		.clk(CLOCK_50), 
-		.reset(~KEY[2]), 
-		.start(start_pulse), 
-		.start_node(start_node), 
-		.goal_node(goal_node),
-		.path(path),
-		.i(index),
-		.success(success)
-	);
-	
-	Path_Writer writer(
-		.success(success),
-		.path(path),
-		.length(index),
-		.address(IO_Address_WIRE),
-		.io_enable(IO_Enable_L_WIRE),
-		.write_enable(IO_RW_WIRE),
-		.data_out(IO_Read_Data_WIRE)
-	);
+
+	logic [8:0] neighbour_hps;
+	logic [8:0] neighbour_id;
+
+	assign neighbour_hps = neighbour_out[neighbour_id];
+
+	//DISJAKTRA END
+
+	//pathwriteER!!
+
+	// Path_Writer writer(
+	// 	.clk  (clk),
+	// 	.neighbour(neighbour_out),
+	// 	.address(IO_Address_WIRE),
+	// 	.io_enable(IO_Enable_L_WIRE),
+	// 	.write_enable(IO_RW_WIRE),
+	// 	.data_in(IO_Write_Data_WIRE),
+	// 	.data_out(IO_Read_Data_WIRE)
+	// );
+
+	//patehraewrriter end!
 	
 	//logic sram_write;
 	
@@ -281,7 +346,11 @@ module MyComputer_Verilog (
 			.sram_goal_readdata					(sram_readdata),
 			.sram_goal_writedata					(sram_writedata),
 			.sram_goal_byteenable				(2'b11),*/
+			.neighbour_id_export            (neighbour_id),
+			.neighbour_out_export           (neighbour_hps),
+			.start_node_id_export           (start_id),
 			.path_goal_set_export				(path_goal_set),
+			.path_finished_export				(path_finished),
 			.hx711_sck_export						(hx711_sck),
 			.hx711_dt_export						(hx711_dt),
 			.wifi_rst_export						(wifi_rst),
@@ -383,8 +452,7 @@ module MyComputer_Verilog (
 			.system_pll_ref_clk_clk          (CLOCK_50),          				//   system_pll_ref_clk.clk
 			.system_pll_ref_reset_reset      (0)       								// system_pll_ref_reset.reset
 		);
-
- 
+		
 	  ///////////////////////////////////////////////////////////////////////////////////////////////
 	  // Instantiate 3 instances of the seven seg decoders
 	  // one for hex display 0 and 1

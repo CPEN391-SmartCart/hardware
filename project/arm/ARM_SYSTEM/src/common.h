@@ -41,4 +41,11 @@ typedef struct Section
     char* key;
 } Section;
 
+typedef struct Coord
+{
+    short x;
+    short y;
+} coord_t;
+
+
 #endif /* COMMON_H_ */

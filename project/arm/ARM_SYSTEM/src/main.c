@@ -20,6 +20,10 @@
 
 #include "objectFactory.h"
 
+#include "imu/imu.h"
+
+#include "pathfinding/dijsktra.h"
+
 #define PATH_GOAL_SET (volatile unsigned int *)(0xFF200200)
 #define PATH_FINISHED (volatile unsigned int *)(0xFF200210)
 #define ACTUAL_COORD (volatile unsigned int *)(0xFF200240)
@@ -35,16 +39,13 @@
 #define GraphicsColourReg               (*(volatile unsigned short int *)(0xFF21000E))
 #define GraphicsBackGroundColourReg     (*(volatile unsigned short int *)(0xFF210010))
 
-#define PATH_LENGTH	(volatile unsigned short int *)(0xFF210100)
-#define PATH_START	(volatile unsigned short int *)(0xFF210102)
+#define MAP_INIT_NODE (volatile unsigned int *)(0xFF210100)
+#define MAP_INIT_WRITE (volatile unsigned int *)(0xFF210402)
 
-#define PATH_WRITE (volatile unsigned short int *)(0xFF210398)
-#define PATH_WRITE_START (volatile unsigned short int *)(0xFF210400)
-
-
-
-#define SRAM (void *) (0xC8000000)
-
+#define START_NODE_ID (volatile unsigned int *)(0xFF200210)
+#define NEIGHBOUR_ID (volatile unsigned int *)(0xFF200230)
+#define NEIGHBOUR (volatile unsigned int *)(0xFF200220)
+#define PATH_FINISHED (volatile unsigned int *)(0xFF200240)
 
 int main(void)
 {
@@ -52,203 +53,42 @@ int main(void)
 	int j;
 	char test[512];
 
-	*PATH_GOAL_SET = 0;
+	int start_node_id = 83;
+	int goal_node_id = 95;
+	coord_t path[10];
 
-	char* SRAM_COPY = SRAM;
+	int length = generate_path(start_node_id, goal_node_id, path);
 
-//	short start_node[] = {
-//			0x0050,
-//			0x0030,
-//			0x0017,
-//			0x0000,
-//			0x0000,
-//			0x0023,
-//			0x000A,
-//			0x0013,
-//			0x0002,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-
-//	short start_node[] = {
-//			0x0010,
-//			0x0010,
-//			0x0013,
-//			0x0000,
-//			0x0000,
-//			0x0016,
-//			0x0004,
-//			0x0017,
-//			0x0002,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-
-	short start_node[] = {
-			0x0015,
-			0x0012,
-			0x003a,
-			0x0000,
-			0x0000,
-			0x0039,
-			0x001f,
-			0x0001,
-			0x0057,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	};
-
-	short goal_node[] = {0x0225,
-			0x01bd,
-			0x0051,
-			0x0000,
-			0x0000,
-			0x0049,
-			0x005f,
-			0x0050,
-			0x0028,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	};
-
-//	short start_node[] = {
-//			0x0000,
-//			0x0000,
-//			0x0050,
-//			0x0000,
-//			0x0000,
-//			0x000d,
-//			0x0026,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-//
-//	short goal_node[] = {
-//			0x0088,
-//			0x015c,
-//			0x0014,
-//			0x0000,
-//			0x0000,
-//			0x0013,
-//			0x0053,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-
-//	short goal_node[] = {
-//			0x0082,
-//			0x0043,
-//			0x0045,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000,
-//			0x0000
-//	};
-
-	*PATH_WRITE = 1;
-
-	for (i = 0, j = 0; i < 17; i++)
+	for (i = 0; i < length; i++)
 	{
-		*(PATH_WRITE_START + i) = start_node[i];
+		printf("nicea!: x: %d, y: %d\n", path[i].x, path[i].y);
 	}
 
-	for (i = 0, j = 0; i < 17; i++)
-	{
-		*(PATH_WRITE_START + 17 + i) = goal_node[i];
-	}
-
-	*PATH_GOAL_SET = 1;
+//	uint8_t devid;
+//	int16_t mg_per_lsb = 4;
+//	int16_t XYZ[3];
 //
-//	int path_count = 0;
+//	pinmux_config();
+//	I2C0_init();
 //
-//	short x;
-//	short y;
+//	ADXL345_REG_READ(0x00, &devid);
 //
-
-//    int length = *PATH_LENGTH;
+//	if (devid == 0xE5) {
+//		ADXL345_init();
 //
-//    for(i = 0, j = 0; j < length * 2 + 2; j++) {
-//        // Get value from *address
-//        printf("t: %x\n", *(PATH_START + i));
-//
-//        if (j % 2 == 0)
-//        {
-//
-//        }
-//
-//        i++;
-//    }
-
-	 short length = *PATH_LENGTH;
-
-	 while (length & 0x8000)
-	 {
-		 length = *PATH_LENGTH;
-	 }
-
-
-	 path_t coordinates[length + 1];
-
-     for(i = 0, j = 0; i <= 2 * length + 2; i++){
-
-         if(i % 2 == 0) {
-             coordinates[j].x = *(PATH_START + i) + 3;
-         }
-         else {
-             coordinates[j].y = *(PATH_START + i) + 5;
-             j++;
-         }
-     }
+//		while (TRUE)
+//		{
+//			if (ADXL345_is_data_ready())
+//			{
+//				ADXL345_XYZ_read(XYZ);
+//				printf("X=%d mg, Y=%d mg, Z=%d mg\n", XYZ[0]*mg_per_lsb, XYZ[1]*mg_per_lsb, XYZ[2]*mg_per_lsb);
+//			}
+//		}
+//	}
+//	else
+//	{
+//		printf("Incorrect device ID\n");
+//	}
 
      int sectionSize = sizeof(sections) / sizeof(Section);
 	 int legendSize = sizeof(legends) / sizeof(Legend);
@@ -261,86 +101,14 @@ int main(void)
 	 CreateStoreMap(sectionSize, sections, legendSize, legends);
 	 CreateSidePanel(legendSize, legends);
 
-	 path_t testw[1];
+	 coord_t old[10];
 
-	 DrawItemPath(0, testw, length + 1, coordinates, 0);
+	 DrawItemPath(0, old, length, path, 0);
+	 while (TRUE)
+	 {
 
-	 short goal[] = {
-			0x0088,
-			0x00E6,
-			0x0008,
-			0x0000,
-			0x0000,
-			0x0009,
-			0x0027,
-			0x0007,
-			0x001C,
-			0x0014,
-			0x0061,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000,
-			0x0000
-	 };
+	 }
 
-		*PATH_WRITE = 1;
-
-		for (i = 0, j = 0; i < 17; i++)
-		{
-			*(PATH_WRITE_START + i) = start_node[i];
-		}
-
-		for (i = 0, j = 0; i < 17; i++)
-		{
-			*(PATH_WRITE_START + 17 + i) = goal[i];
-		}
-
-		*PATH_GOAL_SET = 1;
-	//
-	//	int path_count = 0;
-	//
-	//	short x;
-	//	short y;
-	//
-
-	//    int length = *PATH_LENGTH;
-	//
-	//    for(i = 0, j = 0; j < length * 2 + 2; j++) {
-	//        // Get value from *address
-	//        printf("t: %x\n", *(PATH_START + i));
-	//
-	//        if (j % 2 == 0)
-	//        {
-	//
-	//        }
-	//
-	//        i++;
-	//    }
-
-		 short length2 = *PATH_LENGTH;
-
-		 while (length2 & 0x8000)
-		 {
-			 length2 = *PATH_LENGTH;
-		 }
-
-
-		 path_t coordinates2[length2 + 1];
-
-	     for(i = 0, j = 0; i <= 2 * length2 + 2; i++){
-
-	         if(i % 2 == 0) {
-	             coordinates2[j].x = *(PATH_START + i) + 3;
-	         }
-	         else {
-	             coordinates2[j].y = *(PATH_START + i) + 5;
-	             j++;
-	         }
-	     }
-
-		 DrawItemPath(0, testw, length2 + 1, coordinates2, 22);
 	return 0;
 }
 

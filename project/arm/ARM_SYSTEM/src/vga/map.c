@@ -92,17 +92,17 @@ void ShowNextItem(char* itemName){
     DrawFontLine(SIDEPANEL_HEADER_X, 368, BLACK, WHITE, itemName, 0, 0);
 }
 
-void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour){
+void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour){
     int i;
-    path_t corner0, corner1;
+    coord_t corner0, corner1;
 
     // Clear old path
     for(i = 0; i < oldPathSize - 1; i++){
         corner0 = oldPath[i];
         corner1 = oldPath[i + 1];
 
-        DrawAnyLine(corner0.x, corner0.y, corner1.x, corner1.y, WHITE);
-        DrawAnyLine(corner0.x + 1, corner0.y + 1, corner1.x + 1, corner1.y + 1, WHITE);
+        DrawAnyLine(corner0.x, corner0.y + 5, corner1.x, corner1.y + 5, WHITE);
+        DrawAnyLine(corner0.x + 1, corner0.y + 6, corner1.x + 1, corner1.y + 6, WHITE);
     }
 
     // Draw new path
@@ -110,8 +110,8 @@ void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t new
         corner0 = newPath[i];
         corner1 = newPath[i + 1];
 
-        DrawAnyLine(corner0.x, corner0.y, corner1.x, corner1.y, colour);
-        DrawAnyLine(corner0.x + 1, corner0.y + 1, corner1.x + 1, corner1.y + 1, colour);
+        DrawAnyLine(corner0.x, corner0.y + 5, corner1.x, corner1.y + 5, colour);
+        DrawAnyLine(corner0.x + 1, corner0.y + 6, corner1.x + 1, corner1.y + 6, colour);
     }
 }
 

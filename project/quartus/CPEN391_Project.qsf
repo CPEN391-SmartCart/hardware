@@ -966,6 +966,10 @@ set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
 set_global_assignment -name OPTIMIZATION_MODE BALANCED
 set_global_assignment -name OPTIMIZATION_TECHNIQUE SPEED
 set_global_assignment -name SYNTHESIS_EFFORT FAST
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_global_assignment -name SYSTEMVERILOG_FILE ../../src/fpga/pathfinding_new/HPS_Bridge_Map.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../src/fpga/pathfinding_new/Dijkstra_REAL.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../src/fpga/pathfinding_new/Dijkstra_RAM.sv
 set_global_assignment -name QIP_FILE initial_nodes_mem.qip
 set_global_assignment -name SYSTEMVERILOG_FILE ../../src/fpga/MyComputer_Verilog.sv
 set_global_assignment -name QIP_FILE node_mem.qip

@@ -335,12 +335,12 @@ module Dijkstra
 	
 	
 	logic explored_write;
-	logic [8:0] explored_write_address;
+	logic [11:0] explored_write_address;
 	node_info explored_write_data;
-	logic [8:0] explored_read_address;
+	logic [11:0] explored_read_address;
 	node_info explored_node;
 	
-	Explored_RAM #(.MAX_NODES(511)) explored_mem(
+	Explored_RAM #(.MAX_NODES(2047)) explored_mem(
 		.clk(clk),
 		.write_enable(explored_write),
 		.write_address(explored_write_address),
@@ -353,9 +353,9 @@ module Dijkstra
 	logic explored_child_find;
 	logic explored_child;
 	logic explored_done;
-	logic [8:0] explored_child_read_address;
+	logic [11:0] explored_child_read_address;
 	
-	Explored_Child #(.MAX_NODES(511)) explored_child_mem(
+	Explored_Child #(.MAX_NODES(2047)) explored_child_mem(
 		.clk(clk),
 		.reset(reset),
 		.find(explored_child_find),
@@ -370,10 +370,10 @@ module Dijkstra
 	logic explored_parent_find;
 	node_info parent_node;
 	logic finding_parent;
-	logic [8:0] explored_parent_read_address;
+	logic [11:0] explored_parent_read_address;
 	logic explored_parent_done;
 	
-	Explored_Parent #(.MAX_NODES(511)) explored_parent_mem(
+	Explored_Parent #(.MAX_NODES(2047)) explored_parent_mem(
 		.clk(clk),
 		.reset(reset),
 		.find(explored_parent_find),
@@ -383,6 +383,25 @@ module Dijkstra
 		.read_address(explored_parent_read_address),
 		.parent_node(parent_node),
 		.done(explored_parent_done)
+	);
+
+
+	logic find_explored_address;
+	logic finding_explored_address;
+	logic [11:0] explored_node_read_address;
+	logic [11:0] explored_address;
+	logic explored_node_done;
+
+	Explored_Index #(.MAX_NODES(2047)) explored_index(
+		.clk(clk),
+		.reset(reset),
+		.find(find_explored_address),
+		.current_node(current_node),
+		.read_node(explored_node),
+		.finding_explored_index(finding_explored_address),
+		.read_address(explored_node_read_address),
+		.explored_address(explored_address),
+		.done(explored_node_done)
 	);
 	
 	assign explored_read_address = finding_parent ? explored_parent_read_address : explored_child_read_address;
@@ -424,7 +443,7 @@ module Dijkstra
 						
 				IS_GOAL:
 					if (current_node.x == goal_node.x && current_node.y == goal_node.y)
-						state <= SUCCESS;
+						state <= LOOP;
 					else
 						state <= EXPLORE;
 				
