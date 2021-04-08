@@ -66,7 +66,8 @@ int main(void)
     {
     	//writeStringBT("Hi3!");
     	readStringBT(stringBT);
-    	char* stringTok = stringBT;
+    	char stringTok[1024];
+    	strcpy(stringTok,stringBT);
     	if(stringTok[0]!='\0'){
     		printf ("original: %s\n",stringTok);
     		char* code = strtok (stringTok,":");
@@ -93,25 +94,27 @@ void handleBTMessage(char*code, char*data)
 	char scanCode[] = "sc";
 	char itemCostCode[] = "ic";
 	char pathPlanningCode[] = "pp";
+	char sendMessage[1024] = "in:";
+
 	if(!strcmp(code,scanCode)){
 
-		lastScannedItem = requestItem(data);
+		//Temporarily here to test around barcode data bug
+		lastScannedItem = requestItem("NTSN6378");
+//		lastScannedItem = requestItem(data);
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
-		sprintf(itemPrice, "%d",lastScannedItem.cost);
+
+		FloatToCostString(lastScannedItem.cost, itemPrice, 2);
 		int isByWeight = lastScannedItem.requires_weighing;
 		if(isByWeight)
 		{
-			char itemMessage[16] = "in:";
-			strcat(itemMessage,itemName);
 
-			char priceMessage[16] = "pw:";
-			strcat(priceMessage,itemPrice);
+			strcat(sendMessage, itemName);
+			strcat(sendMessage, " | pw:");
+			strcat(sendMessage, itemPrice);
 
-			printf("WriteBT: %s\n", itemMessage);
-			writeStringBT(itemMessage);
-			printf("WriteBT: %s\n", priceMessage);
-			writeStringBT(priceMessage);
+			printf("WriteBT: %s\n", sendMessage);
+			delay_us(10000);
 
 			// TODO: call a function to get the scale weight
 			for(unsigned int i = 0;i<100;i++)
@@ -119,22 +122,20 @@ void handleBTMessage(char*code, char*data)
 				delay_us(10000);
 
 				char* weightInGrams = "5500"; // weight in grams
-				char weightMessage[16] = "sw:";
-				strcat(weightMessage, weightInGrams);
-
-				writeStringBT(weightMessage);
+				strcat(sendMessage, " | sw:");
+				strcat(sendMessage, weightInGrams);
 			}
+
+			writeStringBT(sendMessage);
 		}
 		else
 		{
-			char itemMessage[16] = "in:";
-			strcat(itemMessage,itemName);
-			writeStringBT(itemMessage);
+			delay_us(10000);
 
-			char priceMessage[16] = "pq:";
-			strcat(priceMessage,itemPrice);
-
-			writeStringBT(priceMessage);
+			strcat(sendMessage, itemName);
+			strcat(sendMessage, " | pq:");
+			strcat(sendMessage, itemPrice);
+			writeStringBT(sendMessage);
 		}
 
 		// TODO: Path plan with the barcodes
