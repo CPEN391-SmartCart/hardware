@@ -6,17 +6,18 @@ local function parseItem(response)
 
 	t = sjson.decode(response)
 
-	barcode = t["barcode"]
-	section_id = t["section_id"]
-	name = t["name"]
-	cost = t["cost"]
-	description = t["description"]
-	requires_weighing = t["requires_weighing"]
-	xPosition = t["x"]
-	yPosition = t["y"]
+	local barcode = t["barcode"]
+	local section_id = t["section_id"]
+	local name = t["name"]
+	local cost = t["cost"]
+	local description = t["description"]
+	local requires_weighing = t["requires_weighing"]
+	local xPosition = t["x"]
+	local yPosition = t["y"]
+	local weight = t["weight"]
+	
 
-
-	x = table.concat({barcode, section_id, name, cost, description,requires_weighing, xPosition, yPosition}, '|')
+	local x = table.concat({barcode, section_id, name, cost, description,requires_weighing, xPosition, yPosition,weight}, '|')
 
 	uart.write(0, 'STRT\n')
 	uart.write(0,x)

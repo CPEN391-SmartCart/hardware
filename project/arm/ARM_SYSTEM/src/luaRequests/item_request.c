@@ -11,9 +11,7 @@ static Item getItemFromResponse(char *read){
 
 	if(!read){
 		strcpy(item.barcode, "DEADBEEF");
-		item.cost = 0;
 		strcpy(item.name, "DEADBEEF");
-		item.section_id = 0;
 		return item;
 	}
 
@@ -28,17 +26,24 @@ static Item getItemFromResponse(char *read){
 	item.requires_weighing = atoi(strtok(NULL, "|"));
 	item.x = atoi(strtok(NULL, "|"));
 	item.y = atoi(strtok(NULL, "|"));
+	item.node_id = atoi(strtok(NULL, "|"));
 	item.aisleColor = 0;
 
-	char* end = strtok(NULL, "|");
 
-	if(end){
-		printf("\nERROR parsing response: no end found. \n");
+
+	char* optional_weight = strtok(NULL, "|");
+
+	if(optional_weight != NULL){
+		item.weight_g = atof(strtok(NULL, "|"));
 	}
+
 	return item;
 }
 
-Item requestItem(char *barcode){
+/*
+ * ec = 0 means success
+ */
+Item requestItem(char *barcode, int* ec){
 	char command[50];
 	sprintf(command, BARCODE_SCRIPT_CMD_FORMAT, barcode);
 
@@ -46,9 +51,7 @@ Item requestItem(char *barcode){
 		printf("\nfailed to allocate space for item request\n");
 		struct Item item;
 		strcpy(item.barcode, "DEADBEEF");
-		item.cost = 0;
 		strcpy(item.name, "DEADBEEF");
-		item.section_id = 0;
 		return item;
 	}
 
@@ -56,9 +59,19 @@ Item requestItem(char *barcode){
 
 	int status = writeAndReadResponse(command, response);
 
+	*ec = status;
 	if(status != 0){
 		printf("\n ERROR: Lua Script returned EXIT%c \n", status);
+		struct Item item;
+		strcpy(item.barcode, "DEADBEEF");
+		strcpy(item.name, "DEADBEEF");
+		return item;
 	}
 
-	return getItemFromResponse(response);
+
+	printf("\n SUCCESS: item retrieved successfully (EXIT%d) \n", status);
+
+
+	Item ret_val= getItemFromResponse(response);
 }
+

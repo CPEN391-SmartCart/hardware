@@ -95,11 +95,17 @@ void handleBTMessage(char*code, char*data)
 	char itemCostCode[] = "ic";
 	char pathPlanningCode[] = "pp";
 	char sendMessage[1024] = "in:";
+	int *request_error_code; //see error code descriptions in common.h
+
 
 	if(!strcmp(code,scanCode)){
 
 		//Temporarily here to test around barcode data bug
-		lastScannedItem = requestItem("NTSN6378");
+		lastScannedItem = requestItem("NTSN6378", request_error_code);
+
+		if(request_error_code != LUA_EXIT_SUCCESS){
+			//todo : handle retrieivng item error
+		}
 //		lastScannedItem = requestItem(data);
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
@@ -171,10 +177,11 @@ void initSystem()
 
 void displayStoreMap()
 {
-    SectionArr ss = requestSections(1);
+	int *request_ec;
+    SectionArr ss = requestSections(1, request_ec);
     Section *sections = ss.sections;
 
-    LegendArr l = requestLegends(1);
+    LegendArr l = requestLegends(1, request_ec);
     Legend *legends = l.legends;
 
 	int sectionSize = ss.size;

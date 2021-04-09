@@ -15,6 +15,13 @@
 
 #define NODE_INFO_ARRAY_SIZE 17
 
+
+#define LUA_EXIT_SUCCESS 0
+#define LUA_HTTP_ERROR 1
+#define LUA_RESPONSE_ITERATION_OVERFLOW 2
+#define LUA_RESPONSE_TIMEOUT 4
+#define LUA_RESPONSE_TBC 9
+
 typedef struct NodeInfo {
 	short nodeInfo[NODE_INFO_ARRAY_SIZE];
 } NodeInfo;
@@ -31,6 +38,8 @@ typedef struct Item
     int x;
     int y;
     int aisleColor;
+    double weight_g;
+    int node_id;
 } Item;
 
 typedef struct Legend

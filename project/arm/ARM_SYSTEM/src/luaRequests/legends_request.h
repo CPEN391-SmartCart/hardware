@@ -16,7 +16,7 @@
 
 static Legend getLegendFromResponse(char *response);
 static int getFirstLegendFromResponse(char *read, Legend *Legend_result);
-LegendArr requestLegends(int store_id);
+LegendArr requestLegends(int store_id, int* ec);
 
 
 #endif /* LUAREQUESTS_LEGENDS_REQUEST_H_ */

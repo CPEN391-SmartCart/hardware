@@ -7,6 +7,7 @@
 #include  "socal/hps.h"
 #include  "alt_interrupt.h"
 #include "alt_int_device.h"
+#include "../common.h"
 
 #define WiFi_ReceiverFifo ((volatile unsigned char *)(0xFF211010))
 #define WiFi_TransmitterFifo ((volatile unsigned char *)(0xFF211010))
@@ -27,10 +28,6 @@
 #define LUA_MSG_START "STRT\n"
 #define LUA_MSG_END_SUCCESS "EXIT0\0" //lua will explicitly send a null terminated character at the end, which is included here
 
-#define LUA_EXIT_SUCCESS 0
-#define LUA_HTTP_ERROR 1
-#define LUA_RESPONSE_ITERATION_OVERFLOW 2
-#define LUA_RESPONSE_TBC 9
 
 typedef struct wifi_context {
 	char *BUFFER;

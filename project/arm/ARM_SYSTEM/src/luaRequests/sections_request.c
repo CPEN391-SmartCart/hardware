@@ -55,7 +55,7 @@ static int getFirstSectionFromResponse(char *read, Section *section_result){
 /*
  * returns malloaced array of Sections created from response. pls free!
  */
-SectionArr requestSections(int store_id){
+SectionArr requestSections(int store_id, int *ec){
 	char command[50];
 	Section first_section;
 
@@ -71,6 +71,7 @@ SectionArr requestSections(int store_id){
 	char response[100];
 
 	int status = writeAndReadResponse(command, response);
+	*ec = status;
 
 	int size;
 
@@ -104,6 +105,7 @@ SectionArr requestSections(int store_id){
 	section_array.size = size;
 	section_array.sections = sections;
 
+	*ec = status;
 	return section_array;
 }
 
