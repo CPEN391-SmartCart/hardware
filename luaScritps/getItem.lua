@@ -4,7 +4,7 @@ collectgarbage()
 
 local function parseItem(response)
 
-	t = sjson.decode(response)
+	t = sjson.decode(response, {null = 'null'})
 
 	local barcode = t["barcode"]
 	local section_id = t["section_id"]
@@ -14,7 +14,12 @@ local function parseItem(response)
 	local requires_weighing = t["requires_weighing"]
 	local xPosition = t["x"]
 	local yPosition = t["y"]
-	local weight = t["weight"]
+	local weight
+	if (t["weight"] ~= 'null') then 
+		weight = t["weight"]
+	else 
+		weight = '0'
+	end
 	
 
 	local x = table.concat({barcode, section_id, name, cost, description,requires_weighing, xPosition, yPosition,weight}, '|')

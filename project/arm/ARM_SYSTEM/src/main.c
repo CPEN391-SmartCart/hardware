@@ -124,7 +124,9 @@ void handleBTMessage(char*code, char*data)
 		if(isByWeight)
 		{
 
-			long weight = getWeight(absolute_weight_min, 1000000);
+			//uncomment when loadcell available
+			//int weight = getWeight(absolute_weight_min, 1000000);
+			int weight = 200;
 
 			if(weight == -1){
 				//TODO: handle weight could not be calculated
@@ -149,7 +151,9 @@ void handleBTMessage(char*code, char*data)
 			int weight_min = expected_weight - (int) (expected_weight * relative_weight_tolerance);
 			int weight_max = expected_weight + (int) (expected_weight * relative_weight_tolerance);
 
-			int weight = getWeight(weight_min, weight_max);
+			//uncomment when loadcell available
+			//int weight = getWeight(weight_min, weight_max);
+			int weight = 200;
 
 			if(weight == -1){
 				//TODO: handle weight could not be calculated
