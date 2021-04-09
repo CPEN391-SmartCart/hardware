@@ -38,7 +38,7 @@ typedef struct Item
     int x;
     int y;
     int aisleColor;
-    double weight_g;
+    int weight_g;
     int node_id;
 } Item;
 

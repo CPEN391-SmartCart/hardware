@@ -43,6 +43,7 @@
 
 #define DEBUG 0
 
+#define BETWEEN(a, b, c)  (((a) >= (b)) && ((a) <= (c)))
 
 char* lastRequestedDestinationBarcode;
 Item lastScannedItem;
@@ -50,7 +51,7 @@ Item lastScannedItem;
 void handleBTMessage(char*code, char*data);
 void initSystem();
 void displayStoreMap();
-
+int getWeight();
 
 
 int main(void)
@@ -95,6 +96,12 @@ void handleBTMessage(char*code, char*data)
 	char itemCostCode[] = "ic";
 	char pathPlanningCode[] = "pp";
 	char sendMessage[1024] = "in:";
+	//TODO setup payment confirmation code
+	char paymentConfirmationCode[] = "pc:";
+
+	int absolute_weight_min = 10;
+	double relative_weight_tolerance = 0.1;
+
 	int *request_error_code; //see error code descriptions in common.h
 
 
@@ -106,41 +113,52 @@ void handleBTMessage(char*code, char*data)
 		if(request_error_code != LUA_EXIT_SUCCESS){
 			//todo : handle retrieivng item error
 		}
+
 //		lastScannedItem = requestItem(data);
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
 
 		FloatToCostString(lastScannedItem.cost, itemPrice, 2);
 		int isByWeight = lastScannedItem.requires_weighing;
+
 		if(isByWeight)
 		{
+
+			long weight = getWeight(absolute_weight_min, 1000000);
+
+			if(weight == -1){
+				//TODO: handle weight could not be calculated
+			}
 
 			strcat(sendMessage, itemName);
 			strcat(sendMessage, " | pw:");
 			strcat(sendMessage, itemPrice);
+			strcat(sendMessage, " | sw:");
+			char weightString[8];
+			sprintf(weightString, "%d", weight);
+			strcat(sendMessage, weightString);
 
 			printf("WriteBT: %s\n", sendMessage);
-			delay_us(10000);
-
-			// TODO: call a function to get the scale weight
-			for(unsigned int i = 0;i<100;i++)
-			{
-				delay_us(10000);
-
-				char* weightInGrams = "5500"; // weight in grams
-				strcat(sendMessage, " | sw:");
-				strcat(sendMessage, weightInGrams);
-			}
 
 			writeStringBT(sendMessage);
 		}
 		else
 		{
-			delay_us(10000);
+
+			int expected_weight = lastScannedItem.weight_g;
+			int weight_min = expected_weight - (int) (expected_weight * relative_weight_tolerance);
+			int weight_max = expected_weight + (int) (expected_weight * relative_weight_tolerance);
+
+			int weight = getWeight(weight_min, weight_max);
+
+			if(weight == -1){
+				//TODO: handle weight could not be calculated
+			}
 
 			strcat(sendMessage, itemName);
 			strcat(sendMessage, " | pq:");
 			strcat(sendMessage, itemPrice);
+			printf("WriteBT: %s\n", sendMessage);
 			writeStringBT(sendMessage);
 		}
 
@@ -158,7 +176,52 @@ void handleBTMessage(char*code, char*data)
 		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
 	}
 
+	if(!strcmp(code,paymentConfirmationCode)){
+		DisplayPaymentConfirmation();
+	}
 
+
+}
+
+/*
+ * returns the weight in grams, a return value of -1 means that no weight above the tolerance level was found
+ */
+int getWeight(double min, double max){
+	int retVal = -1;
+	int weight = -1;
+
+	DisplayWeighCommand(0);
+	delay_us(5000000);
+
+	for(unsigned int i = 0; i < 5; i++){
+		DisplayWeighCommand(0);
+		delay_us(2000000);
+
+		//0.1 seconds between attempts to read weight
+		for(unsigned int j = 0; j<100; i++) {
+			delay_us(100000);
+			weight = hx711_read_average(5000);
+			if(BETWEEN(weight, min, max)){
+				break;
+			}
+		}
+
+		if(BETWEEN(weight, min, max)){
+			DisplayWeighCommand(1);
+			delay_us(2000000);
+		} else {
+			break;
+		}
+	}
+
+	if(BETWEEN(weight, min, max)){
+		printf("weight found, final calculated weight is %d\n", weight);
+		retVal = weight;
+	} else {
+		printf("weight could not be determined, Expected something between %d and %d, but final calculated weight was %d\n", min, max, weight);
+		weight = -1;
+	}
+	return retVal;
 }
 
 void initSystem()
