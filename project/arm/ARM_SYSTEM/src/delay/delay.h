@@ -14,5 +14,6 @@
 
 void delay_us(uint32_t us);
 void setup_hps_timer(void);
+uint64_t getEndTimeFromCurr(uint32_t us);
 
 #endif /* DELAY_H_ */

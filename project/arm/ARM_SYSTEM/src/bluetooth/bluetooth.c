@@ -9,6 +9,8 @@
 
 #include "../uart/uart.h"
 #include "bluetooth.h"
+#include "stdlib.h"
+#include "stdint.h"
 
 void initBluetooth()
 {
@@ -21,7 +23,10 @@ void writeStringBT(char *string)
     writeStringUART(string, Bluetooth_LineStatusReg, Bluetooth_TransmitterFifo);
 }
 
-void readStringBT(char string[32])
+/*
+ * returns number of bytes read
+ */
+int readStringBT(char string[32])
 {
     int i;
     char c;
@@ -34,4 +39,58 @@ void readStringBT(char string[32])
     }
 
     string[i] = '\0';
+    return i;
 }
+
+int readStringUsingProtocol(char string[64]){
+	char buffer[64];
+	int bytes_read = 0;
+	memset(string, 0, sizeof(string));
+	memset(buffer, 0, sizeof(string));
+
+
+	while(bytes_read<MESSAGE_STRING_BEGIN){
+		char s[32];
+		bytes_read += readStringBT(s);
+		strcat(buffer, s);
+
+	}
+
+	char stringSize[MESSAGE_STRING_BEGIN];
+	memcpy(stringSize, buffer, MESSAGE_STRING_BEGIN*sizeof(char));
+
+	int full_string_size = atoi(stringSize);
+
+	int remaining_string_size = full_string_size - (bytes_read - MESSAGE_STRING_BEGIN);
+
+	int remaining_bytes_read = 0;
+
+
+	while(remaining_bytes_read < remaining_string_size) {
+		char s[32];
+		remaining_bytes_read += readStringBT(s);
+		strcat(buffer, s);
+
+	}
+
+	memcpy(string, buffer+MESSAGE_STRING_BEGIN,full_string_size);
+	string[full_string_size] = '\0';
+	flushUART(Bluetooth_LineStatusReg, Bluetooth_ReceiverFifo);
+	return 0;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

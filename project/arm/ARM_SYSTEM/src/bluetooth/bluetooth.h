@@ -12,6 +12,12 @@
 #define Bluetooth_DivisorLatchLSB ((volatile unsigned char *)(0xFF211000))
 #define Bluetooth_DivisorLatchMSB ((volatile unsigned char *)(0xFF211002))
 
+/*
+ * where the actual bt message begins, ie the first 3 bytes are used for size
+ */
+#define MESSAGE_STRING_BEGIN 2
+
 void initBluetooth(void);
 void writeStringBT(char *string);
-void readStringBT(char string[32]);
+int readStringBT(char string[32]);
+int readStringUsingProtocol(char string[64]);
