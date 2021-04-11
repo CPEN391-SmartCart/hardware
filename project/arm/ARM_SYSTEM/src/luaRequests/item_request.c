@@ -73,5 +73,6 @@ Item requestItem(char *barcode, int* ec){
 
 
 	Item ret_val= getItemFromResponse(response);
+	return ret_val;
 }
 
