@@ -12,9 +12,6 @@ double gstRate = 0.07;
 void UpdateBalance(double itemCost);
 void DrawItemPathHelper(int pathSize, path_t path[], int colour);
 void DrawArrowHead(int pathSize, path_t path[], int colour);
-void FloatToCostString(float n, char* res, int afterpoint);
-void Reverse(char* str, int len);
-int IntegerToString(int x, char str[], int d, int dollarBool);
 
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[])
 {
@@ -86,7 +83,7 @@ void AddItemToCart(Item item)
 			sprintf(name, "%d) %s...", vgaIndex, truncatedName);
 		}
 		
-		FloatToCostString(cart[i].cost, cost, 2);
+		FloatToString(cart[i].cost, cost, 2, 1);
 
 		ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y + 15 + 10 * i, SIDEPANEL_TEXT_WIDTH, 7);
 		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y + 15 + 10 * i, BLACK, WHITE, name, 0, 0);
@@ -104,9 +101,9 @@ void UpdateBalance(double itemCost)
 	double gst = subtotal * gstRate;
 	double total = subtotal + gst;
 
-	FloatToCostString(subtotal, subtotalStr, 2);
-	FloatToCostString(gst, gstStr, 2);
-	FloatToCostString(total, totalStr, 2);
+	FloatToString(subtotal, subtotalStr, 2, 1);
+	FloatToString(gst, gstStr, 2, 1);
+	FloatToString(total, totalStr, 2, 1);
 
 	// Clear out old balance
 	ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_BALANCE_Y + 20, SIDEPANEL_TEXT_WIDTH, 7);
@@ -289,11 +286,11 @@ int IntegerToString(int x, char str[], int d, int dollarBool)
     return i;
 }
   
-void FloatToCostString(float n, char* res, int afterpoint)
+void FloatToString(float n, char* res, int afterpoint, int dollarBool)
 {
     int ipart = (int)n;
     float fpart = n - (float)ipart;
-    int i = IntegerToString(ipart, res, 0, 1);
+    int i = IntegerToString(ipart, res, 0, dollarBool);
   
     if (afterpoint != 0) {
         res[i] = '.'; 

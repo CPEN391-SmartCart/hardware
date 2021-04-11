@@ -94,7 +94,7 @@ void handleBTMessage(char*code, char*data)
 	char scanCode[] = "sc";
 	char itemCostCode[] = "ic";
 	char pathPlanningCode[] = "pp";
-	char sendMessage[1024] = "in:";
+	char sendMessage[1024] = "";
 
 	if(!strcmp(code,scanCode)){
 
@@ -104,27 +104,27 @@ void handleBTMessage(char*code, char*data)
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
 
-		FloatToCostString(lastScannedItem.cost, itemPrice, 2);
+		FloatToString(lastScannedItem.cost, itemPrice, 2, 0);
 		int isByWeight = lastScannedItem.requires_weighing;
 		if(isByWeight)
 		{
 
 			strcat(sendMessage, itemName);
-			strcat(sendMessage, " | pw:");
+			strcat(sendMessage, " | ");
 			strcat(sendMessage, itemPrice);
 
 			printf("WriteBT: %s\n", sendMessage);
 			delay_us(10000);
 
 			// TODO: call a function to get the scale weight
-			for(unsigned int i = 0;i<100;i++)
-			{
-				delay_us(10000);
+			// for(unsigned int i = 0;i<100;i++)
+			// {
+			// 	delay_us(10000);
 
-				char* weightInGrams = "5500"; // weight in grams
-				strcat(sendMessage, " | sw:");
-				strcat(sendMessage, weightInGrams);
-			}
+			// 	char* weightInGrams = "5500"; // weight in grams
+			// 	strcat(sendMessage, " | sw:");
+			// 	strcat(sendMessage, weightInGrams);
+			// }
 
 			writeStringBT(sendMessage);
 		}
@@ -133,7 +133,7 @@ void handleBTMessage(char*code, char*data)
 			delay_us(10000);
 
 			strcat(sendMessage, itemName);
-			strcat(sendMessage, " | pq:");
+			strcat(sendMessage, " | ");
 			strcat(sendMessage, itemPrice);
 			writeStringBT(sendMessage);
 		}
@@ -151,8 +151,6 @@ void handleBTMessage(char*code, char*data)
 		// TODO: Path plan with the barcodes
 		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
 	}
-
-
 }
 
 void initSystem()
