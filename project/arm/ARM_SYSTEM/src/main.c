@@ -46,7 +46,13 @@
 
 char* lastRequestedDestinationBarcode;
 Item lastScannedItem;
+SectionArr ss;
+Section *sections;
+LegendArr l;
+Legend *legends;
 
+
+void loadMapData();
 void handleBTMessage(char*code, char*data);
 void initSystem();
 void displayStoreMap();
@@ -56,7 +62,9 @@ void displayStoreMap();
 int main(void)
 {
 	initSystem();
-	displayStoreMap();
+	loadMapData();
+
+//	displayStoreMap();
 
     if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
@@ -65,7 +73,8 @@ int main(void)
     for(;;)
     {
     	//writeStringBT("Hi3!");
-    	readStringBT(stringBT);
+    	// readStringBT(stringBT);
+		readStringUsingProtocol(stringBT);
     	char stringTok[1024];
     	strcpy(stringTok,stringBT);
     	if(stringTok[0]!='\0'){
@@ -94,13 +103,14 @@ void handleBTMessage(char*code, char*data)
 	char scanCode[] = "sc";
 	char itemCostCode[] = "ic";
 	char pathPlanningCode[] = "pp";
+	char successfulPayment[] = "sp";
+	char reset[] = "rs";
 	char sendMessage[1024] = "";
 
 	if(!strcmp(code,scanCode)){
 
 		//Temporarily here to test around barcode data bug
-		lastScannedItem = requestItem("NTSN6378");
-//		lastScannedItem = requestItem(data);
+		lastScannedItem = requestItem(data);
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
 
@@ -151,6 +161,14 @@ void handleBTMessage(char*code, char*data)
 		// TODO: Path plan with the barcodes
 		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
 	}
+
+	if(!strcmp(code,successfulPayment)){
+		DisplayPaymentConfirmation();
+	}
+
+	if(!strcmp(code,reset)){
+		displayStoreMap();
+	}
 }
 
 void initSystem()
@@ -167,17 +185,18 @@ void initSystem()
     printf("Bluetooth, Wifi initialized\n");
 }
 
+void loadMapData(){
+	ss = requestSections(1);
+	sections = ss.sections;
+
+	l = requestLegends(1);
+	legends = l.legends;
+}
+
 void displayStoreMap()
 {
-    SectionArr ss = requestSections(1);
-    Section *sections = ss.sections;
-
-    LegendArr l = requestLegends(1);
-    Legend *legends = l.legends;
-
 	int sectionSize = ss.size;
 	int legendSize = l.size;
-
 
     if(DEBUG){
         printf("   x      y    height width colour\n");
@@ -186,12 +205,9 @@ void displayStoreMap()
         }
     }
 
-
 	printf("Clearing screen...\n");
 	Reset();
 
 	printf("Creating store map...\n");
-	CreateStoreMap(sectionSize, sections, legendSize, legends);
-	CreateSidePanel(legendSize, legends);
-
+	SetupMap(sectionSize, sections, legendSize, legends);
 }

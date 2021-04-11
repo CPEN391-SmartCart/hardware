@@ -13,6 +13,16 @@ void UpdateBalance(double itemCost);
 void DrawItemPathHelper(int pathSize, path_t path[], int colour);
 void DrawArrowHead(int pathSize, path_t path[], int colour);
 
+void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[]){
+	CreateStoreMap(sectionSize, sections, legendSize, legends);
+	CreateSidePanel(legendSize, legends);
+
+	// Clear cart
+	cart[CARTSIZE];
+	numberOfItems = 0;
+	subtotal = 0.0;
+}
+
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[])
 {
 	size_t i;

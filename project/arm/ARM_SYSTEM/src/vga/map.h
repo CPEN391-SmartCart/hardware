@@ -26,6 +26,7 @@ typedef struct path_t
     short y;
 } path_t;
 
+void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateSidePanel(int legendSize, Legend legends[]);
 void AddItemToCart(Item item);
