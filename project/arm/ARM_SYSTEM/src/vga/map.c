@@ -275,7 +275,7 @@ void Reverse(char* str, int len)
     }
 }
 
-int IntegerToString(int x, char str[], int d, int dollarBool)
+int IntegerToString(int x, char str[], int d, int dollarBool, int negativeBool)
 {
     int i = 0;
 
@@ -289,6 +289,8 @@ int IntegerToString(int x, char str[], int d, int dollarBool)
     while (i < d)
         str[i++] = '0';
 
+	if(negativeBool) str[i++] = '-';
+
 	if(dollarBool) str[i++] = '$';
   
     Reverse(str, i);
@@ -298,14 +300,25 @@ int IntegerToString(int x, char str[], int d, int dollarBool)
   
 void FloatToString(float n, char* res, int afterpoint, int dollarBool)
 {
-    int ipart = (int)n;
-    float fpart = n - (float)ipart;
-    int i = IntegerToString(ipart, res, 0, dollarBool);
+	int negativeBool;
+	float absoluteFloat;
+
+	if(n < 0){
+		negativeBool = 1;
+		absoluteFloat = n * -1.0;
+	} else {
+		negativeBool = 0;
+		absoluteFloat = n;
+	}
+
+    int ipart = (int) absoluteFloat;
+    float fpart = absoluteFloat - (float) ipart;
+    int i = IntegerToString(ipart, res, 0, dollarBool, negativeBool);
   
     if (afterpoint != 0) {
         res[i] = '.'; 
         fpart = fpart * pow(10, afterpoint);
   
-        IntegerToString((int)fpart, res + i + 1, afterpoint, 0);
+        IntegerToString((int)fpart, res + i + 1, afterpoint, 0, 0);
     }
 }
