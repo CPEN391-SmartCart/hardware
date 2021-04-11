@@ -126,9 +126,9 @@ int writeAndReadResponse(char *write, char *read) {
 		} else if (num_waits++ >= 500) {
 			printf("\n TIMEOUT ON RECEIVING RESPONSE\n");
 			done_or_timeout = 1;
-			char error_resp[50];
-			memcpy(error_resp, WIFI_ISR_CONTEXT->BUFFER, 49);
-			error_resp[49]='\0';
+			char error_resp[200];
+			memcpy(error_resp, WIFI_ISR_CONTEXT->BUFFER, 199);
+			error_resp[199]='\0';
 			printf("Received in Buffer (note this could be incomplete): %s", error_resp);
 			return -1;
 		}
