@@ -14,6 +14,7 @@ local function parseItem(response)
 	local requires_weighing = t["requires_weighing"]
 	local xPosition = t["x"]
 	local yPosition = t["y"]
+	local node_id = t["node_id"]
 	local weight
 	if (t["weight"] ~= 'null') then 
 		weight = t["weight"]
@@ -22,7 +23,7 @@ local function parseItem(response)
 	end
 	
 
-	local x = table.concat({barcode, section_id, name, cost, description,requires_weighing, xPosition, yPosition,weight}, '|')
+	local x = table.concat({barcode, section_id, name, cost, description,requires_weighing, xPosition, yPosition,node_id,weight}, '|')
 
 	uart.write(0, 'STRT\n')
 	uart.write(0,x)

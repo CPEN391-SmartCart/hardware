@@ -257,7 +257,7 @@ void handleBTMessageALTERNATIVE(char*code, char*data)
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
 
-		FloatToString(lastScannedItem.cost, itemPrice, 2, 0);
+
 		int isByWeight = lastScannedItem.requires_weighing;
 
 		if(isByWeight)
@@ -270,6 +270,9 @@ void handleBTMessageALTERNATIVE(char*code, char*data)
 			if(weight == -1){
 				//TODO: handle weight could not be calculated
 			}
+
+			double item_cost = lastScannedItem.cost * weight;
+			FloatToString(item_cost, itemPrice, 2, 0);
 
 			strcat(sendMessage, itemName);
 			strcat(sendMessage, " | pw:");
@@ -297,6 +300,10 @@ void handleBTMessageALTERNATIVE(char*code, char*data)
 			if(weight == -1){
 				//TODO: handle weight could not be calculated
 			}
+
+			double item_cost = lastScannedItem.cost;
+
+			FloatToString(item_cost, itemPrice, 2, 0);
 
 			strcat(sendMessage, itemName);
 			strcat(sendMessage, " | pq:");
