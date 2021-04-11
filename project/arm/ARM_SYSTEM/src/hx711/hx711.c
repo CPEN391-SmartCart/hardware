@@ -9,7 +9,7 @@
 #include "../io/digital.h"
 
 uint8_t GAIN;
-long OFFSET = 0;
+double OFFSET = 0;
 float SCALE = 1.f;
 
 uint8_t hx711_is_ready()
@@ -87,7 +87,7 @@ long hx711_read()
 
 long hx711_read_average(uint8_t times)
 {
-	long sum = 0;
+	double sum = 0;
 	for (uint8_t i = 0; i < times; i++)
 	{
 		sum += hx711_read();
@@ -97,7 +97,8 @@ long hx711_read_average(uint8_t times)
 
 double hx711_get_value(uint8_t times)
 {
-	return (hx711_read_average(times) - OFFSET) / SCALE;
+	double test = (hx711_read_average(times) - OFFSET);
+	return test;
 }
 
 float hx711_get_units(uint8_t times)

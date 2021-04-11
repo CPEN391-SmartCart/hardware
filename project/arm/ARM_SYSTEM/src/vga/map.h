@@ -20,18 +20,12 @@
 #define PAYMENT_CONFIRMATION_Y 140
 #define CARTSIZE 15
 
-typedef struct path_t
-{
-    short x;
-    short y;
-} path_t;
-
 void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateSidePanel(int legendSize, Legend legends[]);
 void AddItemToCart(Item item);
 void ShowNextItem(char* itemName);
-void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour);
+void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour);
 void DisplayWeighCommand(int mode);
 void DisplayPaymentConfirmation();
 void FloatToString(float n, char* res, int afterpoint, int dollarBool);

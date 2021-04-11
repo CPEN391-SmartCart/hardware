@@ -10,8 +10,8 @@ double gstRate = 0.07;
 
 // private helper functions
 void UpdateBalance(double itemCost);
-void DrawItemPathHelper(int pathSize, path_t path[], int colour);
-void DrawArrowHead(int pathSize, path_t path[], int colour);
+void DrawItemPathHelper(int pathSize, coord_t path[], int colour);
+void DrawArrowHead(int pathSize, coord_t path[], int colour);
 
 void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[]){
 	CreateStoreMap(sectionSize, sections, legendSize, legends);
@@ -128,11 +128,11 @@ void UpdateBalance(double itemCost)
 
 void ShowNextItem(char *itemName)
 {
-	ClearTextField(SIDEPANEL_HEADER_X, 368, SIDEPANEL_TEXT_WIDTH, 7);
-	DrawFontLine(SIDEPANEL_HEADER_X, 368, BLACK, WHITE, itemName, 0, 0);
+    ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, SIDEPANEL_TEXT_WIDTH, 7);
+    DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, BLACK, WHITE, itemName, 0, 0);
 }
 
-void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour)
+void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour)
 {
 	// Current location on map
 	FilledRectangle(newPath[newPathSize - 1].x - 3, newPath[newPathSize - 1].y - 3, 8, 8, colour);
@@ -144,10 +144,10 @@ void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t new
 	DrawItemPathHelper(newPathSize, newPath, colour);
 }
 
-void DrawItemPathHelper(int pathSize, path_t path[], int colour)
+void DrawItemPathHelper(int pathSize, coord_t path[], int colour)
 {
 	int i;
-	path_t corner0, corner1;
+	coord_t corner0, corner1;
 
 	for (i = 0; i < pathSize - 1; i++)
 	{
@@ -161,7 +161,7 @@ void DrawItemPathHelper(int pathSize, path_t path[], int colour)
 	DrawArrowHead(pathSize, path, colour);
 }
 
-void DrawArrowHead(int pathSize, path_t path[], int colour)
+void DrawArrowHead(int pathSize, coord_t path[], int colour)
 {
 	int i;
 	double arrowLength = 5;
@@ -176,8 +176,8 @@ void DrawArrowHead(int pathSize, path_t path[], int colour)
 	double deltaX;
 	double deltaY;
 
-	path_t goal = path[0];
-	path_t goalPrev = path[1];
+	coord_t goal = path[0];
+	coord_t goalPrev = path[1];
 
 	deltaX = goal.x - goalPrev.x;
 	deltaY = goal.y - goalPrev.y;

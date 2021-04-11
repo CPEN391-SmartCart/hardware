@@ -52,6 +52,8 @@ Section *sections;
 LegendArr l;
 Legend *legends;
 
+coord_t old_path[20];
+int old_path_length;
 
 void loadMapData();
 void handleBTMessage(char*code, char*data);
@@ -60,14 +62,15 @@ void displayStoreMap();
 int getWeight();
 void handleBTMessageALTERNATIVE(char*code, char*data);
 
-
+int goal_node_id;
+int start_node_id;
 
 int main(void)
 {
 	initSystem();
 	loadMapData();
 
-//	displayStoreMap();
+	displayStoreMap();
 
     if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
@@ -101,11 +104,14 @@ int main(void)
 	return 0;
 }
 
+
 void handleBTMessage(char*code, char*data)
 {
 	char scanCode[] = "sc";
 	char itemCostCode[] = "ic";
 	char pathPlanningCode[] = "pp";
+	char startPlanningCode[] = "ps";
+	char clearPlanningCode[] = "pc";
 	char successfulPayment[] = "sp";
 	char reset[] = "rs";
 	char sendMessage[1024] = "";
@@ -117,7 +123,7 @@ void handleBTMessage(char*code, char*data)
 		//Temporarily here to test around barcode data bug
 		lastScannedItem = requestItem(data, error_code);
 
-		if(error_code != LUA_EXIT_SUCCESS){
+		if(*error_code != LUA_EXIT_SUCCESS){
 			//TODO HANDLE
 			printf("could not find item \n");
 			return;
@@ -168,9 +174,51 @@ void handleBTMessage(char*code, char*data)
 	}
 
 	if(!strcmp(code,pathPlanningCode)){
-		lastRequestedDestinationBarcode = data;
+		//lastRequestedDestinationBarcode = data;
+		Item next_item = requestItem(data, error_code);
+
+		coord_t new_path[20];
+		int new_path_length = generate_path(lastScannedItem.node_id, next_item.node_id, new_path);
+
+
+		DrawItemPath(old_path_length, old_path, new_path_length, new_path, 0);
+		ShowNextItem(next_item.name);
+
+		for (int i = 0; i < new_path_length; i++)
+		{
+			old_path[i] = new_path[i];
+		}
+
+		old_path_length = new_path_length;
 		// TODO: Path plan with the barcodes
 		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if (!strcmp(code, startPlanningCode))
+	{
+		Item next_item = requestItem(data, error_code);
+
+		coord_t new_path[20];
+		int new_path_length = generate_path(42, next_item.node_id, new_path);
+
+
+		coord_t old_path_start[1];
+		DrawItemPath(0, old_path_start, new_path_length, new_path, 0);
+		ShowNextItem(next_item.name);
+
+		for (int i = 0; i < new_path_length; i++)
+		{
+			old_path[i] = new_path[i];
+		}
+
+		old_path_length = new_path_length;
+	}
+
+	if (!strcmp(code, clearPlanningCode))
+	{
+		coord_t new_path_clear[1];
+		DrawItemPath(old_path_length, old_path, 0, new_path_clear, 0);
+		ShowNextItem("");
 	}
 
 	if(!strcmp(code,successfulPayment)){

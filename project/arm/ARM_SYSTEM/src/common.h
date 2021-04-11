@@ -70,4 +70,10 @@ typedef struct SectionArr
     Section* sections;
 } SectionArr;
 
+typedef struct coord_t
+{
+    short x;
+    short y;
+} coord_t;
+
 #endif /* COMMON_H_ */
