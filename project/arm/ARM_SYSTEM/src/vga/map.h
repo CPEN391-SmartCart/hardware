@@ -36,5 +36,5 @@ void DisplayWeighCommand(int mode);
 void DisplayPaymentConfirmation();
 void FloatToString(float n, char* res, int afterpoint, int dollarBool);
 void Reverse(char* str, int len);
-int IntegerToString(int x, char str[], int d, int dollarBool);
+int IntegerToString(int x, char str[], int d, int dollarBool, int negativeBool);
 #endif /* MAP_H_ */
