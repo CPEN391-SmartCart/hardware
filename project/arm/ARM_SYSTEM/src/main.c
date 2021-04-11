@@ -266,8 +266,8 @@ void displayStoreMap()
         }
     }
 
-	printf("Clearing screen...\n");
-	Reset();
+//  printf("Clearing screen...\n");
+//	Reset();
 
 	printf("Creating store map...\n");
 	SetupMap(sectionSize, sections, legendSize, legends);

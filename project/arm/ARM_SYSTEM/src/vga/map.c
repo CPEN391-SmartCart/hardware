@@ -18,7 +18,6 @@ void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legend
 	CreateSidePanel(legendSize, legends);
 
 	// Clear cart
-	cart[CARTSIZE];
 	numberOfItems = 0;
 	subtotal = 0.0;
 }
@@ -26,7 +25,7 @@ void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legend
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[])
 {
 	size_t i;
-	FilledRectangle(0, 0, RES_WIDTH, RES_HEIGHT, WHITE);
+	FilledRectangle(0, 0, SIDEPANEL_SPLITTER_X, RES_HEIGHT, WHITE);
 
 	for (i = 0; i < sectionSize; i++)
 	{
@@ -40,6 +39,7 @@ void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend 
 void CreateSidePanel(int legendSize, Legend legends[])
 {
 	size_t i;
+	FilledRectangle(SIDEPANEL_SPLITTER_X, 0, RES_WIDTH - SIDEPANEL_SPLITTER_X, RES_HEIGHT, WHITE);
 	FilledRectangle(SIDEPANEL_SPLITTER_X, 0, 2, 480, BLACK);
 
 	DrawFontLine(SIDEPANEL_HEADER_X, 15, BLACK, WHITE, "LEGEND:", 1, 0);
@@ -137,8 +137,8 @@ void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t n
 	// Current location on map
 	FilledRectangle(newPath[newPathSize - 1].x - 3, newPath[newPathSize - 1].y - 3, 8, 8, colour);
 
-	// Clear old path
-	DrawItemPathHelper(oldPathSize, oldPath, WHITE);
+//	// Clear old path
+//	DrawItemPathHelper(oldPathSize, oldPath, WHITE);
 
 	// Draw new path
 	DrawItemPathHelper(newPathSize, newPath, colour);
