@@ -20,6 +20,7 @@
 #define LUA_HTTP_ERROR 1
 #define LUA_RESPONSE_ITERATION_OVERFLOW 2
 #define LUA_RESPONSE_TIMEOUT 4
+#define ITEM_NOT_FOUND 5
 #define LUA_RESPONSE_TBC 9
 
 typedef struct NodeInfo {

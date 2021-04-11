@@ -8,5 +8,5 @@ void wifiLegendsRoutine(void);
 void vgaRoutine(void);
 void wifiNodeInfoRoutine(void);
 void addToCart(void);
-
+void delayTest(void);
 #endif /* TESTS_TESTS_H_ */

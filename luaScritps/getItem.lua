@@ -35,12 +35,15 @@ end
 
 print(args[1])--TODO : implement args
 http.get("http://cpen391-smartcart.herokuapp.com/items/barcode/"..args[1], nil, function(code, data)
-    if (code < 0) then
+    if (code == 204) then
 		uart.write(0, 'STRT\n')
+		uart.write(0,'EXIT5\0')
+	elseif (code == 200) then
+        parseItem(data)
+    else
+	    uart.write(0, 'STRT\n')
 		uart.write(0,'EXIT1\0')
-    else           
-      parseItem(data)
-    end
+	end
   end)
  
  collectgarbage()

@@ -47,17 +47,27 @@
 
 char* lastRequestedDestinationBarcode;
 Item lastScannedItem;
+SectionArr ss;
+Section *sections;
+LegendArr l;
+Legend *legends;
 
+
+void loadMapData();
 void handleBTMessage(char*code, char*data);
 void initSystem();
 void displayStoreMap();
 int getWeight();
+void handleBTMessageALTERNATIVE(char*code, char*data);
+
 
 
 int main(void)
 {
 	initSystem();
-	displayStoreMap();
+	loadMapData();
+
+//	displayStoreMap();
 
     if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
@@ -66,7 +76,8 @@ int main(void)
     for(;;)
     {
     	//writeStringBT("Hi3!");
-    	readStringBT(stringBT);
+    	// readStringBT(stringBT);
+		readStringUsingProtocol(stringBT);
     	char stringTok[1024];
     	strcpy(stringTok,stringBT);
     	if(stringTok[0]!='\0'){
@@ -95,6 +106,134 @@ void handleBTMessage(char*code, char*data)
 	char scanCode[] = "sc";
 	char itemCostCode[] = "ic";
 	char pathPlanningCode[] = "pp";
+	char successfulPayment[] = "sp";
+	char reset[] = "rs";
+	char sendMessage[1024] = "";
+	int *error_code; //see common.h for description of errors
+
+
+	if(!strcmp(code,scanCode)){
+
+		//Temporarily here to test around barcode data bug
+		lastScannedItem = requestItem(data, error_code);
+
+		if(error_code != LUA_EXIT_SUCCESS){
+			//TODO HANDLE
+			printf("could not find item \n");
+			return;
+		}
+		char* itemName = lastScannedItem.name;
+		char itemPrice[6];
+
+		FloatToString(lastScannedItem.cost, itemPrice, 2, 0);
+		int isByWeight = lastScannedItem.requires_weighing;
+		if(isByWeight)
+		{
+
+			strcat(sendMessage, itemName);
+			strcat(sendMessage, " | ");
+			strcat(sendMessage, itemPrice);
+
+			printf("WriteBT: %s\n", sendMessage);
+			delay_us(10000);
+
+			// TODO: call a function to get the scale weight
+			// for(unsigned int i = 0;i<100;i++)
+			// {
+			// 	delay_us(10000);
+
+			// 	char* weightInGrams = "5500"; // weight in grams
+			// 	strcat(sendMessage, " | sw:");
+			// 	strcat(sendMessage, weightInGrams);
+			// }
+
+			writeStringBT(sendMessage);
+		}
+		else
+		{
+			delay_us(10000);
+
+			strcat(sendMessage, itemName);
+			strcat(sendMessage, " | ");
+			strcat(sendMessage, itemPrice);
+			writeStringBT(sendMessage);
+		}
+
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if(!strcmp(code,itemCostCode)){
+		AddItemToCart(lastScannedItem);
+	}
+
+	if(!strcmp(code,pathPlanningCode)){
+		lastRequestedDestinationBarcode = data;
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if(!strcmp(code,successfulPayment)){
+		DisplayPaymentConfirmation();
+	}
+
+	if(!strcmp(code,reset)){
+		displayStoreMap();
+	}
+}
+
+void initSystem()
+{
+	initBluetooth();
+
+    initWiFi(115200);
+    resetWiFi();
+
+    //needs to be after wifi reset
+    enableUARTInterrupt(WiFi_InterruptEnableReg);
+
+
+    printf("Bluetooth, Wifi initialized\n");
+}
+
+void loadMapData(){
+	int *error_code; //see common.h for description of errors
+
+	ss = requestSections(1, error_code);
+	sections = ss.sections;
+
+	l = requestLegends(1, error_code);
+	legends = l.legends;
+}
+
+void displayStoreMap()
+{
+	int sectionSize = ss.size;
+	int legendSize = l.size;
+
+    if(DEBUG){
+        printf("   x      y    height width colour\n");
+        for(int i = 0; i < sectionSize; i++){
+            printf("%5d %5d %5d %5d %5d \n", sections[i].originX, sections[i].originY, sections[i].sectionWidth, sections[i].sectionHeight, sections[i].aisleColor);
+        }
+    }
+
+	printf("Clearing screen...\n");
+	Reset();
+
+	printf("Creating store map...\n");
+	SetupMap(sectionSize, sections, legendSize, legends);
+}
+
+
+
+
+////////////////////////alternative handling of bt message //////////////////////////
+void handleBTMessageALTERNATIVE(char*code, char*data)
+{
+	char scanCode[] = "sc";
+	char itemCostCode[] = "ic";
+	char pathPlanningCode[] = "pp";
 	char sendMessage[1024] = "in:";
 	//TODO setup payment confirmation code
 	char paymentConfirmationCode[] = "pc:";
@@ -118,7 +257,7 @@ void handleBTMessage(char*code, char*data)
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
 
-		FloatToCostString(lastScannedItem.cost, itemPrice, 2);
+		FloatToString(lastScannedItem.cost, itemPrice, 2, 0);
 		int isByWeight = lastScannedItem.requires_weighing;
 
 		if(isByWeight)
@@ -226,48 +365,4 @@ int getWeight(double min, double max){
 		weight = -1;
 	}
 	return retVal;
-}
-
-void initSystem()
-{
-	initBluetooth();
-
-    initWiFi(115200);
-    resetWiFi();
-
-    //needs to be after wifi reset
-    enableUARTInterrupt(WiFi_InterruptEnableReg);
-
-
-    printf("Bluetooth, Wifi initialized\n");
-}
-
-void displayStoreMap()
-{
-	int *request_ec;
-    SectionArr ss = requestSections(1, request_ec);
-    Section *sections = ss.sections;
-
-    LegendArr l = requestLegends(1, request_ec);
-    Legend *legends = l.legends;
-
-	int sectionSize = ss.size;
-	int legendSize = l.size;
-
-
-    if(DEBUG){
-        printf("   x      y    height width colour\n");
-        for(int i = 0; i < sectionSize; i++){
-            printf("%5d %5d %5d %5d %5d \n", sections[i].originX, sections[i].originY, sections[i].sectionWidth, sections[i].sectionHeight, sections[i].aisleColor);
-        }
-    }
-
-
-	printf("Clearing screen...\n");
-	Reset();
-
-	printf("Creating store map...\n");
-	CreateStoreMap(sectionSize, sections, legendSize, legends);
-	CreateSidePanel(legendSize, legends);
-
 }

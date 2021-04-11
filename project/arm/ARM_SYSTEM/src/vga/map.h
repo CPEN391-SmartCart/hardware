@@ -26,6 +26,7 @@ typedef struct path_t
     short y;
 } path_t;
 
+void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateSidePanel(int legendSize, Legend legends[]);
 void AddItemToCart(Item item);
@@ -33,4 +34,7 @@ void ShowNextItem(char* itemName);
 void DrawItemPath(int oldPathSize, path_t oldPath[], int newPathSize, path_t newPath[], int colour);
 void DisplayWeighCommand(int mode);
 void DisplayPaymentConfirmation();
+void FloatToString(float n, char* res, int afterpoint, int dollarBool);
+void Reverse(char* str, int len);
+int IntegerToString(int x, char str[], int d, int dollarBool);
 #endif /* MAP_H_ */
