@@ -11,6 +11,12 @@
 #include "bluetooth.h"
 #include "stdlib.h"
 #include "stdint.h"
+#include "alt_clock_manager.h"
+#include "alt_globaltmr.h"
+#include "../delay/delay.h"
+#include "string.h"
+#include "stdio.h"
+
 
 void initBluetooth()
 {
@@ -53,7 +59,6 @@ int readStringUsingProtocol(char string[64]){
 		char s[32];
 		bytes_read += readStringBT(s);
 		strcat(buffer, s);
-
 	}
 
 	char stringSize[MESSAGE_STRING_BEGIN];
@@ -65,12 +70,25 @@ int readStringUsingProtocol(char string[64]){
 
 	int remaining_bytes_read = 0;
 
+	if(remaining_string_size < 0){
+		printf(" ERROR: received string larger than given size \n");
+		flushUART(Bluetooth_LineStatusReg, Bluetooth_ReceiverFifo);
+		return -1;
+	}
+	uint64_t end_time;
+
+	end_time = getEndTimeFromCurr(5000000);
 
 	while(remaining_bytes_read < remaining_string_size) {
 		char s[32];
 		remaining_bytes_read += readStringBT(s);
 		strcat(buffer, s);
 
+		if(alt_globaltmr_get64()> end_time){
+			printf("ERROR READING BLUETOOTH: TIMEOUT, COULD NOT READ STRING PAYLOAD\n");
+			flushUART(Bluetooth_LineStatusReg, Bluetooth_ReceiverFifo);
+			return -1;
+		}
 	}
 
 	memcpy(string, buffer+MESSAGE_STRING_BEGIN,full_string_size);

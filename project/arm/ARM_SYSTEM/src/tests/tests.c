@@ -15,10 +15,20 @@
 #include "tests.h"
 #include "../hx711/hx711.h"
 
+void btTest(){
+	for(;;){
+		delay_us(10000);
+		char readval[64];
+		int res = readStringUsingProtocol(readval);
+		printf("readval = %s", readval);
+	}
+}
+
+
 void delayTest(){
-	printf("statement 1");
-	delay_us(1000000000);
-	printf("statement 2");
+	printf("statement 1\n");
+	delay_us(1000);
+	printf("statement 2\n");
 }
 
 void addToCart(){
