@@ -26,6 +26,7 @@ void CreateSidePanel(int legendSize, Legend legends[]);
 void AddItemToCart(Item item);
 void ShowNextItem(char* itemName);
 void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour);
+void DrawReconstructionPixels();
 void DisplayWeighCommand(int mode);
 void DisplayPaymentConfirmation();
 void FloatToString(float n, char* res, int afterpoint, int dollarBool);

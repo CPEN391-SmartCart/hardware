@@ -8,12 +8,19 @@ int numberOfItems = 0;
 double subtotal = 0.0;
 double gstRate = 0.07;
 
+// Arrow head reconstruction
+int reconstructionX;
+int reconstructionY;
+int reconstructionPixel[30][30];
+int reconstructionFlag = 0;
+
 // private helper functions
 void UpdateBalance(double itemCost);
-void DrawItemPathHelper(int pathSize, coord_t path[], int colour);
+void DrawItemPathHelper(int pathSize, coord_t path[], int colour, int clear);
 void DrawArrowHead(int pathSize, coord_t path[], int colour);
 
-void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[]){
+void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[])
+{
 	CreateStoreMap(sectionSize, sections, legendSize, legends);
 	CreateSidePanel(legendSize, legends);
 
@@ -82,17 +89,21 @@ void AddItemToCart(Item item)
 	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, SIDEPANEL_TEXT_WIDTH, 7);
 
 	// Display items on vga
-	for (i = 0; i < size; i++) {
+	for (i = 0; i < size; i++)
+	{
 		vgaIndex = numberOfItems > CARTSIZE ? numberOfItems - CARTSIZE + i + 1 : i + 1;
 
-		if (strlen(cart[i].name) < 12) {
+		if (strlen(cart[i].name) < 12)
+		{
 			sprintf(name, "%d) %s", vgaIndex, cart[i].name);
-		} else {
+		}
+		else
+		{
 			memcpy(truncatedName, cart[i].name, 12);
 			truncatedName[12] = '\0';
 			sprintf(name, "%d) %s...", vgaIndex, truncatedName);
 		}
-		
+
 		FloatToString(cart[i].cost, cost, 2, 1);
 
 		ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y + 15 + 10 * i, SIDEPANEL_TEXT_WIDTH, 7);
@@ -128,26 +139,30 @@ void UpdateBalance(double itemCost)
 
 void ShowNextItem(char *itemName)
 {
-    ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, SIDEPANEL_TEXT_WIDTH, 7);
-    DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, BLACK, WHITE, itemName, 0, 0);
+	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, SIDEPANEL_TEXT_WIDTH, 7);
+	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, BLACK, WHITE, itemName, 0, 0);
 }
 
 void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour)
 {
-	// Current location on map
-	FilledRectangle(newPath[newPathSize - 1].x - 3, newPath[newPathSize - 1].y - 3, 8, 8, colour);
-
-//	// Clear old path
-//	DrawItemPathHelper(oldPathSize, oldPath, WHITE);
+	// Clear old path
+	FilledRectangle(oldPath[oldPathSize - 1].x - 3, oldPath[oldPathSize - 1].y - 3, 8, 8, WHITE);
+	DrawItemPathHelper(oldPathSize, oldPath, WHITE, 1);
 
 	// Draw new path
-	DrawItemPathHelper(newPathSize, newPath, colour);
+	FilledRectangle(newPath[newPathSize - 1].x - 3, newPath[newPathSize - 1].y - 3, 8, 8, colour);
+	DrawItemPathHelper(newPathSize, newPath, colour, 0);
 }
 
-void DrawItemPathHelper(int pathSize, coord_t path[], int colour)
+void DrawItemPathHelper(int pathSize, coord_t path[], int colour, int clear)
 {
 	int i;
 	coord_t corner0, corner1;
+
+	if (!clear)
+	{
+		DrawArrowHead(pathSize, path, colour);
+	}
 
 	for (i = 0; i < pathSize - 1; i++)
 	{
@@ -158,12 +173,30 @@ void DrawItemPathHelper(int pathSize, coord_t path[], int colour)
 		DrawAnyLine(corner0.x + 1, corner0.y + 1, corner1.x + 1, corner1.y + 1, colour);
 	}
 
-	DrawArrowHead(pathSize, path, colour);
+	if (clear && reconstructionFlag)
+	{
+		DrawReconstructionPixels();
+	}
+}
+
+void DrawReconstructionPixels()
+{
+	int i;
+	int j;
+
+	for (i = 0; i < 30; i++)
+	{
+		for (j = 0; j < 30; j++)
+		{
+			WriteAPixel(reconstructionX - 15 + i, reconstructionY - 15 + j, reconstructionPixel[i][j]);
+		}
+	}
 }
 
 void DrawArrowHead(int pathSize, coord_t path[], int colour)
 {
 	int i;
+	int j;
 	double arrowLength = 5;
 	double grad;
 	double gradPerpendicular;
@@ -178,6 +211,20 @@ void DrawArrowHead(int pathSize, coord_t path[], int colour)
 
 	coord_t goal = path[0];
 	coord_t goalPrev = path[1];
+
+	// store pixels for section reconstruction
+	reconstructionX = goal.x;
+	reconstructionY = goal.y;
+
+	for (i = 0; i < 30; i++)
+	{
+		for (j = 0; j < 30; j++)
+		{
+			reconstructionPixel[i][j] = ReadAPixel(goal.x - 15 + i, goal.y - 15 + j);
+		}
+	}
+
+	reconstructionFlag = 1;
 
 	deltaX = goal.x - goalPrev.x;
 	deltaY = goal.y - goalPrev.y;
@@ -229,23 +276,28 @@ void DrawArrowHead(int pathSize, coord_t path[], int colour)
 }
 
 // mode: 0 - request weighing, 1 - invalid weight
-void DisplayWeighCommand(int mode){
+void DisplayWeighCommand(int mode)
+{
 	char *requestWeighing1 = "PLEASE PLACE ITEM IN CART";
 	char *requestWeighing2 = "TO WEIGH SCANNED ITEM!";
 
 	char *invalidWeight1 = "PLEASE REMOVE ITEM PLACED";
 	char *invalidWeight2 = "IN CART AND SCAN AGAIN!";
 
-	if(!mode){
+	if (!mode)
+	{
 		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y, RED, WHITE, requestWeighing1, 1, 0);
 		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, RED, WHITE, requestWeighing2, 1, 0);
-	} else {
+	}
+	else
+	{
 		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y, RED, WHITE, invalidWeight1, 1, 0);
 		DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, RED, WHITE, invalidWeight2, 1, 0);
 	}
 }
 
-void DisplayPaymentConfirmation(){
+void DisplayPaymentConfirmation()
+{
 	char *string1 = "We have processed and confirmed your transaction.";
 	char *string2 = "A copy of the receipt has been sent to your app.";
 	char *string3 = "Thank you for shopping with us. See you soon.";
@@ -263,62 +315,71 @@ void DisplayPaymentConfirmation(){
  * in C: https://www.geeksforgeeks.org/convert-floating-point-number-string/
  */
 
-void Reverse(char* str, int len)
+void Reverse(char *str, int len)
 {
-    int i = 0, j = len - 1, temp;
-    while (i < j) {
-        temp = str[i];
-        str[i] = str[j];
-        str[j] = temp;
-        i++;
-        j--;
-    }
+	int i = 0, j = len - 1, temp;
+	while (i < j)
+	{
+		temp = str[i];
+		str[i] = str[j];
+		str[j] = temp;
+		i++;
+		j--;
+	}
 }
 
 int IntegerToString(int x, char str[], int d, int dollarBool, int negativeBool)
 {
-    int i = 0;
+	int i = 0;
 
-	if(!x && dollarBool) str[i++] = '0';
+	if (!x && dollarBool)
+		str[i++] = '0';
 
-    while (x) {
-        str[i++] = (x % 10) + '0';
-        x = x / 10;
-    }
-  
-    while (i < d)
-        str[i++] = '0';
+	while (x)
+	{
+		str[i++] = (x % 10) + '0';
+		x = x / 10;
+	}
 
-	if(negativeBool) str[i++] = '-';
+	while (i < d)
+		str[i++] = '0';
 
-	if(dollarBool) str[i++] = '$';
-  
-    Reverse(str, i);
-    str[i] = '\0';
-    return i;
+	if (negativeBool)
+		str[i++] = '-';
+
+	if (dollarBool)
+		str[i++] = '$';
+
+	Reverse(str, i);
+	str[i] = '\0';
+	return i;
 }
-  
-void FloatToString(float n, char* res, int afterpoint, int dollarBool)
+
+void FloatToString(float n, char *res, int afterpoint, int dollarBool)
 {
 	int negativeBool;
 	float absoluteFloat;
 
-	if(n < 0){
+	if (n < 0)
+	{
 		negativeBool = 1;
 		absoluteFloat = n * -1.0;
-	} else {
+	}
+	else
+	{
 		negativeBool = 0;
 		absoluteFloat = n;
 	}
 
-    int ipart = (int) absoluteFloat;
-    float fpart = absoluteFloat - (float) ipart;
-    int i = IntegerToString(ipart, res, 0, dollarBool, negativeBool);
-  
-    if (afterpoint != 0) {
-        res[i] = '.'; 
-        fpart = fpart * pow(10, afterpoint);
-  
-        IntegerToString((int)fpart, res + i + 1, afterpoint, 0, 0);
-    }
+	int ipart = (int)absoluteFloat;
+	float fpart = absoluteFloat - (float)ipart;
+	int i = IntegerToString(ipart, res, 0, dollarBool, negativeBool);
+
+	if (afterpoint != 0)
+	{
+		res[i] = '.';
+		fpart = fpart * pow(10, afterpoint);
+
+		IntegerToString((int)fpart, res + i + 1, afterpoint, 0, 0);
+	}
 }
