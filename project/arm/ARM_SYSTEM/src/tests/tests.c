@@ -15,6 +15,11 @@
 #include "tests.h"
 #include "../hx711/hx711.h"
 
+void delayTest(){
+	printf("statement 1");
+	delay_us(1000000000);
+	printf("statement 2");
+}
 
 void addToCart(){
 
