@@ -26,7 +26,7 @@ static Item getItemFromResponse(char *read){
 	item.requires_weighing = atoi(strtok(NULL, "|"));
 	item.x = atoi(strtok(NULL, "|"));
 	item.y = atoi(strtok(NULL, "|"));
-	//item.node_id = atoi(strtok(NULL, "|")); todo: determine if this is in the
+	item.node_id = atoi(strtok(NULL, "|"));
 	item.aisleColor = 0;
 
 
