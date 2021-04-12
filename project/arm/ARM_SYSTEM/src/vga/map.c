@@ -144,8 +144,8 @@ void UpdateBalance(double itemCost)
 
 void ShowNextItem(char *itemName)
 {
-	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, SIDEPANEL_TEXT_WIDTH, 7);
-	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 10, BLACK, WHITE, itemName, 0, 0);
+	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 15, SIDEPANEL_TEXT_WIDTH, 7);
+	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 15, BLACK, WHITE, itemName, 0, 0);
 }
 
 void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour)
