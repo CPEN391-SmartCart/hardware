@@ -12,6 +12,8 @@
 #include "hx711/hx711.h"
 #include "string.h"
 
+#include "./pathfinding/dijsktra.h";
+
 #include "objectFactory.h"
 #include "tests/tests.h"
 #include "luaRequests/item_request.h"
@@ -55,11 +57,14 @@ Legend *legends;
 coord_t old_path[20];
 int old_path_length;
 
+int current_expected_weight = 0;
+
+
 void loadMapData();
 void handleBTMessage(char*code, char*data);
 void initSystem();
 void displayStoreMap();
-int getWeight();
+double getWeight(double min, double max);
 void handleBTMessageALTERNATIVE(char*code, char*data);
 
 int goal_node_id;
@@ -70,11 +75,15 @@ int main(void)
 	initSystem();
 	loadMapData();
 
-	displayStoreMap();
+	//displayStoreMap();
+
+
 
     if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
     char stringBT[1024];
+
+    int times = 0;
 
     for(;;)
     {
@@ -97,8 +106,6 @@ int main(void)
     		  }
     		}
     	}
-
-    	delay_us(10000);
     }
 
 	return 0;
@@ -120,6 +127,8 @@ void handleBTMessage(char*code, char*data)
 
 	if(!strcmp(code,scanCode)){
 
+
+
 		//Temporarily here to test around barcode data bug
 		lastScannedItem = requestItem(data, error_code);
 
@@ -128,6 +137,7 @@ void handleBTMessage(char*code, char*data)
 			printf("could not find item \n");
 			return;
 		}
+
 		char* itemName = lastScannedItem.name;
 		char itemPrice[6];
 
@@ -135,42 +145,71 @@ void handleBTMessage(char*code, char*data)
 		int isByWeight = lastScannedItem.requires_weighing;
 		if(isByWeight)
 		{
+			//uncomment when loadcell available
+			double weight = getWeight(current_expected_weight + 40, current_expected_weight + 1000);
 
-			strcat(sendMessage, itemName);
-			strcat(sendMessage, " | ");
-			strcat(sendMessage, itemPrice);
 
-			printf("WriteBT: %s\n", sendMessage);
-			delay_us(10000);
+			if(weight == -1){
+				//TODO: handle weight could not be calculated
+			}
+			else
+			{
+				weight -= current_expected_weight;
+				double item_cost = (lastScannedItem.cost * weight) / 1000;
+				lastScannedItem.cost = item_cost;
+				FloatToString(item_cost, itemPrice, 2, 0);
 
-			// TODO: call a function to get the scale weight
-			// for(unsigned int i = 0;i<100;i++)
-			// {
-			// 	delay_us(10000);
+				strcat(sendMessage, itemName);
+				strcat(sendMessage, " | ");
+				strcat(sendMessage, itemPrice);
 
-			// 	char* weightInGrams = "5500"; // weight in grams
-			// 	strcat(sendMessage, " | sw:");
-			// 	strcat(sendMessage, weightInGrams);
-			// }
+				printf("WriteBT: %s\n", sendMessage);
 
-			writeStringBT(sendMessage);
+				writeStringBT(sendMessage);
+
+				current_expected_weight += weight;
+			}
 		}
 		else
 		{
-			delay_us(10000);
+			delay_us(10 * 1000 * 1000);
+			current_expected_weight += lastScannedItem.weight_g;
+
+			int times = 0;
+
+			for (int i = 0; i < 10; i++)
+			{
+				double current_weight = hx711_get_units(10);
+				if (current_weight < current_expected_weight - 200 || current_weight > current_expected_weight + 200)
+				{
+					times++;
+					if (times >= 6)
+					{
+						//PLEASE ALERT STORE
+						printf("STEALING!\n");
+					}
+				}
+				else
+				{
+					times = 0;
+				}
+			}
+
+			//delay_us(10000);
 
 			strcat(sendMessage, itemName);
 			strcat(sendMessage, " | ");
 			strcat(sendMessage, itemPrice);
 			writeStringBT(sendMessage);
 		}
-
 		// TODO: Path plan with the barcodes
 		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
 	}
 
 	if(!strcmp(code,itemCostCode)){
 		AddItemToCart(lastScannedItem);
+
+		writeStringBT("acked");
 	}
 
 	if(!strcmp(code,pathPlanningCode)){
@@ -222,11 +261,33 @@ void handleBTMessage(char*code, char*data)
 	}
 
 	if(!strcmp(code,successfulPayment)){
+		int times = 0;
+
+		for (int i = 0; i < 10; i++)
+		{
+			double current_weight = hx711_get_units(10);
+			if (current_weight < current_expected_weight - 200 || current_weight > current_expected_weight + 200)
+			{
+				times++;
+				if (times >= 6)
+				{
+					//PLEASE ALERT STORE
+					printf("STEALING!\n");
+				}
+			}
+			else
+			{
+				times = 0;
+			}
+		}
+
 		DisplayPaymentConfirmation();
 	}
 
 	if(!strcmp(code,reset)){
 		displayStoreMap();
+
+		writeStringBT("resetdone");
 	}
 }
 
@@ -242,6 +303,10 @@ void initSystem()
 
 
     printf("Bluetooth, Wifi initialized\n");
+
+	hx711_set_scale(72.61);
+	hx711_tare(20);
+	printf("Scale calibration done!\n");
 }
 
 void loadMapData(){
@@ -342,8 +407,7 @@ void handleBTMessageALTERNATIVE(char*code, char*data)
 			int weight_max = expected_weight + (int) (expected_weight * relative_weight_tolerance);
 
 			//uncomment when loadcell available
-			//int weight = getWeight(weight_min, weight_max);
-			int weight = 200;
+			double weight = getWeight(weight_min, weight_max);
 
 			if(weight == -1){
 				//TODO: handle weight could not be calculated
@@ -384,28 +448,26 @@ void handleBTMessageALTERNATIVE(char*code, char*data)
 /*
  * returns the weight in grams, a return value of -1 means that no weight above the tolerance level was found
  */
-int getWeight(double min, double max){
+double getWeight(double min, double max){
 	int retVal = -1;
-	int weight = -1;
+	double weight = -1;
 
 	DisplayWeighCommand(0);
-	delay_us(5000000);
+	delay_us(5 * 1000 * 1000);
 
 	for(unsigned int i = 0; i < 5; i++){
-		DisplayWeighCommand(0);
-		delay_us(2000000);
 
 		//0.1 seconds between attempts to read weight
 		for(unsigned int j = 0; j<100; i++) {
-			delay_us(100000);
-			weight = hx711_read_average(5000);
+			weight = hx711_get_units(10);
 			if(BETWEEN(weight, min, max)){
+				delay_us(1 * 1000 * 1000);
+				weight = hx711_get_units(10);
 				break;
 			}
 		}
 
-		if(BETWEEN(weight, min, max)){
-			DisplayWeighCommand(1);
+		if(!BETWEEN(weight, min, max)){
 			delay_us(2000000);
 		} else {
 			break;
@@ -416,8 +478,8 @@ int getWeight(double min, double max){
 		printf("weight found, final calculated weight is %d\n", weight);
 		retVal = weight;
 	} else {
+		DisplayWeighCommand(1);
 		printf("weight could not be determined, Expected something between %d and %d, but final calculated weight was %d\n", min, max, weight);
-		weight = -1;
 	}
 	return retVal;
 }

@@ -33,9 +33,7 @@ static Item getItemFromResponse(char *read){
 
 	char* optional_weight = strtok(NULL, "|");
 
-	if(optional_weight != NULL){
-		item.weight_g = atoi(strtok(NULL, "|"));
-	}
+	item.weight_g = atoi(optional_weight);
 
 	return item;
 }

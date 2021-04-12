@@ -11,6 +11,7 @@
 #include "assert.h"
 #include "alt_clock_manager.h"
 #include "alt_globaltmr.h"
+#include <stdint.h>
 
 void delay_us(uint32_t us);
 void setup_hps_timer(void);

@@ -16,7 +16,10 @@
 #include "../delay/delay.h"
 #include "string.h"
 #include "stdio.h"
+#include "../hx711/hx711.h";
 
+int current_weight = 0;
+extern int current_expected_weight;
 
 void initBluetooth()
 {
@@ -54,7 +57,7 @@ int readStringUsingProtocol(char string[64]){
 	memset(string, 0, sizeof(string));
 	memset(buffer, 0, sizeof(string));
 
-
+	int times = 0;
 	while(bytes_read<MESSAGE_STRING_BEGIN){
 		char s[32];
 		bytes_read += readStringBT(s);

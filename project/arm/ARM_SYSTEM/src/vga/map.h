@@ -13,12 +13,12 @@
 #define SIDEPANEL_BALANCE_Y 420
 #define SIDEPANEL_SPLITTER_X 576
 #define SIDEPANEL_TEXT_WIDTH 224
-#define SIDEPANEL_WEIGHT_COMMAND_Y 165
-#define SIDEPANEL_ITEMS_Y 210
+#define SIDEPANEL_WEIGHT_COMMAND_Y 185
+#define SIDEPANEL_ITEMS_Y 230
 #define SIDEPANEL_NEXT_ITEM_Y 385
 #define PAYMENT_CONFIRMATION_X 200
 #define PAYMENT_CONFIRMATION_Y 140
-#define CARTSIZE 15
+#define CARTSIZE 10
 
 void SetupMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
 void CreateStoreMap(int sectionSize, Section sections[], int legendSize, Legend legends[]);
