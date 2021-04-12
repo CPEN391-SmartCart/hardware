@@ -9,9 +9,14 @@ double subtotal = 0.0;
 double gstRate = 0.07;
 
 // Arrow head reconstruction
-int reconstructionX;
-int reconstructionY;
-int reconstructionPixel[30][30];
+int reconstructionGoalX;
+int reconstructionGoalY;
+int reconstructionPixelGoal[30][30];
+
+int reconstructionStartX;
+int reconstructionStartY;
+int reconstructionPixelStart[30][30];
+
 int reconstructionFlag = 0;
 
 // private helper functions
@@ -146,12 +151,11 @@ void ShowNextItem(char *itemName)
 void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour)
 {
 	// Clear old path
-	FilledRectangle(oldPath[oldPathSize - 1].x - 3, oldPath[oldPathSize - 1].y - 3, 8, 8, WHITE);
 	DrawItemPathHelper(oldPathSize, oldPath, WHITE, 1);
 
 	// Draw new path
-	FilledRectangle(newPath[newPathSize - 1].x - 3, newPath[newPathSize - 1].y - 3, 8, 8, colour);
 	DrawItemPathHelper(newPathSize, newPath, colour, 0);
+	FilledRectangle(newPath[newPathSize - 1].x - 3, newPath[newPathSize - 1].y - 3, 8, 8, colour);
 }
 
 void DrawItemPathHelper(int pathSize, coord_t path[], int colour, int clear)
@@ -188,7 +192,8 @@ void DrawReconstructionPixels()
 	{
 		for (j = 0; j < 30; j++)
 		{
-			WriteAPixel(reconstructionX - 15 + i, reconstructionY - 15 + j, reconstructionPixel[i][j]);
+			WriteAPixel(reconstructionGoalX - 15 + i, reconstructionGoalY - 15 + j, reconstructionPixelGoal[i][j]);
+			WriteAPixel(reconstructionStartX - 15 + i, reconstructionStartY - 15 + j, reconstructionPixelStart[i][j]);
 		}
 	}
 }
@@ -213,14 +218,18 @@ void DrawArrowHead(int pathSize, coord_t path[], int colour)
 	coord_t goalPrev = path[1];
 
 	// store pixels for section reconstruction
-	reconstructionX = goal.x;
-	reconstructionY = goal.y;
+	reconstructionGoalX = goal.x;
+	reconstructionGoalY = goal.y;
+
+	reconstructionStartX = path[pathSize - 1].x;
+	reconstructionStartY = path[pathSize - 1].y;
 
 	for (i = 0; i < 30; i++)
 	{
 		for (j = 0; j < 30; j++)
 		{
-			reconstructionPixel[i][j] = ReadAPixel(goal.x - 15 + i, goal.y - 15 + j);
+			reconstructionPixelGoal[i][j] = ReadAPixel(reconstructionGoalX - 15 + i, reconstructionGoalY - 15 + j);
+			reconstructionPixelStart[i][j] = ReadAPixel(reconstructionStartX - 15 + i, reconstructionStartY - 15 + j);
 		}
 	}
 
