@@ -6,7 +6,7 @@
 Item cart[CARTSIZE];
 int numberOfItems = 0;
 double subtotal = 0.0;
-double gstRate = 0.07;
+double gstRate = 0.05;
 
 // Arrow head reconstruction
 int reconstructionGoalX;
