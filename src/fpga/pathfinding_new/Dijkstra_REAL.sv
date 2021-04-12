@@ -149,6 +149,9 @@ module Dijkstra_Table_Init
 						else if ((row == 3 && i == 32)) begin
 							write_data[i] <= 14'h007c;
 						end
+						else if ((row == 3 && i == 91)) begin
+							write_data[i] <= 14'h003f;
+						end
 						else if ((row == 4 && i == 3)) begin
 							write_data[i] <= 14'h0023;
 						end
@@ -160,9 +163,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 4 && i == 33)) begin
 							write_data[i] <= 14'h007c;
-						end
-						else if ((row == 4 && i == 93)) begin
-							write_data[i] <= 14'h0042;
 						end
 						else if ((row == 5 && i == 4)) begin
 							write_data[i] <= 14'h0025;
@@ -188,8 +188,8 @@ module Dijkstra_Table_Init
 						else if ((row == 6 && i == 35)) begin
 							write_data[i] <= 14'h007c;
 						end
-						else if ((row == 6 && i == 96)) begin
-							write_data[i] <= 14'h0183;
+						else if ((row == 6 && i == 88)) begin
+							write_data[i] <= 14'h0176;
 						end
 						else if ((row == 7 && i == 6)) begin
 							write_data[i] <= 14'h0024;
@@ -200,9 +200,6 @@ module Dijkstra_Table_Init
 						else if ((row == 7 && i == 23)) begin
 							write_data[i] <= 14'h0056;
 						end
-						else if ((row == 7 && i == 88)) begin
-							write_data[i] <= 14'h0155;
-						end
 						else if ((row == 8 && i == 7)) begin
 							write_data[i] <= 14'h001e;
 						end
@@ -211,9 +208,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 8 && i == 36)) begin
 							write_data[i] <= 14'h005e;
-						end
-						else if ((row == 8 && i == 88)) begin
-							write_data[i] <= 14'h0137;
 						end
 						else if ((row == 9 && i == 8)) begin
 							write_data[i] <= 14'h0027;
@@ -229,9 +223,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 9 && i == 38)) begin
 							write_data[i] <= 14'h0067;
-						end
-						else if ((row == 9 && i == 88)) begin
-							write_data[i] <= 14'h0139;
 						end
 						else if ((row == 10 && i == 9)) begin
 							write_data[i] <= 14'h003e;
@@ -275,8 +266,8 @@ module Dijkstra_Table_Init
 						else if ((row == 13 && i == 39)) begin
 							write_data[i] <= 14'h005e;
 						end
-						else if ((row == 13 && i == 92)) begin
-							write_data[i] <= 14'h002e;
+						else if ((row == 13 && i == 90)) begin
+							write_data[i] <= 14'h002c;
 						end
 						else if ((row == 14 && i == 15)) begin
 							write_data[i] <= 14'h0022;
@@ -290,6 +281,9 @@ module Dijkstra_Table_Init
 						else if ((row == 14 && i == 40)) begin
 							write_data[i] <= 14'h0068;
 						end
+						else if ((row == 14 && i == 92)) begin
+							write_data[i] <= 14'h0029;
+						end
 						else if ((row == 15 && i == 14)) begin
 							write_data[i] <= 14'h0022;
 						end
@@ -301,9 +295,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 15 && i == 41)) begin
 							write_data[i] <= 14'h0068;
-						end
-						else if ((row == 15 && i == 94)) begin
-							write_data[i] <= 14'h0034;
 						end
 						else if ((row == 16 && i == 15)) begin
 							write_data[i] <= 14'h001f;
@@ -323,8 +314,8 @@ module Dijkstra_Table_Init
 						else if ((row == 17 && i == 26)) begin
 							write_data[i] <= 14'h006c;
 						end
-						else if ((row == 17 && i == 92)) begin
-							write_data[i] <= 14'h0037;
+						else if ((row == 17 && i == 90)) begin
+							write_data[i] <= 14'h0034;
 						end
 						else if ((row == 18 && i == 0)) begin
 							write_data[i] <= 14'h001f;
@@ -344,6 +335,9 @@ module Dijkstra_Table_Init
 						else if ((row == 19 && i == 20)) begin
 							write_data[i] <= 14'h0023;
 						end
+						else if ((row == 19 && i == 91)) begin
+							write_data[i] <= 14'h0095;
+						end
 						else if ((row == 20 && i == 4)) begin
 							write_data[i] <= 14'h0056;
 						end
@@ -352,9 +346,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 20 && i == 21)) begin
 							write_data[i] <= 14'h0025;
-						end
-						else if ((row == 20 && i == 93)) begin
-							write_data[i] <= 14'h0098;
 						end
 						else if ((row == 21 && i == 5)) begin
 							write_data[i] <= 14'h0057;
@@ -374,8 +365,8 @@ module Dijkstra_Table_Init
 						else if ((row == 22 && i == 23)) begin
 							write_data[i] <= 14'h0024;
 						end
-						else if ((row == 22 && i == 96)) begin
-							write_data[i] <= 14'h01da;
+						else if ((row == 22 && i == 88)) begin
+							write_data[i] <= 14'h01cd;
 						end
 						else if ((row == 23 && i == 7)) begin
 							write_data[i] <= 14'h0056;
@@ -385,9 +376,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 23 && i == 24)) begin
 							write_data[i] <= 14'h0026;
-						end
-						else if ((row == 23 && i == 88)) begin
-							write_data[i] <= 14'h01ab;
 						end
 						else if ((row == 24 && i == 10)) begin
 							write_data[i] <= 14'h0037;
@@ -416,8 +404,8 @@ module Dijkstra_Table_Init
 						else if ((row == 26 && i == 27)) begin
 							write_data[i] <= 14'h0021;
 						end
-						else if ((row == 26 && i == 92)) begin
-							write_data[i] <= 14'h00a3;
+						else if ((row == 26 && i == 90)) begin
+							write_data[i] <= 14'h00a0;
 						end
 						else if ((row == 27 && i == 14)) begin
 							write_data[i] <= 14'h006b;
@@ -428,6 +416,9 @@ module Dijkstra_Table_Init
 						else if ((row == 27 && i == 28)) begin
 							write_data[i] <= 14'h0022;
 						end
+						else if ((row == 27 && i == 92)) begin
+							write_data[i] <= 14'h0093;
+						end
 						else if ((row == 28 && i == 15)) begin
 							write_data[i] <= 14'h006b;
 						end
@@ -436,9 +427,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 28 && i == 29)) begin
 							write_data[i] <= 14'h001f;
-						end
-						else if ((row == 28 && i == 94)) begin
-							write_data[i] <= 14'h009f;
 						end
 						else if ((row == 29 && i == 16)) begin
 							write_data[i] <= 14'h006a;
@@ -473,6 +461,9 @@ module Dijkstra_Table_Init
 						else if ((row == 32 && i == 33)) begin
 							write_data[i] <= 14'h0023;
 						end
+						else if ((row == 32 && i == 91)) begin
+							write_data[i] <= 14'h003d;
+						end
 						else if ((row == 33 && i == 4)) begin
 							write_data[i] <= 14'h007c;
 						end
@@ -481,9 +472,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 33 && i == 34)) begin
 							write_data[i] <= 14'h0024;
-						end
-						else if ((row == 33 && i == 93)) begin
-							write_data[i] <= 14'h003a;
 						end
 						else if ((row == 34 && i == 5)) begin
 							write_data[i] <= 14'h007c;
@@ -509,8 +497,8 @@ module Dijkstra_Table_Init
 						else if ((row == 35 && i == 70)) begin
 							write_data[i] <= 14'h0037;
 						end
-						else if ((row == 35 && i == 96)) begin
-							write_data[i] <= 14'h0107;
+						else if ((row == 35 && i == 88)) begin
+							write_data[i] <= 14'h00fa;
 						end
 						else if ((row == 36 && i == 8)) begin
 							write_data[i] <= 14'h005e;
@@ -524,8 +512,8 @@ module Dijkstra_Table_Init
 						else if ((row == 36 && i == 46)) begin
 							write_data[i] <= 14'h0031;
 						end
-						else if ((row == 36 && i == 88)) begin
-							write_data[i] <= 14'h00d9;
+						else if ((row == 36 && i == 70)) begin
+							write_data[i] <= 14'h003f;
 						end
 						else if ((row == 37 && i == 9)) begin
 							write_data[i] <= 14'h005e;
@@ -563,8 +551,8 @@ module Dijkstra_Table_Init
 						else if ((row == 39 && i == 40)) begin
 							write_data[i] <= 14'h0021;
 						end
-						else if ((row == 39 && i == 92)) begin
-							write_data[i] <= 14'h0030;
+						else if ((row == 39 && i == 90)) begin
+							write_data[i] <= 14'h0033;
 						end
 						else if ((row == 40 && i == 14)) begin
 							write_data[i] <= 14'h0068;
@@ -575,6 +563,9 @@ module Dijkstra_Table_Init
 						else if ((row == 40 && i == 41)) begin
 							write_data[i] <= 14'h0022;
 						end
+						else if ((row == 40 && i == 92)) begin
+							write_data[i] <= 14'h0040;
+						end
 						else if ((row == 41 && i == 15)) begin
 							write_data[i] <= 14'h0068;
 						end
@@ -583,12 +574,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 41 && i == 42)) begin
 							write_data[i] <= 14'h001e;
-						end
-						else if ((row == 41 && i == 43)) begin
-							write_data[i] <= 14'h0030;
-						end
-						else if ((row == 41 && i == 94)) begin
-							write_data[i] <= 14'h0034;
 						end
 						else if ((row == 42 && i == 16)) begin
 							write_data[i] <= 14'h0068;
@@ -599,9 +584,6 @@ module Dijkstra_Table_Init
 						else if ((row == 42 && i == 43)) begin
 							write_data[i] <= 14'h0031;
 						end
-						else if ((row == 43 && i == 41)) begin
-							write_data[i] <= 14'h0030;
-						end
 						else if ((row == 43 && i == 42)) begin
 							write_data[i] <= 14'h0031;
 						end
@@ -611,11 +593,8 @@ module Dijkstra_Table_Init
 						else if ((row == 43 && i == 46)) begin
 							write_data[i] <= 14'h00b7;
 						end
-						else if ((row == 43 && i == 89)) begin
-							write_data[i] <= 14'h0088;
-						end
-						else if ((row == 43 && i == 94)) begin
-							write_data[i] <= 14'h0064;
+						else if ((row == 43 && i == 95)) begin
+							write_data[i] <= 14'h0087;
 						end
 						else if ((row == 44 && i == 43)) begin
 							write_data[i] <= 14'h001d;
@@ -625,9 +604,6 @@ module Dijkstra_Table_Init
 						end
 						else if ((row == 44 && i == 47)) begin
 							write_data[i] <= 14'h00b7;
-						end
-						else if ((row == 44 && i == 94)) begin
-							write_data[i] <= 14'h0081;
 						end
 						else if ((row == 45 && i == 44)) begin
 							write_data[i] <= 14'h001c;
@@ -653,11 +629,8 @@ module Dijkstra_Table_Init
 						else if ((row == 46 && i == 47)) begin
 							write_data[i] <= 14'h001d;
 						end
-						else if ((row == 46 && i == 88)) begin
-							write_data[i] <= 14'h00ac;
-						end
-						else if ((row == 46 && i == 89)) begin
-							write_data[i] <= 14'h0030;
+						else if ((row == 46 && i == 95)) begin
+							write_data[i] <= 14'h0031;
 						end
 						else if ((row == 47 && i == 44)) begin
 							write_data[i] <= 14'h00b7;
@@ -668,9 +641,6 @@ module Dijkstra_Table_Init
 						else if ((row == 47 && i == 48)) begin
 							write_data[i] <= 14'h001d;
 						end
-						else if ((row == 47 && i == 88)) begin
-							write_data[i] <= 14'h008f;
-						end
 						else if ((row == 48 && i == 45)) begin
 							write_data[i] <= 14'h00b7;
 						end
@@ -680,9 +650,6 @@ module Dijkstra_Table_Init
 						else if ((row == 48 && i == 49)) begin
 							write_data[i] <= 14'h0020;
 						end
-						else if ((row == 48 && i == 88)) begin
-							write_data[i] <= 14'h0072;
-						end
 						else if ((row == 49 && i == 48)) begin
 							write_data[i] <= 14'h0020;
 						end
@@ -690,10 +657,7 @@ module Dijkstra_Table_Init
 							write_data[i] <= 14'h0068;
 						end
 						else if ((row == 49 && i == 61)) begin
-							write_data[i] <= 14'h002d;
-						end
-						else if ((row == 49 && i == 88)) begin
-							write_data[i] <= 14'h0052;
+							write_data[i] <= 14'h002e;
 						end
 						else if ((row == 50 && i == 49)) begin
 							write_data[i] <= 14'h0068;
@@ -719,9 +683,6 @@ module Dijkstra_Table_Init
 						else if ((row == 52 && i == 53)) begin
 							write_data[i] <= 14'h0028;
 						end
-						else if ((row == 52 && i == 94)) begin
-							write_data[i] <= 14'h00c4;
-						end
 						else if ((row == 53 && i == 52)) begin
 							write_data[i] <= 14'h0028;
 						end
@@ -731,11 +692,11 @@ module Dijkstra_Table_Init
 						else if ((row == 53 && i == 60)) begin
 							write_data[i] <= 14'h0062;
 						end
-						else if ((row == 53 && i == 90)) begin
-							write_data[i] <= 14'h0150;
+						else if ((row == 53 && i == 93)) begin
+							write_data[i] <= 14'h017a;
 						end
-						else if ((row == 53 && i == 91)) begin
-							write_data[i] <= 14'h0097;
+						else if ((row == 53 && i == 94)) begin
+							write_data[i] <= 14'h0034;
 						end
 						else if ((row == 54 && i == 53)) begin
 							write_data[i] <= 14'h0031;
@@ -746,11 +707,8 @@ module Dijkstra_Table_Init
 						else if ((row == 54 && i == 59)) begin
 							write_data[i] <= 14'h0062;
 						end
-						else if ((row == 54 && i == 87)) begin
-							write_data[i] <= 14'h002f;
-						end
-						else if ((row == 54 && i == 88)) begin
-							write_data[i] <= 14'h00d8;
+						else if ((row == 54 && i == 89)) begin
+							write_data[i] <= 14'h00a0;
 						end
 						else if ((row == 55 && i == 54)) begin
 							write_data[i] <= 14'h0030;
@@ -761,8 +719,11 @@ module Dijkstra_Table_Init
 						else if ((row == 55 && i == 58)) begin
 							write_data[i] <= 14'h0061;
 						end
-						else if ((row == 55 && i == 86)) begin
-							write_data[i] <= 14'h008b;
+						else if ((row == 55 && i == 87)) begin
+							write_data[i] <= 14'h0097;
+						end
+						else if ((row == 55 && i == 96)) begin
+							write_data[i] <= 14'h002e;
 						end
 						else if ((row == 56 && i == 55)) begin
 							write_data[i] <= 14'h0028;
@@ -770,8 +731,8 @@ module Dijkstra_Table_Init
 						else if ((row == 56 && i == 57)) begin
 							write_data[i] <= 14'h0061;
 						end
-						else if ((row == 56 && i == 95)) begin
-							write_data[i] <= 14'h014d;
+						else if ((row == 56 && i == 85)) begin
+							write_data[i] <= 14'h015c;
 						end
 						else if ((row == 57 && i == 56)) begin
 							write_data[i] <= 14'h0061;
@@ -782,8 +743,8 @@ module Dijkstra_Table_Init
 						else if ((row == 57 && i == 64)) begin
 							write_data[i] <= 14'h0068;
 						end
-						else if ((row == 57 && i == 95)) begin
-							write_data[i] <= 14'h00ec;
+						else if ((row == 57 && i == 85)) begin
+							write_data[i] <= 14'h00fb;
 						end
 						else if ((row == 58 && i == 55)) begin
 							write_data[i] <= 14'h0061;
@@ -797,8 +758,11 @@ module Dijkstra_Table_Init
 						else if ((row == 58 && i == 63)) begin
 							write_data[i] <= 14'h0068;
 						end
-						else if ((row == 58 && i == 86)) begin
-							write_data[i] <= 14'h002b;
+						else if ((row == 58 && i == 87)) begin
+							write_data[i] <= 14'h0037;
+						end
+						else if ((row == 58 && i == 96)) begin
+							write_data[i] <= 14'h0037;
 						end
 						else if ((row == 59 && i == 54)) begin
 							write_data[i] <= 14'h0062;
@@ -812,11 +776,8 @@ module Dijkstra_Table_Init
 						else if ((row == 59 && i == 62)) begin
 							write_data[i] <= 14'h0067;
 						end
-						else if ((row == 59 && i == 87)) begin
-							write_data[i] <= 14'h0037;
-						end
-						else if ((row == 59 && i == 88)) begin
-							write_data[i] <= 14'h0077;
+						else if ((row == 59 && i == 89)) begin
+							write_data[i] <= 14'h003e;
 						end
 						else if ((row == 60 && i == 50)) begin
 							write_data[i] <= 14'h002e;
@@ -830,47 +791,41 @@ module Dijkstra_Table_Init
 						else if ((row == 60 && i == 61)) begin
 							write_data[i] <= 14'h0067;
 						end
-						else if ((row == 60 && i == 90)) begin
-							write_data[i] <= 14'h00ee;
+						else if ((row == 60 && i == 93)) begin
+							write_data[i] <= 14'h0118;
 						end
-						else if ((row == 60 && i == 91)) begin
-							write_data[i] <= 14'h0036;
+						else if ((row == 60 && i == 94)) begin
+							write_data[i] <= 14'h0032;
 						end
 						else if ((row == 61 && i == 49)) begin
-							write_data[i] <= 14'h002d;
+							write_data[i] <= 14'h002e;
 						end
 						else if ((row == 61 && i == 60)) begin
 							write_data[i] <= 14'h0067;
 						end
 						else if ((row == 61 && i == 62)) begin
-							write_data[i] <= 14'h0030;
+							write_data[i] <= 14'h002f;
 						end
 						else if ((row == 61 && i == 68)) begin
 							write_data[i] <= 14'h002f;
 						end
-						else if ((row == 61 && i == 88)) begin
-							write_data[i] <= 14'h0027;
+						else if ((row == 61 && i == 93)) begin
+							write_data[i] <= 14'h00b2;
 						end
-						else if ((row == 61 && i == 90)) begin
-							write_data[i] <= 14'h0088;
-						end
-						else if ((row == 61 && i == 91)) begin
-							write_data[i] <= 14'h0035;
+						else if ((row == 61 && i == 94)) begin
+							write_data[i] <= 14'h0098;
 						end
 						else if ((row == 62 && i == 59)) begin
 							write_data[i] <= 14'h0067;
 						end
 						else if ((row == 62 && i == 61)) begin
-							write_data[i] <= 14'h0030;
+							write_data[i] <= 14'h002f;
 						end
 						else if ((row == 62 && i == 63)) begin
 							write_data[i] <= 14'h0031;
 						end
-						else if ((row == 62 && i == 87)) begin
-							write_data[i] <= 14'h009d;
-						end
-						else if ((row == 62 && i == 88)) begin
-							write_data[i] <= 14'h0013;
+						else if ((row == 62 && i == 89)) begin
+							write_data[i] <= 14'h002c;
 						end
 						else if ((row == 63 && i == 58)) begin
 							write_data[i] <= 14'h0068;
@@ -881,11 +836,11 @@ module Dijkstra_Table_Init
 						else if ((row == 63 && i == 64)) begin
 							write_data[i] <= 14'h0027;
 						end
-						else if ((row == 63 && i == 86)) begin
-							write_data[i] <= 14'h0040;
+						else if ((row == 63 && i == 87)) begin
+							write_data[i] <= 14'h0035;
 						end
-						else if ((row == 63 && i == 88)) begin
-							write_data[i] <= 14'h003f;
+						else if ((row == 63 && i == 96)) begin
+							write_data[i] <= 14'h009e;
 						end
 						else if ((row == 64 && i == 57)) begin
 							write_data[i] <= 14'h0068;
@@ -896,11 +851,8 @@ module Dijkstra_Table_Init
 						else if ((row == 64 && i == 65)) begin
 							write_data[i] <= 14'h002f;
 						end
-						else if ((row == 64 && i == 88)) begin
-							write_data[i] <= 14'h0065;
-						end
-						else if ((row == 64 && i == 95)) begin
-							write_data[i] <= 14'h0084;
+						else if ((row == 64 && i == 85)) begin
+							write_data[i] <= 14'h0093;
 						end
 						else if ((row == 65 && i == 64)) begin
 							write_data[i] <= 14'h002f;
@@ -911,14 +863,14 @@ module Dijkstra_Table_Init
 						else if ((row == 65 && i == 82)) begin
 							write_data[i] <= 14'h00b3;
 						end
-						else if ((row == 65 && i == 86)) begin
-							write_data[i] <= 14'h007a;
+						else if ((row == 65 && i == 85)) begin
+							write_data[i] <= 14'h0064;
 						end
-						else if ((row == 65 && i == 95)) begin
-							write_data[i] <= 14'h0055;
+						else if ((row == 65 && i == 87)) begin
+							write_data[i] <= 14'h006f;
 						end
-						else if ((row == 65 && i == 96)) begin
-							write_data[i] <= 14'h0037;
+						else if ((row == 65 && i == 88)) begin
+							write_data[i] <= 14'h0044;
 						end
 						else if ((row == 66 && i == 65)) begin
 							write_data[i] <= 14'h0028;
@@ -929,11 +881,11 @@ module Dijkstra_Table_Init
 						else if ((row == 66 && i == 81)) begin
 							write_data[i] <= 14'h00b3;
 						end
-						else if ((row == 66 && i == 85)) begin
-							write_data[i] <= 14'h0095;
+						else if ((row == 66 && i == 86)) begin
+							write_data[i] <= 14'h007f;
 						end
-						else if ((row == 66 && i == 96)) begin
-							write_data[i] <= 14'h0012;
+						else if ((row == 66 && i == 88)) begin
+							write_data[i] <= 14'h001d;
 						end
 						else if ((row == 67 && i == 66)) begin
 							write_data[i] <= 14'h0031;
@@ -944,8 +896,8 @@ module Dijkstra_Table_Init
 						else if ((row == 67 && i == 80)) begin
 							write_data[i] <= 14'h00b3;
 						end
-						else if ((row == 67 && i == 96)) begin
-							write_data[i] <= 14'h0025;
+						else if ((row == 67 && i == 88)) begin
+							write_data[i] <= 14'h0019;
 						end
 						else if ((row == 68 && i == 61)) begin
 							write_data[i] <= 14'h002f;
@@ -959,14 +911,14 @@ module Dijkstra_Table_Init
 						else if ((row == 68 && i == 79)) begin
 							write_data[i] <= 14'h00b3;
 						end
-						else if ((row == 68 && i == 90)) begin
-							write_data[i] <= 14'h0059;
+						else if ((row == 68 && i == 88)) begin
+							write_data[i] <= 14'h0047;
 						end
-						else if ((row == 68 && i == 91)) begin
-							write_data[i] <= 14'h0063;
+						else if ((row == 68 && i == 93)) begin
+							write_data[i] <= 14'h0083;
 						end
-						else if ((row == 68 && i == 96)) begin
-							write_data[i] <= 14'h0054;
+						else if ((row == 68 && i == 94)) begin
+							write_data[i] <= 14'h00c6;
 						end
 						else if ((row == 69 && i == 68)) begin
 							write_data[i] <= 14'h002d;
@@ -977,11 +929,14 @@ module Dijkstra_Table_Init
 						else if ((row == 69 && i == 72)) begin
 							write_data[i] <= 14'h002f;
 						end
-						else if ((row == 69 && i == 96)) begin
-							write_data[i] <= 14'h0081;
+						else if ((row == 69 && i == 88)) begin
+							write_data[i] <= 14'h0074;
 						end
 						else if ((row == 70 && i == 35)) begin
 							write_data[i] <= 14'h0037;
+						end
+						else if ((row == 70 && i == 36)) begin
+							write_data[i] <= 14'h003f;
 						end
 						else if ((row == 70 && i == 69)) begin
 							write_data[i] <= 14'h0050;
@@ -989,8 +944,8 @@ module Dijkstra_Table_Init
 						else if ((row == 70 && i == 71)) begin
 							write_data[i] <= 14'h002f;
 						end
-						else if ((row == 70 && i == 96)) begin
-							write_data[i] <= 14'h00d0;
+						else if ((row == 70 && i == 88)) begin
+							write_data[i] <= 14'h00c3;
 						end
 						else if ((row == 71 && i == 70)) begin
 							write_data[i] <= 14'h002f;
@@ -1001,8 +956,8 @@ module Dijkstra_Table_Init
 						else if ((row == 71 && i == 74)) begin
 							write_data[i] <= 14'h0030;
 						end
-						else if ((row == 71 && i == 89)) begin
-							write_data[i] <= 14'h008e;
+						else if ((row == 71 && i == 95)) begin
+							write_data[i] <= 14'h008f;
 						end
 						else if ((row == 72 && i == 69)) begin
 							write_data[i] <= 14'h002f;
@@ -1031,8 +986,8 @@ module Dijkstra_Table_Init
 						else if ((row == 74 && i == 75)) begin
 							write_data[i] <= 14'h002f;
 						end
-						else if ((row == 74 && i == 89)) begin
-							write_data[i] <= 14'h00be;
+						else if ((row == 74 && i == 95)) begin
+							write_data[i] <= 14'h00bf;
 						end
 						else if ((row == 75 && i == 74)) begin
 							write_data[i] <= 14'h002f;
@@ -1044,13 +999,13 @@ module Dijkstra_Table_Init
 							write_data[i] <= 14'h0026;
 						end
 						else if ((row == 75 && i == 83)) begin
-							write_data[i] <= 14'h0032;
+							write_data[i] <= 14'h0021;
 						end
 						else if ((row == 75 && i == 84)) begin
-							write_data[i] <= 14'h001e;
+							write_data[i] <= 14'h0031;
 						end
-						else if ((row == 75 && i == 89)) begin
-							write_data[i] <= 14'h00ed;
+						else if ((row == 75 && i == 95)) begin
+							write_data[i] <= 14'h00ee;
 						end
 						else if ((row == 76 && i == 73)) begin
 							write_data[i] <= 14'h0030;
@@ -1062,10 +1017,10 @@ module Dijkstra_Table_Init
 							write_data[i] <= 14'h0024;
 						end
 						else if ((row == 76 && i == 83)) begin
-							write_data[i] <= 14'h0020;
+							write_data[i] <= 14'h0032;
 						end
 						else if ((row == 76 && i == 84)) begin
-							write_data[i] <= 14'h0034;
+							write_data[i] <= 14'h0022;
 						end
 						else if ((row == 77 && i == 76)) begin
 							write_data[i] <= 14'h0024;
@@ -1085,8 +1040,8 @@ module Dijkstra_Table_Init
 						else if ((row == 78 && i == 77)) begin
 							write_data[i] <= 14'h004f;
 						end
-						else if ((row == 78 && i == 89)) begin
-							write_data[i] <= 14'h0113;
+						else if ((row == 78 && i == 95)) begin
+							write_data[i] <= 14'h0114;
 						end
 						else if ((row == 79 && i == 68)) begin
 							write_data[i] <= 14'h00b3;
@@ -1097,11 +1052,11 @@ module Dijkstra_Table_Init
 						else if ((row == 79 && i == 80)) begin
 							write_data[i] <= 14'h0030;
 						end
-						else if ((row == 79 && i == 90)) begin
-							write_data[i] <= 14'h005c;
+						else if ((row == 79 && i == 93)) begin
+							write_data[i] <= 14'h0033;
 						end
-						else if ((row == 79 && i == 91)) begin
-							write_data[i] <= 14'h0115;
+						else if ((row == 79 && i == 94)) begin
+							write_data[i] <= 14'h0179;
 						end
 						else if ((row == 80 && i == 67)) begin
 							write_data[i] <= 14'h00b3;
@@ -1121,11 +1076,8 @@ module Dijkstra_Table_Init
 						else if ((row == 81 && i == 82)) begin
 							write_data[i] <= 14'h0028;
 						end
-						else if ((row == 81 && i == 85)) begin
-							write_data[i] <= 14'h0020;
-						end
-						else if ((row == 81 && i == 96)) begin
-							write_data[i] <= 14'h00c0;
+						else if ((row == 81 && i == 86)) begin
+							write_data[i] <= 14'h0037;
 						end
 						else if ((row == 82 && i == 65)) begin
 							write_data[i] <= 14'h00b3;
@@ -1133,254 +1085,194 @@ module Dijkstra_Table_Init
 						else if ((row == 82 && i == 81)) begin
 							write_data[i] <= 14'h0028;
 						end
-						else if ((row == 82 && i == 95)) begin
-							write_data[i] <= 14'h005e;
+						else if ((row == 82 && i == 85)) begin
+							write_data[i] <= 14'h004f;
 						end
 						else if ((row == 83 && i == 75)) begin
-							write_data[i] <= 14'h0032;
+							write_data[i] <= 14'h0021;
 						end
 						else if ((row == 83 && i == 76)) begin
-							write_data[i] <= 14'h0020;
+							write_data[i] <= 14'h0032;
 						end
 						else if ((row == 83 && i == 84)) begin
-							write_data[i] <= 14'h0015;
+							write_data[i] <= 14'h0011;
 						end
 						else if ((row == 84 && i == 75)) begin
-							write_data[i] <= 14'h001e;
+							write_data[i] <= 14'h0031;
 						end
 						else if ((row == 84 && i == 76)) begin
-							write_data[i] <= 14'h0034;
+							write_data[i] <= 14'h0022;
 						end
 						else if ((row == 84 && i == 83)) begin
-							write_data[i] <= 14'h0015;
+							write_data[i] <= 14'h0011;
 						end
-						else if ((row == 85 && i == 66)) begin
-							write_data[i] <= 14'h0095;
+						else if ((row == 85 && i == 56)) begin
+							write_data[i] <= 14'h015c;
 						end
-						else if ((row == 85 && i == 81)) begin
-							write_data[i] <= 14'h0020;
+						else if ((row == 85 && i == 57)) begin
+							write_data[i] <= 14'h00fb;
 						end
-						else if ((row == 85 && i == 96)) begin
-							write_data[i] <= 14'h00a1;
+						else if ((row == 85 && i == 64)) begin
+							write_data[i] <= 14'h0093;
 						end
-						else if ((row == 86 && i == 55)) begin
-							write_data[i] <= 14'h008b;
-						end
-						else if ((row == 86 && i == 58)) begin
-							write_data[i] <= 14'h002b;
-						end
-						else if ((row == 86 && i == 63)) begin
-							write_data[i] <= 14'h0040;
-						end
-						else if ((row == 86 && i == 65)) begin
-							write_data[i] <= 14'h007a;
-						end
-						else if ((row == 87 && i == 54)) begin
-							write_data[i] <= 14'h002f;
-						end
-						else if ((row == 87 && i == 59)) begin
-							write_data[i] <= 14'h0037;
-						end
-						else if ((row == 87 && i == 62)) begin
-							write_data[i] <= 14'h009d;
-						end
-						else if ((row == 87 && i == 88)) begin
-							write_data[i] <= 14'h00ab;
-						end
-						else if ((row == 88 && i == 7)) begin
-							write_data[i] <= 14'h0155;
-						end
-						else if ((row == 88 && i == 8)) begin
-							write_data[i] <= 14'h0137;
-						end
-						else if ((row == 88 && i == 9)) begin
-							write_data[i] <= 14'h0139;
-						end
-						else if ((row == 88 && i == 23)) begin
-							write_data[i] <= 14'h01ab;
-						end
-						else if ((row == 88 && i == 36)) begin
-							write_data[i] <= 14'h00d9;
-						end
-						else if ((row == 88 && i == 46)) begin
-							write_data[i] <= 14'h00ac;
-						end
-						else if ((row == 88 && i == 47)) begin
-							write_data[i] <= 14'h008f;
-						end
-						else if ((row == 88 && i == 48)) begin
-							write_data[i] <= 14'h0072;
-						end
-						else if ((row == 88 && i == 49)) begin
-							write_data[i] <= 14'h0052;
-						end
-						else if ((row == 88 && i == 54)) begin
-							write_data[i] <= 14'h00d8;
-						end
-						else if ((row == 88 && i == 59)) begin
-							write_data[i] <= 14'h0077;
-						end
-						else if ((row == 88 && i == 61)) begin
-							write_data[i] <= 14'h0027;
-						end
-						else if ((row == 88 && i == 62)) begin
-							write_data[i] <= 14'h0013;
-						end
-						else if ((row == 88 && i == 63)) begin
-							write_data[i] <= 14'h003f;
-						end
-						else if ((row == 88 && i == 64)) begin
-							write_data[i] <= 14'h0065;
-						end
-						else if ((row == 88 && i == 87)) begin
-							write_data[i] <= 14'h00ab;
-						end
-						else if ((row == 88 && i == 91)) begin
-							write_data[i] <= 14'h0053;
-						end
-						else if ((row == 89 && i == 43)) begin
-							write_data[i] <= 14'h0088;
-						end
-						else if ((row == 89 && i == 46)) begin
-							write_data[i] <= 14'h0030;
-						end
-						else if ((row == 89 && i == 71)) begin
-							write_data[i] <= 14'h008e;
-						end
-						else if ((row == 89 && i == 74)) begin
-							write_data[i] <= 14'h00be;
-						end
-						else if ((row == 89 && i == 75)) begin
-							write_data[i] <= 14'h00ed;
-						end
-						else if ((row == 89 && i == 78)) begin
-							write_data[i] <= 14'h0113;
-						end
-						else if ((row == 90 && i == 53)) begin
-							write_data[i] <= 14'h0150;
-						end
-						else if ((row == 90 && i == 60)) begin
-							write_data[i] <= 14'h00ee;
-						end
-						else if ((row == 90 && i == 61)) begin
-							write_data[i] <= 14'h0088;
-						end
-						else if ((row == 90 && i == 68)) begin
-							write_data[i] <= 14'h0059;
-						end
-						else if ((row == 90 && i == 79)) begin
-							write_data[i] <= 14'h005c;
-						end
-						else if ((row == 90 && i == 91)) begin
-							write_data[i] <= 14'h00ba;
-						end
-						else if ((row == 91 && i == 53)) begin
-							write_data[i] <= 14'h0097;
-						end
-						else if ((row == 91 && i == 60)) begin
-							write_data[i] <= 14'h0036;
-						end
-						else if ((row == 91 && i == 61)) begin
-							write_data[i] <= 14'h0035;
-						end
-						else if ((row == 91 && i == 68)) begin
-							write_data[i] <= 14'h0063;
-						end
-						else if ((row == 91 && i == 79)) begin
-							write_data[i] <= 14'h0115;
-						end
-						else if ((row == 91 && i == 88)) begin
-							write_data[i] <= 14'h0053;
-						end
-						else if ((row == 91 && i == 90)) begin
-							write_data[i] <= 14'h00ba;
-						end
-						else if ((row == 92 && i == 13)) begin
-							write_data[i] <= 14'h002e;
-						end
-						else if ((row == 92 && i == 17)) begin
-							write_data[i] <= 14'h0037;
-						end
-						else if ((row == 92 && i == 26)) begin
-							write_data[i] <= 14'h00a3;
-						end
-						else if ((row == 92 && i == 39)) begin
-							write_data[i] <= 14'h0030;
-						end
-						else if ((row == 93 && i == 4)) begin
-							write_data[i] <= 14'h0042;
-						end
-						else if ((row == 93 && i == 20)) begin
-							write_data[i] <= 14'h0098;
-						end
-						else if ((row == 93 && i == 33)) begin
-							write_data[i] <= 14'h003a;
-						end
-						else if ((row == 94 && i == 15)) begin
-							write_data[i] <= 14'h0034;
-						end
-						else if ((row == 94 && i == 28)) begin
-							write_data[i] <= 14'h009f;
-						end
-						else if ((row == 94 && i == 41)) begin
-							write_data[i] <= 14'h0034;
-						end
-						else if ((row == 94 && i == 43)) begin
+						else if ((row == 85 && i == 65)) begin
 							write_data[i] <= 14'h0064;
 						end
-						else if ((row == 94 && i == 44)) begin
-							write_data[i] <= 14'h0081;
+						else if ((row == 85 && i == 82)) begin
+							write_data[i] <= 14'h004f;
 						end
-						else if ((row == 94 && i == 52)) begin
-							write_data[i] <= 14'h00c4;
+						else if ((row == 86 && i == 66)) begin
+							write_data[i] <= 14'h007f;
 						end
-						else if ((row == 95 && i == 56)) begin
-							write_data[i] <= 14'h014d;
-						end
-						else if ((row == 95 && i == 57)) begin
-							write_data[i] <= 14'h00ec;
-						end
-						else if ((row == 95 && i == 64)) begin
-							write_data[i] <= 14'h0084;
-						end
-						else if ((row == 95 && i == 65)) begin
-							write_data[i] <= 14'h0055;
-						end
-						else if ((row == 95 && i == 82)) begin
-							write_data[i] <= 14'h005e;
-						end
-						else if ((row == 96 && i == 6)) begin
-							write_data[i] <= 14'h0183;
-						end
-						else if ((row == 96 && i == 22)) begin
-							write_data[i] <= 14'h01da;
-						end
-						else if ((row == 96 && i == 35)) begin
-							write_data[i] <= 14'h0107;
-						end
-						else if ((row == 96 && i == 65)) begin
+						else if ((row == 86 && i == 81)) begin
 							write_data[i] <= 14'h0037;
 						end
-						else if ((row == 96 && i == 66)) begin
-							write_data[i] <= 14'h0012;
+						else if ((row == 87 && i == 55)) begin
+							write_data[i] <= 14'h0097;
 						end
-						else if ((row == 96 && i == 67)) begin
-							write_data[i] <= 14'h0025;
+						else if ((row == 87 && i == 58)) begin
+							write_data[i] <= 14'h0037;
 						end
-						else if ((row == 96 && i == 68)) begin
-							write_data[i] <= 14'h0054;
+						else if ((row == 87 && i == 63)) begin
+							write_data[i] <= 14'h0035;
 						end
-						else if ((row == 96 && i == 69)) begin
-							write_data[i] <= 14'h0081;
+						else if ((row == 87 && i == 65)) begin
+							write_data[i] <= 14'h006f;
 						end
-						else if ((row == 96 && i == 70)) begin
-							write_data[i] <= 14'h00d0;
+						else if ((row == 87 && i == 96)) begin
+							write_data[i] <= 14'h006a;
 						end
-						else if ((row == 96 && i == 81)) begin
-							write_data[i] <= 14'h00c0;
+						else if ((row == 88 && i == 6)) begin
+							write_data[i] <= 14'h0176;
 						end
-						else if ((row == 96 && i == 85)) begin
-							write_data[i] <= 14'h00a1;
+						else if ((row == 88 && i == 22)) begin
+							write_data[i] <= 14'h01cd;
+						end
+						else if ((row == 88 && i == 35)) begin
+							write_data[i] <= 14'h00fa;
+						end
+						else if ((row == 88 && i == 65)) begin
+							write_data[i] <= 14'h0044;
+						end
+						else if ((row == 88 && i == 66)) begin
+							write_data[i] <= 14'h001d;
+						end
+						else if ((row == 88 && i == 67)) begin
+							write_data[i] <= 14'h0019;
+						end
+						else if ((row == 88 && i == 68)) begin
+							write_data[i] <= 14'h0047;
+						end
+						else if ((row == 88 && i == 69)) begin
+							write_data[i] <= 14'h0074;
+						end
+						else if ((row == 88 && i == 70)) begin
+							write_data[i] <= 14'h00c3;
+						end
+						else if ((row == 89 && i == 54)) begin
+							write_data[i] <= 14'h00a0;
+						end
+						else if ((row == 89 && i == 59)) begin
+							write_data[i] <= 14'h003e;
+						end
+						else if ((row == 89 && i == 62)) begin
+							write_data[i] <= 14'h002c;
+						end
+						else if ((row == 90 && i == 13)) begin
+							write_data[i] <= 14'h002c;
+						end
+						else if ((row == 90 && i == 17)) begin
+							write_data[i] <= 14'h0034;
+						end
+						else if ((row == 90 && i == 26)) begin
+							write_data[i] <= 14'h00a0;
+						end
+						else if ((row == 90 && i == 39)) begin
+							write_data[i] <= 14'h0033;
+						end
+						else if ((row == 91 && i == 3)) begin
+							write_data[i] <= 14'h003f;
+						end
+						else if ((row == 91 && i == 19)) begin
+							write_data[i] <= 14'h0095;
+						end
+						else if ((row == 91 && i == 32)) begin
+							write_data[i] <= 14'h003d;
+						end
+						else if ((row == 92 && i == 14)) begin
+							write_data[i] <= 14'h0029;
+						end
+						else if ((row == 92 && i == 27)) begin
+							write_data[i] <= 14'h0093;
+						end
+						else if ((row == 92 && i == 40)) begin
+							write_data[i] <= 14'h0040;
+						end
+						else if ((row == 93 && i == 53)) begin
+							write_data[i] <= 14'h017a;
+						end
+						else if ((row == 93 && i == 60)) begin
+							write_data[i] <= 14'h0118;
+						end
+						else if ((row == 93 && i == 61)) begin
+							write_data[i] <= 14'h00b2;
+						end
+						else if ((row == 93 && i == 68)) begin
+							write_data[i] <= 14'h0083;
+						end
+						else if ((row == 93 && i == 79)) begin
+							write_data[i] <= 14'h0033;
+						end
+						else if ((row == 93 && i == 94)) begin
+							write_data[i] <= 14'h0148;
+						end
+						else if ((row == 94 && i == 53)) begin
+							write_data[i] <= 14'h0034;
+						end
+						else if ((row == 94 && i == 60)) begin
+							write_data[i] <= 14'h0032;
+						end
+						else if ((row == 94 && i == 61)) begin
+							write_data[i] <= 14'h0098;
+						end
+						else if ((row == 94 && i == 68)) begin
+							write_data[i] <= 14'h00c6;
+						end
+						else if ((row == 94 && i == 79)) begin
+							write_data[i] <= 14'h0179;
+						end
+						else if ((row == 94 && i == 93)) begin
+							write_data[i] <= 14'h0148;
+						end
+						else if ((row == 95 && i == 43)) begin
+							write_data[i] <= 14'h0087;
+						end
+						else if ((row == 95 && i == 46)) begin
+							write_data[i] <= 14'h0031;
+						end
+						else if ((row == 95 && i == 71)) begin
+							write_data[i] <= 14'h008f;
+						end
+						else if ((row == 95 && i == 74)) begin
+							write_data[i] <= 14'h00bf;
+						end
+						else if ((row == 95 && i == 75)) begin
+							write_data[i] <= 14'h00ee;
+						end
+						else if ((row == 95 && i == 78)) begin
+							write_data[i] <= 14'h0114;
+						end
+						else if ((row == 96 && i == 55)) begin
+							write_data[i] <= 14'h002e;
+						end
+						else if ((row == 96 && i == 58)) begin
+							write_data[i] <= 14'h0037;
+						end
+						else if ((row == 96 && i == 63)) begin
+							write_data[i] <= 14'h009e;
+						end
+						else if ((row == 96 && i == 87)) begin
+							write_data[i] <= 14'h006a;
 						end
 						else begin 
 							write_data[i] <= `INFINITY;
