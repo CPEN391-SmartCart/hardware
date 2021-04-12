@@ -146,8 +146,8 @@ void UpdateBalance(double itemCost)
 
 void ShowNextItem(char *itemName)
 {
-	ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_NEXT_ITEM_Y, SIDEPANEL_TEXT_WIDTH, 7);
-	DrawFontLine(SIDEPANEL_BALANCE_X, SIDEPANEL_NEXT_ITEM_Y, BLACK, WHITE, itemName, 0, 0);
+	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 15, SIDEPANEL_TEXT_WIDTH, 7);
+	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 15, BLACK, WHITE, itemName, 0, 0);
 }
 
 void ShowItemWeight(char *itemWeight)
@@ -243,53 +243,55 @@ void DrawArrowHead(int pathSize, coord_t path[], int colour)
 
 	reconstructionFlag = 1;
 
-	deltaX = goal.x - goalPrev.x;
-	deltaY = goal.y - goalPrev.y;
+	FilledRectangle(goal.x - 3, goal.y - 3, 8, 8, RED);
 
-	if (goalPrev.x < goal.x)
-	{
-		coordArrowBaseX = goal.x - arrowLength;
-	}
-	else
-	{
-		coordArrowBaseX = goal.x + arrowLength;
-	}
+	// deltaX = goal.x - goalPrev.x;
+	// deltaY = goal.y - goalPrev.y;
 
-	if (!deltaX && !deltaY)
-	{
-		return;
-	}
-	else if (!deltaY)
-	{ // Horizontal
-		coordArrow1X = coordArrowBaseX;
-		coordArrow1Y = goal.y + arrowLength;
-		coordArrow2X = coordArrowBaseX;
-		coordArrow2Y = goal.y - arrowLength;
-	}
-	else if (!deltaX)
-	{ // Vertical
-		coordArrow1X = goal.x + arrowLength;
-		coordArrow1Y = coordArrowBaseY;
-		coordArrow2X = goal.x - arrowLength;
-		coordArrow2Y = coordArrowBaseY;
-	}
-	else
-	{
-		grad = deltaY / deltaX;
-		gradPerpendicular = -1 / grad;
+	// if (goalPrev.x < goal.x)
+	// {
+	// 	coordArrowBaseX = goal.x - arrowLength;
+	// }
+	// else
+	// {
+	// 	coordArrowBaseX = goal.x + arrowLength;
+	// }
 
-		coordArrowBaseY = grad * (coordArrowBaseX - goal.x) + goal.y;
-		coordArrow1X = coordArrowBaseX - grad * arrowLength;
-		coordArrow1Y = gradPerpendicular * (coordArrow1X - coordArrowBaseX) + coordArrowBaseY;
-		coordArrow2X = coordArrowBaseX + grad * arrowLength;
-		coordArrow2Y = gradPerpendicular * (coordArrow2X - coordArrowBaseX) + coordArrowBaseY;
-	}
+	// if (!deltaX && !deltaY)
+	// {
+	// 	return;
+	// }
+	// else if (!deltaY)
+	// { // Horizontal
+	// 	coordArrow1X = coordArrowBaseX;
+	// 	coordArrow1Y = goal.y + arrowLength;
+	// 	coordArrow2X = coordArrowBaseX;
+	// 	coordArrow2Y = goal.y - arrowLength;
+	// }
+	// else if (!deltaX)
+	// { // Vertical
+	// 	coordArrow1X = goal.x + arrowLength;
+	// 	coordArrow1Y = coordArrowBaseY;
+	// 	coordArrow2X = goal.x - arrowLength;
+	// 	coordArrow2Y = coordArrowBaseY;
+	// }
+	// else
+	// {
+	// 	grad = deltaY / deltaX;
+	// 	gradPerpendicular = -1 / grad;
 
-	for (i = 0; i < 3; i++)
-	{
-		DrawAnyLine(coordArrow1X + i, coordArrow1Y, goal.x + i, goal.y, colour);
-		DrawAnyLine(coordArrow2X + i, coordArrow2Y, goal.x + i, goal.y, colour);
-	}
+	// 	coordArrowBaseY = grad * (coordArrowBaseX - goal.x) + goal.y;
+	// 	coordArrow1X = coordArrowBaseX - grad * arrowLength;
+	// 	coordArrow1Y = gradPerpendicular * (coordArrow1X - coordArrowBaseX) + coordArrowBaseY;
+	// 	coordArrow2X = coordArrowBaseX + grad * arrowLength;
+	// 	coordArrow2Y = gradPerpendicular * (coordArrow2X - coordArrowBaseX) + coordArrowBaseY;
+	// }
+
+	// for (i = 0; i < 3; i++)
+	// {
+	// 	DrawAnyLine(coordArrow1X + i, coordArrow1Y, goal.x + i, goal.y, colour);
+	// 	DrawAnyLine(coordArrow2X + i, coordArrow2Y, goal.x + i, goal.y, colour);
+	// }
 }
 
 // mode: 0 - request weighing, 1 - invalid weight
@@ -322,9 +324,9 @@ void DisplayPaymentConfirmation()
 	FilledRectangle(PAYMENT_CONFIRMATION_X, PAYMENT_CONFIRMATION_Y, 400, 200, WHITE);
 	Rectangle(PAYMENT_CONFIRMATION_X, PAYMENT_CONFIRMATION_Y, 400, 200, BLACK, 2);
 
-	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 40, BLACK, WHITE, string1, 1, 0);
-	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 70, BLACK, WHITE, string2, 1, 0);
-	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 100, BLACK, WHITE, string3, 1, 0);
+	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 10, BLACK, WHITE, string1, 1, 0);
+	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 40, BLACK, WHITE, string2, 1, 0);
+	DrawFontLine(PAYMENT_CONFIRMATION_X + 30, SIDEPANEL_WEIGHT_COMMAND_Y + 70, BLACK, WHITE, string3, 1, 0);
 }
 
 /*
