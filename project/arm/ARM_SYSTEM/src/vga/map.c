@@ -62,7 +62,8 @@ void CreateSidePanel(int legendSize, Legend legends[])
 		DrawFontLine(SIDEPANEL_HEADER_X + 30, 31 + 15 * i, BLACK, WHITE, legends[i].key, 0, 0);
 	}
 
-	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y, BLACK, WHITE, "ITEMS IN CART (RECENT 15):", 1, 0);
+	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_ITEMS_Y, BLACK, WHITE, "ITEMS IN CART (RECENT 10):", 1, 0);
+	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_Y, BLACK, WHITE, "WEIGHT OF ITEM:", 1, 0);
 	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y, BLACK, WHITE, "NEXT ITEM:", 1, 0);
 	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_BALANCE_Y, BLACK, WHITE, "BALANCE:", 1, 0);
 	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_BALANCE_Y + 20, BLACK, WHITE, "SUBTOTAL", 0, 0);
@@ -92,6 +93,7 @@ void AddItemToCart(Item item)
 	// Clear weight commands
 	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y, SIDEPANEL_TEXT_WIDTH, 7);
 	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, SIDEPANEL_TEXT_WIDTH, 7);
+	ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_WEIGHT_Y, SIDEPANEL_TEXT_WIDTH, 7);
 
 	// Display items on vga
 	for (i = 0; i < size; i++)
@@ -144,8 +146,14 @@ void UpdateBalance(double itemCost)
 
 void ShowNextItem(char *itemName)
 {
-	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 15, SIDEPANEL_TEXT_WIDTH, 7);
-	DrawFontLine(SIDEPANEL_HEADER_X, SIDEPANEL_NEXT_ITEM_Y + 15, BLACK, WHITE, itemName, 0, 0);
+	ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_NEXT_ITEM_Y, SIDEPANEL_TEXT_WIDTH, 7);
+	DrawFontLine(SIDEPANEL_BALANCE_X, SIDEPANEL_NEXT_ITEM_Y, BLACK, WHITE, itemName, 0, 0);
+}
+
+void ShowItemWeight(char *itemWeight)
+{
+	ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_WEIGHT_Y, SIDEPANEL_TEXT_WIDTH, 7);
+	DrawFontLine(SIDEPANEL_BALANCE_X, SIDEPANEL_WEIGHT_Y, BLACK, WHITE, itemWeight, 0, 0);
 }
 
 void DrawItemPath(int oldPathSize, coord_t oldPath[], int newPathSize, coord_t newPath[], int colour)
