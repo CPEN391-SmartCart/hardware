@@ -93,7 +93,7 @@ void AddItemToCart(Item item)
 	// Clear weight commands
 	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y, SIDEPANEL_TEXT_WIDTH, 7);
 	ClearTextField(SIDEPANEL_HEADER_X, SIDEPANEL_WEIGHT_COMMAND_Y + 15, SIDEPANEL_TEXT_WIDTH, 7);
-	ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_WEIGHT_Y, SIDEPANEL_TEXT_WIDTH, 7);
+	//ClearTextField(SIDEPANEL_BALANCE_X, SIDEPANEL_WEIGHT_Y, SIDEPANEL_TEXT_WIDTH, 7);
 
 	// Display items on vga
 	for (i = 0; i < size; i++)
@@ -210,7 +210,7 @@ void DrawArrowHead(int pathSize, coord_t path[], int colour)
 {
 	int i;
 	int j;
-	double arrowLength = 5;
+	double arrowLength = 1;
 	double grad;
 	double gradPerpendicular;
 	double coordArrowBaseX;

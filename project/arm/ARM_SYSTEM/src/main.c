@@ -12,7 +12,7 @@
 #include "hx711/hx711.h"
 #include "string.h"
 
-#include "./pathfinding/dijsktra.h";
+#include "pathfinding/dijsktra.h";
 
 #include "objectFactory.h"
 #include "tests/tests.h"
@@ -75,7 +75,11 @@ int main(void)
 	initSystem();
 	loadMapData();
 
-	//displayStoreMap();
+	hx711_set_scale(72.61);
+	hx711_tare(20);
+	printf("Scale calibration done!\n");
+	displayStoreMap();
+
 
 
 
@@ -167,33 +171,37 @@ void handleBTMessage(char*code, char*data)
 
 				writeStringBT(sendMessage);
 
+				char weight_str[30];
+				FloatToString(weight / 1000, weight_str, 2, 0);
+				strcat(weight_str, " kg");
+				ShowItemWeight(weight_str);
 				current_expected_weight += weight;
 			}
 		}
 		else
 		{
-			delay_us(10 * 1000 * 1000);
+//			delay_us(10 * 1000 * 1000);
 			current_expected_weight += lastScannedItem.weight_g;
 
-			int times = 0;
-
-			for (int i = 0; i < 10; i++)
-			{
-				double current_weight = hx711_get_units(10);
-				if (current_weight < current_expected_weight - 200 || current_weight > current_expected_weight + 200)
-				{
-					times++;
-					if (times >= 6)
-					{
-						//PLEASE ALERT STORE
-						printf("STEALING!\n");
-					}
-				}
-				else
-				{
-					times = 0;
-				}
-			}
+//			int times = 0;
+//
+//			for (int i = 0; i < 10; i++)
+//			{
+//				double current_weight = hx711_get_units(10);
+//				if (current_weight < current_expected_weight - 200 || current_weight > current_expected_weight + 200)
+//				{
+//					times++;
+//					if (times >= 6)
+//					{
+//						//PLEASE ALERT STORE
+//						printf("STEALING!\n");
+//					}
+//				}
+//				else
+//				{
+//					times = 0;
+//				}
+//			}
 
 			//delay_us(10000);
 
@@ -235,10 +243,17 @@ void handleBTMessage(char*code, char*data)
 
 	if (!strcmp(code, startPlanningCode))
 	{
+		int node_id = 42;
+
+		if (lastScannedItem.node_id != 0)
+		{
+			node_id = lastScannedItem.node_id;
+		}
+
 		Item next_item = requestItem(data, error_code);
 
 		coord_t new_path[20];
-		int new_path_length = generate_path(42, next_item.node_id, new_path);
+		int new_path_length = generate_path(node_id, next_item.node_id, new_path);
 
 
 		coord_t old_path_start[1];
@@ -304,9 +319,7 @@ void initSystem()
 
     printf("Bluetooth, Wifi initialized\n");
 
-	hx711_set_scale(72.61);
-	hx711_tare(20);
-	printf("Scale calibration done!\n");
+
 }
 
 void loadMapData(){
@@ -455,10 +468,10 @@ double getWeight(double min, double max){
 	DisplayWeighCommand(0);
 	delay_us(5 * 1000 * 1000);
 
-	for(unsigned int i = 0; i < 5; i++){
+	for(unsigned int i = 0; i < 1; i++){
 
 		//0.1 seconds between attempts to read weight
-		for(unsigned int j = 0; j<100; i++) {
+		for(unsigned int j = 0; j<1; j++) {
 			weight = hx711_get_units(10);
 			if(BETWEEN(weight, min, max)){
 				delay_us(1 * 1000 * 1000);
