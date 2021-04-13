@@ -21,6 +21,7 @@ c5_pin_model_dump.txt
 *.done
 *.csv
 *.jdi
+*.o
 
 CPEN391_Computer/
 design_constraints/
