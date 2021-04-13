@@ -43,7 +43,7 @@ NodeInfo requestNodeInfo(char *barcode){
 	int status = writeAndReadResponse(command, response);
 
 	if(status != 0){
-		printf("\n ERROR: Lua Script returned EXIT%c \n, status");
+		printf("\n ERROR: Lua Script returned EXIT%c \n", status);
 	}
 
 	return getnodeInfoFromResponse(response);

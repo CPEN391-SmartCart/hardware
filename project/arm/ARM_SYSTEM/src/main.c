@@ -3,18 +3,13 @@
 #include "wifi/wifi.h"
 #include "common.h"
 #include "stdio.h"
-
 #include "wifi/wifi.h"
 #include "uart/uart.h"
-
 #include "delay/delay.h"
-
 #include "hx711/hx711.h"
 #include "string.h"
-
-#include "pathfinding/dijsktra.h";
-
-#include "objectFactory.h"
+#include "pathfinding/dijsktra.h"
+#include "vga/map.h"
 #include "tests/tests.h"
 #include "luaRequests/item_request.h"
 #include "luaRequests/sections_request.h"
@@ -53,12 +48,9 @@ SectionArr ss;
 Section *sections;
 LegendArr l;
 Legend *legends;
-
 coord_t old_path[20];
 int old_path_length;
-
 int current_expected_weight = 0;
-
 
 void loadMapData();
 void handleBTMessage(char*code, char*data);
@@ -80,19 +72,13 @@ int main(void)
 	printf("Scale calibration done!\n");
 	displayStoreMap();
 
-
-
-
     if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
     char stringBT[1024];
-
     int times = 0;
 
     for(;;)
     {
-    	//writeStringBT("Hi3!");
-    	// readStringBT(stringBT);
 		readStringUsingProtocol(stringBT);
     	char stringTok[1024];
     	strcpy(stringTok,stringBT);
@@ -128,11 +114,7 @@ void handleBTMessage(char*code, char*data)
 	char sendMessage[1024] = "";
 	int *error_code; //see common.h for description of errors
 
-
 	if(!strcmp(code,scanCode)){
-
-
-
 		//Temporarily here to test around barcode data bug
 		lastScannedItem = requestItem(data, error_code);
 
@@ -350,9 +332,6 @@ void displayStoreMap()
 	printf("Creating store map...\n");
 	SetupMap(sectionSize, sections, legendSize, legends);
 }
-
-
-
 
 ////////////////////////alternative handling of bt message //////////////////////////
 void handleBTMessageALTERNATIVE(char*code, char*data)
