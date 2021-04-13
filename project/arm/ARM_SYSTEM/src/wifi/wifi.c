@@ -91,12 +91,16 @@ void readStringWIFI(char *string)
     char c = ' ';
 
     i = 0;
-    while (c != '\r')
+    int nodata = 0;
+    while (c != '\r' && nodata < 100)
     {
 		if (dataReadyUART(WiFi_LineStatusReg))
 		{
 			c = readCharUART(WiFi_LineStatusReg, WiFi_ReceiverFifo);
 			string[i++] = c;
+			nodata = 0;
+		} else{
+			nodata++;
 		}
     }
 
@@ -112,17 +116,37 @@ int writeAndReadResponse(char *write, char *read) {
 	delay_us(1000);
 
 	//wait for itnerrupt to signal that read is complete
-	while(WIFI_ISR_CONTEXT->doneRead != 1){};
 
-	char *start = strstr(WIFI_ISR_CONTEXT->BUFFER, LUA_MSG_START) + strlen(LUA_MSG_START);
+	int done_or_timeout = 0;
+	int num_waits = 0;
+	while(!done_or_timeout){
+		delay_us(100000);
+		if(WIFI_ISR_CONTEXT->doneRead == 1) {
+			done_or_timeout = 1;
+		} else if (num_waits++ >= 500) {
+			printf("\n TIMEOUT ON RECEIVING RESPONSE\n");
+			done_or_timeout = 1;
+			char error_resp[200];
+			memcpy(error_resp, WIFI_ISR_CONTEXT->BUFFER, 199);
+			error_resp[199]='\0';
+			printf("Received in Buffer (note this could be incomplete): %s", error_resp);
+			return -1;
+		}
+	}
 
-	if(!read){
+	char *start = strstr(WIFI_ISR_CONTEXT->BUFFER, LUA_MSG_START);
+
+	if(start==""){
 		printf("\nERROR: Response had no start\n");
+
 	} else{
+		start+= strlen(LUA_MSG_START);
 		strcpy(read, start);
 	}
 
-	return (int) WIFI_ISR_CONTEXT->status;
+	char c = WIFI_ISR_CONTEXT->status;
+	int exit_status = atoi(&c);
+	return exit_status;
 }
 
 
@@ -155,7 +179,7 @@ void  wifi_isr_callback ( uint32_t icciar, void * context)
 		  if(strncmp(exit_result, "EXIT", 4) == 0){
 			  (buffer)[start_index] = '\0';
 			  wcontext->doneRead = 1;
-			  wcontext->status = exit_result[5];
+			  wcontext->status = exit_result[4];
 			  flushUART(WiFi_LineStatusReg, WiFi_ReceiverFifo);
 		  }
 	  }

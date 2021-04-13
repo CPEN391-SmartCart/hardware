@@ -11,31 +11,37 @@ static Item getItemFromResponse(char *read){
 
 	if(!read){
 		strcpy(item.barcode, "DEADBEEF");
-		item.cost = 0;
 		strcpy(item.name, "DEADBEEF");
-		item.section_id = 0;
 		return item;
 	}
 
-	item.barcode = strtok(read, "|");
+	strncpy(item.barcode, strtok(read, "|"), MAX_CHARS);
+	item.barcode[MAX_CHARS-1] = '\0';
 	item.section_id = atoi(strtok(NULL, "|"));
-	item.name = strtok(NULL, "|");
+	strncpy(item.name, strtok(NULL, "|"), MAX_CHARS);
+	item.name[MAX_CHARS-1] = '\0';
 	item.cost = atof(strtok(NULL, "|"));
-	item.description = strtok(NULL, "|");
-	item.requires_weighing = strtok(NULL, "|");
+	strncpy(item.description, strtok(NULL, "|"), MAX_CHARS);
+	item.description[MAX_CHARS-1] = '\0';
+	item.requires_weighing = atoi(strtok(NULL, "|"));
 	item.x = atoi(strtok(NULL, "|"));
 	item.y = atoi(strtok(NULL, "|"));
+	item.node_id = atoi(strtok(NULL, "|"));
 	item.aisleColor = 0;
 
-	char* end = strtok(NULL, "|");
 
-	if(end){
-		printf("\nERROR parsing response: no end found. \n");
-	}
+
+	char* optional_weight = strtok(NULL, "|");
+
+	item.weight_g = atoi(optional_weight);
+
 	return item;
 }
 
-Item requestItem(char *barcode){
+/*
+ * ec = 0 means success
+ */
+Item requestItem(char *barcode, int* ec){
 	char command[50];
 	sprintf(command, BARCODE_SCRIPT_CMD_FORMAT, barcode);
 
@@ -43,19 +49,28 @@ Item requestItem(char *barcode){
 		printf("\nfailed to allocate space for item request\n");
 		struct Item item;
 		strcpy(item.barcode, "DEADBEEF");
-		item.cost = 0;
 		strcpy(item.name, "DEADBEEF");
-		item.section_id = 0;
 		return item;
 	}
 
 	char response[500];
 
-	int status = writeAndReadResponse(BARCODE_SCRIPT_CMD_FORMAT, response);
+	int status = writeAndReadResponse(command, response);
 
+	*ec = status;
 	if(status != 0){
 		printf("\n ERROR: Lua Script returned EXIT%c \n", status);
+		struct Item item;
+		strcpy(item.barcode, "DEADBEEF");
+		strcpy(item.name, "DEADBEEF");
+		return item;
 	}
 
-	return getItemFromResponse(response);
+
+	printf("\n SUCCESS: item retrieved successfully (EXIT%d) \n", status);
+
+
+	Item ret_val= getItemFromResponse(response);
+	return ret_val;
 }
+

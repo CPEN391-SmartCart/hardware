@@ -5,23 +5,18 @@
 #include "../wifi/wifi.h"
 #include <string.h>
 
-static Section *getSectionsFromResponse(char *read){
+static Section getSectionFromResponse(char *read){
+	Section section_result;
 
 	if(!read){
-		return NULL;
+		return section_result;
 	}
 
-
-	int size = atoi(strtok(read, "|"));
-	struct Section *sections = malloc(size * sizeof(struct Section));
-
-
-	for(int i = 0; i < size; i++) {
-		struct Section s;
-
-
-		sections[i] = s;
-	}
+	section_result.originX = atoi(strtok(read, "|"));
+	section_result.originY = atoi(strtok(NULL, "|"));
+	section_result.sectionHeight = atoi(strtok(NULL, "|"));
+	section_result.sectionWidth = atoi(strtok(NULL, "|"));
+	section_result.aisleColor = atoi(strtok(NULL, "|"));
 
 
 	char* end = strtok(NULL, "|");
@@ -29,24 +24,96 @@ static Section *getSectionsFromResponse(char *read){
 	if(end){
 		printf("\nERROR parsing response: no end found. \n");
 	}
-	return sections;
+
+	return section_result;
 }
 
-Section *requestSections(int store_id){
-	char command[50];
+static int getFirstSectionFromResponse(char *read, Section *section_result){
 
-	if(!command){
+	if(!read){
 		return NULL;
 	}
 
-	sprintf(command, SECTIONS_SCRIPT_CMD_FORMAT, store_id);
-	char response[500];
 
-	int status = writeAndReadResponse(command, response);
+	int size = atoi(strtok(read, "|"));
 
-	if(status != 0){
-		printf("\n ERROR: Lua Script returned EXIT%c \n, status");
+	section_result->originX = atoi(strtok(NULL, "|"));
+	section_result->originY = atoi(strtok(NULL, "|"));
+	section_result->sectionHeight = atoi(strtok(NULL, "|"));
+	section_result->sectionWidth = atoi(strtok(NULL, "|"));
+	section_result->aisleColor = atoi(strtok(NULL, "|"));
+
+
+	char* end = strtok(NULL, "|");
+
+	if(end){
+		printf("\nERROR parsing response: no end found. \n");
+	}
+	return size;
+}
+
+/*
+ * returns malloaced array of Sections created from response. pls free!
+ */
+SectionArr requestSections(int store_id, int *ec){
+	char command[50];
+	Section first_section;
+
+	SectionArr section_array;
+
+	if(!command){
+		section_array.sections = NULL;
+		section_array.size = 0;
+		return section_array;
 	}
 
-	return getSectionsFromResponse(response);
+	sprintf(command, SECTIONS_SCRIPT_CMD_FORMAT, store_id);
+	char response[100];
+
+	int status = writeAndReadResponse(command, response);
+	*ec = status;
+
+	int size;
+
+	if(status == LUA_RESPONSE_TBC){
+		size = getFirstSectionFromResponse(response, &first_section);
+	} else if (status == LUA_EXIT_SUCCESS){
+		size = 1;
+	} else{
+		printf("\n ERROR: Lua Script returned EXIT%c \n", status);
+		section_array.sections = NULL;
+		section_array.size = 0;
+		return section_array;
+	}
+
+	Section *sections = malloc((size+1) * sizeof(Section));
+
+	sections[0] = first_section;
+
+	sprintf(command, NEXT_SECTION_CMD);
+
+	int index = 1;
+	while(status == LUA_RESPONSE_TBC){
+		status = writeAndReadResponse(command, response);
+		sections[index++] = getSectionFromResponse(response);
+	}
+
+	if(status != LUA_EXIT_SUCCESS){
+		printf("\n ERROR: Lua Script returned EXIT%c \n", status);
+	}
+
+	section_array.size = size;
+	section_array.sections = sections;
+
+	*ec = status;
+	return section_array;
+}
+
+void freeSection(Section *section){
+	free(section);
+}
+
+void freeSectionArr(SectionArr *section_list){
+	free(section_list->sections);
+	free(section_list);
 }

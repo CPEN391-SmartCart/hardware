@@ -11,41 +11,69 @@
 #define TRUE 1
 #define FALSE 0
 
+#define MAX_CHARS 30
+
+#define NODE_INFO_ARRAY_SIZE 17
+
+
+#define LUA_EXIT_SUCCESS 0
+#define LUA_HTTP_ERROR 1
+#define LUA_RESPONSE_ITERATION_OVERFLOW 2
+#define LUA_RESPONSE_TIMEOUT 4
+#define ITEM_NOT_FOUND 5
+#define LUA_RESPONSE_TBC 9
+
+typedef struct NodeInfo {
+	short nodeInfo[NODE_INFO_ARRAY_SIZE];
+} NodeInfo;
+
+
 typedef struct Item
 {
-	char *barcode;
+	char barcode[MAX_CHARS];
 	int section_id;
-    char *name;
+    char name[MAX_CHARS];
 	double cost;
-    char *description;
-    char *requires_weighing;
+    char description[MAX_CHARS];
+    int requires_weighing;
     int x;
     int y;
     int aisleColor;
+    int weight_g;
+    int node_id;
 } Item;
 
 typedef struct Legend
 {
-    char *key;
+    char key[MAX_CHARS];
     int color;
 } Legend;
 
+typedef struct LegendArr
+{
+	int size;
+    Legend *legends;
+} LegendArr;
+
 typedef struct Section
 {
-	int id;
     int originX;
     int originY;
     int sectionWidth;
     int sectionHeight;
     int aisleColor;
-    char* key;
 } Section;
 
-typedef struct Coord
+typedef struct SectionArr
+{
+    int size;
+    Section* sections;
+} SectionArr;
+
+typedef struct coord_t
 {
     short x;
     short y;
 } coord_t;
-
 
 #endif /* COMMON_H_ */

@@ -19,8 +19,6 @@
 #define PATH_FINISHED (volatile unsigned int *)(0xFF200240)
 
 int generate_path(int start_node_id, int goal_node_id, coord_t *path);
-short GeneratePathFromHex(char *start_node, char *goal_node, coord_t *path);
-short GeneratePath(short start_node[], short goal_node[], coord_t *path);
 
 
 #endif /* DIJKSTRA_H_ */

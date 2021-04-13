@@ -9,8 +9,11 @@ RM := clean
 # All of the sources participating in the build are defined here
 -include sources.mk
 -include src/wifi/subdir.mk
+-include src/vga/subdir.mk
 -include src/uart/subdir.mk
+-include src/luaRequests/subdir.mk
 -include src/io/subdir.mk
+-include src/interrupt/subdir.mk
 -include src/hx711/subdir.mk
 -include src/delay/subdir.mk
 -include src/bluetooth/subdir.mk
@@ -19,35 +22,41 @@ RM := clean
 -include objects.mk
 
 ifneq ($(MAKECMDGOALS),clean)
-ifneq ($(strip $(C++_DEPS)),)
--include $(C++_DEPS)
-endif
-ifneq ($(strip $(ASM_DEPS)),)
--include $(ASM_DEPS)
-endif
-ifneq ($(strip $(C_DEPS)),)
--include $(C_DEPS)
-endif
 ifneq ($(strip $(CC_DEPS)),)
 -include $(CC_DEPS)
+endif
+ifneq ($(strip $(SX_DEPS)),)
+-include $(SX_DEPS)
 endif
 ifneq ($(strip $(ASM_UPPER_DEPS)),)
 -include $(ASM_UPPER_DEPS)
 endif
-ifneq ($(strip $(CPP_DEPS)),)
--include $(CPP_DEPS)
-endif
-ifneq ($(strip $(S_DEPS)),)
--include $(S_DEPS)
-endif
-ifneq ($(strip $(CXX_DEPS)),)
--include $(CXX_DEPS)
+ifneq ($(strip $(C++_DEPS)),)
+-include $(C++_DEPS)
 endif
 ifneq ($(strip $(C_UPPER_DEPS)),)
 -include $(C_UPPER_DEPS)
 endif
+ifneq ($(strip $(CXX_DEPS)),)
+-include $(CXX_DEPS)
+endif
+ifneq ($(strip $(SX_UPPER_DEPS)),)
+-include $(SX_UPPER_DEPS)
+endif
+ifneq ($(strip $(ASM_DEPS)),)
+-include $(ASM_DEPS)
+endif
+ifneq ($(strip $(S_DEPS)),)
+-include $(S_DEPS)
+endif
 ifneq ($(strip $(S_UPPER_DEPS)),)
 -include $(S_UPPER_DEPS)
+endif
+ifneq ($(strip $(C_DEPS)),)
+-include $(C_DEPS)
+endif
+ifneq ($(strip $(CPP_DEPS)),)
+-include $(CPP_DEPS)
 endif
 endif
 
@@ -59,16 +68,16 @@ endif
 all: ARM_SYSTEM.axf
 
 # Tool invocations
-ARM_SYSTEM.axf: $(OBJS) /home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/CPEN391.scat $(USER_OBJS) $(LIBS)
+ARM_SYSTEM.axf: $(OBJS) ../CPEN391.scat $(USER_OBJS) $(LIBS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: ARM Linker 5'
-	armlink --cpu=Cortex-A9 --scatter="/home/jared/Desktop/smartcart/de1-hardware/project/arm/ARM_SYSTEM/CPEN391.scat" --info=sizes -o "ARM_SYSTEM.axf" $(OBJS) $(USER_OBJS) $(LIBS)
+	armlink --cpu=Cortex-A9 --scatter="../CPEN391.scat" --info=sizes -o "ARM_SYSTEM.axf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(OBJS) $(C++_DEPS) $(ASM_DEPS) $(C_DEPS) $(CC_DEPS) $(ASM_UPPER_DEPS) $(CPP_DEPS) $(S_DEPS) $(EXECUTABLES) $(CXX_DEPS) $(C_UPPER_DEPS) $(S_UPPER_DEPS) ARM_SYSTEM.axf 
+	-$(RM) $(C_UPPER_DEPS) $(S_DEPS) $(C_DEPS) $(CC_DEPS) $(SX_DEPS) $(ASM_UPPER_DEPS) $(C++_DEPS) $(EXECUTABLES) $(CXX_DEPS) $(OBJS) $(SX_UPPER_DEPS) $(ASM_DEPS) $(S_UPPER_DEPS) $(CPP_DEPS) ARM_SYSTEM.axf 
 	-@echo ' '
 
 .PHONY: all clean dependents

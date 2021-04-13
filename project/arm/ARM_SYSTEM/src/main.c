@@ -1,9 +1,3 @@
-/*
- * main.c
- *
- *  Created on: Feb 21, 2021
- *      Author: jared
- */
 
 #include "bluetooth/bluetooth.h"
 #include "wifi/wifi.h"
@@ -18,11 +12,13 @@
 #include "hx711/hx711.h"
 #include "string.h"
 
+#include "pathfinding/dijsktra.h";
+
 #include "objectFactory.h"
-
-#include "imu/imu.h"
-
-#include "pathfinding/dijsktra.h"
+#include "tests/tests.h"
+#include "luaRequests/item_request.h"
+#include "luaRequests/sections_request.h"
+#include "luaRequests/legends_request.h"
 
 #define PATH_GOAL_SET (volatile unsigned int *)(0xFF200200)
 #define PATH_FINISHED (volatile unsigned int *)(0xFF200210)
@@ -39,76 +35,464 @@
 #define GraphicsColourReg               (*(volatile unsigned short int *)(0xFF21000E))
 #define GraphicsBackGroundColourReg     (*(volatile unsigned short int *)(0xFF210010))
 
-#define MAP_INIT_NODE (volatile unsigned int *)(0xFF210100)
-#define MAP_INIT_WRITE (volatile unsigned int *)(0xFF210402)
+#define PATH_LENGTH	(volatile unsigned short int *)(0xFF210100)
+#define PATH_START	(volatile unsigned short int *)(0xFF210102)
 
-#define START_NODE_ID (volatile unsigned int *)(0xFF200210)
-#define NEIGHBOUR_ID (volatile unsigned int *)(0xFF200230)
-#define NEIGHBOUR (volatile unsigned int *)(0xFF200220)
-#define PATH_FINISHED (volatile unsigned int *)(0xFF200240)
+#define PATH_WRITE (volatile unsigned short int *)(0xFF210398)
+#define PATH_WRITE_START (volatile unsigned short int *)(0xFF210400)
+
+#define SRAM (void *) (0xC8000000)
+
+#define DEBUG 0
+
+#define BETWEEN(a, b, c)  (((a) >= (b)) && ((a) <= (c)))
+
+char* lastRequestedDestinationBarcode;
+Item lastScannedItem;
+SectionArr ss;
+Section *sections;
+LegendArr l;
+Legend *legends;
+
+coord_t old_path[20];
+int old_path_length;
+
+int current_expected_weight = 0;
+
+
+void loadMapData();
+void handleBTMessage(char*code, char*data);
+void initSystem();
+void displayStoreMap();
+double getWeight(double min, double max);
+void handleBTMessageALTERNATIVE(char*code, char*data);
+
+int goal_node_id;
+int start_node_id;
 
 int main(void)
 {
-	int i;
-	int j;
-	char test[512];
+	initSystem();
+	loadMapData();
 
-	int start_node_id = 83;
-	int goal_node_id = 95;
-	coord_t path[10];
+	hx711_set_scale(72.61);
+	hx711_tare(20);
+	printf("Scale calibration done!\n");
+	displayStoreMap();
 
-	int length = generate_path(start_node_id, goal_node_id, path);
 
-	for (i = 0; i < length; i++)
-	{
-		printf("nicea!: x: %d, y: %d\n", path[i].x, path[i].y);
-	}
 
-//	uint8_t devid;
-//	int16_t mg_per_lsb = 4;
-//	int16_t XYZ[3];
-//
-//	pinmux_config();
-//	I2C0_init();
-//
-//	ADXL345_REG_READ(0x00, &devid);
-//
-//	if (devid == 0xE5) {
-//		ADXL345_init();
-//
-//		while (TRUE)
-//		{
-//			if (ADXL345_is_data_ready())
-//			{
-//				ADXL345_XYZ_read(XYZ);
-//				printf("X=%d mg, Y=%d mg, Z=%d mg\n", XYZ[0]*mg_per_lsb, XYZ[1]*mg_per_lsb, XYZ[2]*mg_per_lsb);
-//			}
-//		}
-//	}
-//	else
-//	{
-//		printf("Incorrect device ID\n");
-//	}
 
-     int sectionSize = sizeof(sections) / sizeof(Section);
-	 int legendSize = sizeof(legends) / sizeof(Legend);
-	 int listSize = sizeof(shoppingList) / sizeof(Item);
+    if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
-	 printf("Clearing screen...\n");
-	 Reset();
+    char stringBT[1024];
 
-	 printf("Creating store map...\n");
-	 CreateStoreMap(sectionSize, sections, legendSize, legends);
-	 CreateSidePanel(legendSize, legends);
+    int times = 0;
 
-	 coord_t old[10];
-
-	 DrawItemPath(0, old, length, path, 0);
-	 while (TRUE)
-	 {
-
-	 }
+    for(;;)
+    {
+    	//writeStringBT("Hi3!");
+    	// readStringBT(stringBT);
+		readStringUsingProtocol(stringBT);
+    	char stringTok[1024];
+    	strcpy(stringTok,stringBT);
+    	if(stringTok[0]!='\0'){
+    		printf ("original: %s\n",stringTok);
+    		char* code = strtok (stringTok,":");
+    		char* data;
+    		if (code != NULL)
+    		{
+    		  printf ("code: %s\n",code);
+    		  data = strtok (NULL,":");
+    		  if(data!=NULL){
+    			  printf ("data: %s\n",data);
+    			  handleBTMessage(code, data);
+    		  }
+    		}
+    	}
+    }
 
 	return 0;
 }
 
+
+void handleBTMessage(char*code, char*data)
+{
+	char scanCode[] = "sc";
+	char itemCostCode[] = "ic";
+	char pathPlanningCode[] = "pp";
+	char startPlanningCode[] = "ps";
+	char clearPlanningCode[] = "pc";
+	char successfulPayment[] = "sp";
+	char reset[] = "rs";
+	char sendMessage[1024] = "";
+	int *error_code; //see common.h for description of errors
+
+
+	if(!strcmp(code,scanCode)){
+
+
+
+		//Temporarily here to test around barcode data bug
+		lastScannedItem = requestItem(data, error_code);
+
+		if(*error_code != LUA_EXIT_SUCCESS){
+			//TODO HANDLE
+			printf("could not find item \n");
+			return;
+		}
+
+		char* itemName = lastScannedItem.name;
+		char itemPrice[6];
+
+		FloatToString(lastScannedItem.cost, itemPrice, 2, 0);
+		int isByWeight = lastScannedItem.requires_weighing;
+		if(isByWeight)
+		{
+			//uncomment when loadcell available
+			double weight = getWeight(current_expected_weight + 40, current_expected_weight + 1000);
+
+
+			if(weight == -1){
+				//TODO: handle weight could not be calculated
+			}
+			else
+			{
+				weight -= current_expected_weight;
+				double item_cost = (lastScannedItem.cost * weight) / 1000;
+				lastScannedItem.cost = item_cost;
+				FloatToString(item_cost, itemPrice, 2, 0);
+
+				strcat(sendMessage, itemName);
+				strcat(sendMessage, " | ");
+				strcat(sendMessage, itemPrice);
+
+				printf("WriteBT: %s\n", sendMessage);
+
+				writeStringBT(sendMessage);
+
+				char weight_str[30];
+				FloatToString(weight / 1000, weight_str, 2, 0);
+				strcat(weight_str, " kg");
+				ShowItemWeight(weight_str);
+				current_expected_weight += weight;
+			}
+		}
+		else
+		{
+//			delay_us(10 * 1000 * 1000);
+			current_expected_weight += lastScannedItem.weight_g;
+
+//			int times = 0;
+//
+//			for (int i = 0; i < 10; i++)
+//			{
+//				double current_weight = hx711_get_units(10);
+//				if (current_weight < current_expected_weight - 200 || current_weight > current_expected_weight + 200)
+//				{
+//					times++;
+//					if (times >= 6)
+//					{
+//						//PLEASE ALERT STORE
+//						printf("STEALING!\n");
+//					}
+//				}
+//				else
+//				{
+//					times = 0;
+//				}
+//			}
+
+			//delay_us(10000);
+
+			strcat(sendMessage, itemName);
+			strcat(sendMessage, " | ");
+			strcat(sendMessage, itemPrice);
+			writeStringBT(sendMessage);
+		}
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if(!strcmp(code,itemCostCode)){
+		AddItemToCart(lastScannedItem);
+
+		writeStringBT("acked");
+	}
+
+	if(!strcmp(code,pathPlanningCode)){
+		//lastRequestedDestinationBarcode = data;
+		Item next_item = requestItem(data, error_code);
+
+		coord_t new_path[20];
+		int new_path_length = generate_path(lastScannedItem.node_id, next_item.node_id, new_path);
+
+
+		DrawItemPath(old_path_length, old_path, new_path_length, new_path, 0);
+		ShowNextItem(next_item.name);
+
+		for (int i = 0; i < new_path_length; i++)
+		{
+			old_path[i] = new_path[i];
+		}
+
+		old_path_length = new_path_length;
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if (!strcmp(code, startPlanningCode))
+	{
+		int node_id = 42;
+
+		if (lastScannedItem.node_id != 0)
+		{
+			node_id = lastScannedItem.node_id;
+		}
+
+		Item next_item = requestItem(data, error_code);
+
+		coord_t new_path[20];
+		int new_path_length = generate_path(node_id, next_item.node_id, new_path);
+
+
+		coord_t old_path_start[1];
+		DrawItemPath(0, old_path_start, new_path_length, new_path, 0);
+		ShowNextItem(next_item.name);
+
+		for (int i = 0; i < new_path_length; i++)
+		{
+			old_path[i] = new_path[i];
+		}
+
+		old_path_length = new_path_length;
+	}
+
+	if (!strcmp(code, clearPlanningCode))
+	{
+		coord_t new_path_clear[1];
+		DrawItemPath(old_path_length, old_path, 0, new_path_clear, 0);
+		ShowNextItem("");
+	}
+
+	if(!strcmp(code,successfulPayment)){
+		int times = 0;
+
+		for (int i = 0; i < 10; i++)
+		{
+			double current_weight = hx711_get_units(10);
+			if (current_weight < current_expected_weight - 200 || current_weight > current_expected_weight + 200)
+			{
+				times++;
+				if (times >= 6)
+				{
+					//PLEASE ALERT STORE
+					printf("STEALING!\n");
+				}
+			}
+			else
+			{
+				times = 0;
+			}
+		}
+
+		DisplayPaymentConfirmation();
+	}
+
+	if(!strcmp(code,reset)){
+		displayStoreMap();
+
+		writeStringBT("resetdone");
+	}
+}
+
+void initSystem()
+{
+	initBluetooth();
+
+    initWiFi(115200);
+    resetWiFi();
+
+    //needs to be after wifi reset
+    enableUARTInterrupt(WiFi_InterruptEnableReg);
+
+
+    printf("Bluetooth, Wifi initialized\n");
+
+
+}
+
+void loadMapData(){
+	int *error_code; //see common.h for description of errors
+
+	ss = requestSections(1, error_code);
+	sections = ss.sections;
+
+	l = requestLegends(1, error_code);
+	legends = l.legends;
+}
+
+void displayStoreMap()
+{
+	int sectionSize = ss.size;
+	int legendSize = l.size;
+
+    if(DEBUG){
+        printf("   x      y    height width colour\n");
+        for(int i = 0; i < sectionSize; i++){
+            printf("%5d %5d %5d %5d %5d \n", sections[i].originX, sections[i].originY, sections[i].sectionWidth, sections[i].sectionHeight, sections[i].aisleColor);
+        }
+    }
+
+//  printf("Clearing screen...\n");
+//	Reset();
+
+	printf("Creating store map...\n");
+	SetupMap(sectionSize, sections, legendSize, legends);
+}
+
+
+
+
+////////////////////////alternative handling of bt message //////////////////////////
+void handleBTMessageALTERNATIVE(char*code, char*data)
+{
+	char scanCode[] = "sc";
+	char itemCostCode[] = "ic";
+	char pathPlanningCode[] = "pp";
+	char sendMessage[1024] = "in:";
+	//TODO setup payment confirmation code
+	char paymentConfirmationCode[] = "pc:";
+
+	int absolute_weight_min = 10;
+	double relative_weight_tolerance = 0.1;
+
+	int *request_error_code; //see error code descriptions in common.h
+
+
+	if(!strcmp(code,scanCode)){
+
+		//Temporarily here to test around barcode data bug
+		lastScannedItem = requestItem("NTSN6378", request_error_code);
+
+		if(request_error_code != LUA_EXIT_SUCCESS){
+			//todo : handle retrieivng item error
+		}
+
+//		lastScannedItem = requestItem(data);
+		char* itemName = lastScannedItem.name;
+		char itemPrice[6];
+
+
+		int isByWeight = lastScannedItem.requires_weighing;
+
+		if(isByWeight)
+		{
+
+			//uncomment when loadcell available
+			//int weight = getWeight(absolute_weight_min, 1000000);
+			int weight = 200;
+
+			if(weight == -1){
+				//TODO: handle weight could not be calculated
+			}
+
+			double item_cost = lastScannedItem.cost * weight;
+			FloatToString(item_cost, itemPrice, 2, 0);
+
+			strcat(sendMessage, itemName);
+			strcat(sendMessage, " | pw:");
+			strcat(sendMessage, itemPrice);
+			strcat(sendMessage, " | sw:");
+			char weightString[8];
+			sprintf(weightString, "%d", weight);
+			strcat(sendMessage, weightString);
+
+			printf("WriteBT: %s\n", sendMessage);
+
+			writeStringBT(sendMessage);
+		}
+		else
+		{
+
+			int expected_weight = lastScannedItem.weight_g;
+			int weight_min = expected_weight - (int) (expected_weight * relative_weight_tolerance);
+			int weight_max = expected_weight + (int) (expected_weight * relative_weight_tolerance);
+
+			//uncomment when loadcell available
+			double weight = getWeight(weight_min, weight_max);
+
+			if(weight == -1){
+				//TODO: handle weight could not be calculated
+			}
+
+			double item_cost = lastScannedItem.cost;
+
+			FloatToString(item_cost, itemPrice, 2, 0);
+
+			strcat(sendMessage, itemName);
+			strcat(sendMessage, " | pq:");
+			strcat(sendMessage, itemPrice);
+			printf("WriteBT: %s\n", sendMessage);
+			writeStringBT(sendMessage);
+		}
+
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if(!strcmp(code,itemCostCode)){
+		AddItemToCart(lastScannedItem);
+	}
+
+	if(!strcmp(code,pathPlanningCode)){
+		lastRequestedDestinationBarcode = data;
+		// TODO: Path plan with the barcodes
+		// pathPlan(lastScannedBarcode,lastRequestedDestinationBarcode);
+	}
+
+	if(!strcmp(code,paymentConfirmationCode)){
+		DisplayPaymentConfirmation();
+	}
+
+
+}
+
+/*
+ * returns the weight in grams, a return value of -1 means that no weight above the tolerance level was found
+ */
+double getWeight(double min, double max){
+	int retVal = -1;
+	double weight = -1;
+
+	DisplayWeighCommand(0);
+	delay_us(5 * 1000 * 1000);
+
+	for(unsigned int i = 0; i < 1; i++){
+
+		//0.1 seconds between attempts to read weight
+		for(unsigned int j = 0; j<1; j++) {
+			weight = hx711_get_units(10);
+			if(BETWEEN(weight, min, max)){
+				delay_us(1 * 1000 * 1000);
+				weight = hx711_get_units(10);
+				break;
+			}
+		}
+
+		if(!BETWEEN(weight, min, max)){
+			delay_us(2000000);
+		} else {
+			break;
+		}
+	}
+
+	if(BETWEEN(weight, min, max)){
+		printf("weight found, final calculated weight is %d\n", weight);
+		retVal = weight;
+	} else {
+		DisplayWeighCommand(1);
+		printf("weight could not be determined, Expected something between %d and %d, but final calculated weight was %d\n", min, max, weight);
+	}
+	return retVal;
+}
