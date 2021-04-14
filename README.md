@@ -16,9 +16,7 @@ SmartCart is a smart shopping cart aimed to replace existing shopping carts and 
 
 ## Pre-requisites
 
-* Quartus Prime II Lite 18.1
-* Intel FPGA Monitor Program
-* Cygwin
+* Quartus Prime II Lite 18.1 or 15
 * DS5
 
 ## Target Market and Requirements
