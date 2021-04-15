@@ -24,7 +24,7 @@ void delay_us(uint32_t us);
 void setup_hps_timer(void);
 
 /**
- * Returns the endtime from the current delay
+ * Returns the value of the global timer at {us} microseconds in the future
  */
 uint64_t getEndTimeFromCurr(uint32_t us);
 

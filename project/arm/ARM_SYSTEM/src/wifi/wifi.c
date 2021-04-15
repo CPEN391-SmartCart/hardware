@@ -14,7 +14,10 @@
 #include "stdlib.h"
 #include "string.h"
 
+//global wifi context used to manage reads from rfs board
 volatile wifi_context *WIFI_ISR_CONTEXT;
+
+//global buffer used to store wifi read values
 char BUFFER[1024];
 
 void initWiFi(int baud_rate)

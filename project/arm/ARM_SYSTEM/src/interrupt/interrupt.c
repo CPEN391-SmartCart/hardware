@@ -5,7 +5,9 @@
  *      Author: Amr
  */
 
-
+/*
+ * adapted from: https://fpga.kice.tokyo/fpga/de0-nano-soc-baremetal-int
+ */
 #include  <stdio.h>
 #include  "alt_interrupt.h"
 #include  "hwlib.h"

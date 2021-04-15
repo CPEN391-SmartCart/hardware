@@ -10,7 +10,7 @@
 #include  "alt_interrupt.h"
 #include "alt_int_device.h"
 
-
+//the wifi interrupt id (configured in qsys)
 extern ALT_INT_INTERRUPT_t WIFI_INTERRUPT;
 
 /**
@@ -22,11 +22,6 @@ ALT_STATUS_CODE setup_interrupt(ALT_INT_INTERRUPT_t interrupt_id, alt_int_callba
  * Sets up an interrupt based on our DE1-SoC
  */
 ALT_STATUS_CODE socfpga_int_setup (ALT_INT_INTERRUPT_t int_id, ALT_INT_TRIGGER_t trigger);
-
-/**
- * Called when the wifi isr is triggered
- */
-void  wifi_isr_callback ( uint32_t icciar, void * context) ;
 
 /**
  * Disables the specified interrupt

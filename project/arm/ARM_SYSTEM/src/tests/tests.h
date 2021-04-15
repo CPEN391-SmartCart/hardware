@@ -24,4 +24,11 @@ void imuTestX(void);
 void imuTestY(void);
 void imuTestZ(void);
 
+/*
+ * test utility function used for comparison and writing messages
+ */
+int testInt(char* test, int expected, int actual);
+int testDouble(char* test, double expected, double actual);
+int testString(char* test, char* expected, char* actual);
+
 #endif /* TESTS_TESTS_H_ */

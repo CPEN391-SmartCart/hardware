@@ -15,6 +15,13 @@
 #include "tests.h"
 #include "../hx711/hx711.h"
 
+
+/*
+ * to be used in conjunction with bluetooth serial terminal app
+ * sending any message that followed the protocol should be displayed correctly
+ * by this test.
+ * verify by inspection.
+ */
 void btTest(){
 	for(;;){
 		delay_us(10000);
@@ -25,22 +32,18 @@ void btTest(){
 }
 
 
-void delayTest(){
-	printf("statement 1\n");
-	delay_us(1000);
-	printf("statement 2\n");
-}
-
+/*
+ * integration test.
+ * results displayed on vga, verified by inspection
+ */
 void addToCart(){
 
 	int *ec;
     initWiFi(115200);
     resetWiFi();
 
-    printf("hi\n");
     enableUARTInterrupt(WiFi_InterruptEnableReg);
 
-    printf("\n 2setup interrupt complete \n");
     printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
 
     delay_us(100000);
@@ -88,7 +91,10 @@ void addToCart(){
 
 }
 
-
+/*
+ * integration test.
+ * Results are displayed on vga and can be verified by inspection
+ */
 void vgaRoutine(){
 	int *ec;
 
@@ -130,6 +136,7 @@ void vgaRoutine(){
 
 void wifiItemRoutine(){
 	int *ec;
+	char *test = "wifiItemRoutine";
 
      initWiFi(115200);
      resetWiFi();
@@ -149,10 +156,21 @@ void wifiItemRoutine(){
      printf(" barcode barcode,name,sectionid = %s, name = %s, section = %d\n", bc.barcode, bc.name, bc.section_id);
      printf(" barcode2 barcode,name,sectionid = %s, name = %s, section = %d", bc2.barcode, bc2.name, bc2.section_id);
 
+     testInt(test, 105,bc.weight_g);
+     testString(test, "604059000075",bc.barcode);
+     testInt(test, 83,bc.node_id);
+
+     testInt(test, 175,bc2.weight_g);
+     testString(test, "628233883209",bc2.barcode);
+     testInt(test, 87,bc2.node_id);
+
+
 }
 
 void wifiSectionsRoutine(){
 	int *ec;
+	char *test = "wifiSectionRoutine";
+
 
      initWiFi(115200);
      resetWiFi();
@@ -174,10 +192,24 @@ void wifiSectionsRoutine(){
      for(int i = 0; i < size; i++){
          printf("%5d %5d %5d %5d %5d \n", s[i].originX, s[i].originY, s[i].sectionHeight, s[i].sectionWidth, s[i].aisleColor);
      }
+
+     testInt(test, 52,size);
+
+     Section s1 = ss.sections[0];
+     Section s2 = ss.sections[51];
+
+     testInt(test, 319,s1.originX);
+     testInt(test, 12,s1.sectionWidth);
+
+     testInt(test, 132,s2.originX);
+     testInt(test, 81,s2.sectionWidth);
+
 }
 
 void wifiLegendsRoutine(){
 	int *ec;
+	char *test = "wifiLegendsRoutine";
+
 
      initWiFi(115200);
      resetWiFi();
@@ -198,6 +230,17 @@ void wifiLegendsRoutine(){
      for(int i = 0; i < size; i++){
          printf("%s %5d \n", s[i].key, s[i].color);
      }
+
+     testInt(test, 10, size);
+
+     Legend l1 = ss.legends[0];
+     Legend l2 = ss.legends[9];
+
+     testInt(test, 15,l1.color);
+     testString(test, "FROZEN FOOD", l1.key);
+
+     testInt(test, 4,l2.color);
+     testString(test, "UTENSILS AND CUTLERY", l2.key);
 }
 
 void wifiNodeInfoRoutine(){
@@ -229,6 +272,15 @@ void wifiNodeInfoRoutine(){
      for(int i = 0; i < NODE_INFO_ARRAY_SIZE; i++){
     	 printf("%d\n", i2.nodeInfo[i]);
      }
+}
+
+/*
+ * verify by inspection
+ */
+void delayTest(){
+	printf("statement 1\n");
+	delay_us(10000);
+	printf("statement 2\n");
 }
 
 
@@ -435,3 +487,31 @@ void imuTestZ(void)
         i++;
     }
 }
+
+int testInt(char* test, int expected, int actual){
+	if(expected!=actual){
+		printf("error in %s: expected %d, got %d", test, expected, actual);
+		return 0;
+	}
+
+	return 1;
+}
+
+int testDouble(char* test, double expected, double actual){
+	if(expected!=actual){
+		printf("error in %s comparing doubles", test);
+		return 0;
+	}
+
+	return 1;
+}
+
+int testString(char* test, char* expected, char* actual){
+	if(strcmp(expected, actual) != 0){
+		printf("error in %s: expected %s, got %s", test, expected, actual);
+		return 0;
+	}
+
+	return 1;
+}
+

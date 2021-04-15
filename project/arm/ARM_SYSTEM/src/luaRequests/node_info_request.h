@@ -36,8 +36,19 @@
     a [16] distance_child_six;
  */
 
-static NodeInfo getNodeInfoFromResponse(char *response);
+
+/**
+ * sends command to rfs board to retrieve node info via wifi and parses response
+ * barcode: the barcode of the item whose node info we are querying
+ * returns NodeInfo representing the information related to that node in the map
+ */
 NodeInfo requestNodeInfo(char* barcode);
 
+/**
+ * parses string delimited by '|' to get one NodeInfo struct
+ * response: string to be parsed
+ * returns NodeInfo representing a node
+ */
+static NodeInfo getNodeInfoFromResponse(char *response);
 
 #endif /* LUAREQUESTS_NODE_INFO_REQUEST_H_ */

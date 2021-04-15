@@ -9,6 +9,7 @@
 #include "alt_int_device.h"
 #include "../common.h"
 
+//wifi uart register locations. Defined in serialIODecoder.v
 #define WiFi_ReceiverFifo ((volatile unsigned char *)(0xFF211010))
 #define WiFi_TransmitterFifo ((volatile unsigned char *)(0xFF211010))
 #define WiFi_InterruptEnableReg ((volatile unsigned char *)(0xFF211012))
@@ -28,7 +29,10 @@
 #define LUA_MSG_START "STRT\n"
 #define LUA_MSG_END_SUCCESS "EXIT0\0" //lua will explicitly send a null terminated character at the end, which is included here
 
-
+/*
+ * represents information related to reading from
+ * rfs wifi chip
+ */
 typedef struct wifi_context {
 	char *BUFFER;
 	int index;

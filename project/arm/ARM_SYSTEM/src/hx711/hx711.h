@@ -46,3 +46,24 @@ void hx711_tare(uint8_t times);
  * Sets the scale value based on calibration
  */
 void hx711_set_scale(float scale);
+
+/*
+ * sets the scale offset based on calibration
+ */
+void hx711_set_offset(long offset);
+
+/*
+ * retuns the scale offset
+ */
+long hx711_get_offset();
+
+/*
+ * powers down device
+ */
+void hx711_power_down();
+
+/*
+ * powers up device
+ */
+void hx711_power_up();
+
