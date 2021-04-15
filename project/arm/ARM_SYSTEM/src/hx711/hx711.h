@@ -1,3 +1,6 @@
+/*
+ * Source: https://www.instructables.com/How-to-Interface-HX711-Balance-Module-With-Load-Ce/
+ */
 
 #include <stdint.h>
 

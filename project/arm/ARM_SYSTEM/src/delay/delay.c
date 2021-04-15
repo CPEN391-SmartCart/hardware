@@ -5,6 +5,10 @@
  *      Author: jared
  */
 
+/*
+ * Source: https://people.ece.cornell.edu/land/courses/ece5760/DE1_SOC/SoC-FPGA%20Design%20Guide_EPFL.pdf
+ */
+
 #include "delay.h"
 
 void setup_hps_timer() {

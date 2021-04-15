@@ -1,4 +1,8 @@
 
+/*
+ * Source: ftp://ftp.intel.com/pub/fpgaup/pub/Intel_Material/17.0/Tutorials/Using_DE_Series_Accelerometer.pdf
+ */
+
 #include "imu.h"
 
 void pinmux_config()

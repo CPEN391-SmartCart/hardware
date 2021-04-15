@@ -5,6 +5,10 @@
  *      Author: jared
  */
 
+/*
+ * Source: https://www.instructables.com/How-to-Interface-HX711-Balance-Module-With-Load-Ce/
+ */
+
 #include "hx711.h"
 #include "../io/digital.h"
 
@@ -39,10 +43,6 @@ void hx711_set_gain(uint8_t gain)
 long hx711_read()
 {
 	while (!hx711_is_ready());
-
-//	printf("GAIN: %d\n", GAIN);
-//	printf("OFFSET: %ld\n", OFFSET);
-//	printf("SCALE: %f\n", SCALE);
 
 	unsigned long value = 0;
 	uint8_t data[3] = { 0 };
@@ -97,8 +97,7 @@ long hx711_read_average(uint8_t times)
 
 double hx711_get_value(uint8_t times)
 {
-	double test = (hx711_read_average(times) - OFFSET);
-	return test;
+	return (hx711_read_average(times) - OFFSET);
 }
 
 float hx711_get_units(uint8_t times)

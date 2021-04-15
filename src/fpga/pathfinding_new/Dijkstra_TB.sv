@@ -99,16 +99,12 @@ module Dijkstra_TB;
 		reset = 0;
 		#10;
 
-		start_id = 9'd0;
+		start_id = 9'd0; //change this to whatever node that is in the node map, 0 - 96 rn
 		start = 1'b1;
 		#20;
 		start = 1'b0;
 
-		#100000;
-		start_id = 9'd5;
-		start = 1'b1;
-		#20;
-		start = 1'b0;
+		//standard graphical simulation right now, too many nodes to test automatically
 	end
 
 endmodule
