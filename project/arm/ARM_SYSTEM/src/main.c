@@ -14,15 +14,7 @@
 #include "luaRequests/item_request.h"
 #include "luaRequests/sections_request.h"
 #include "luaRequests/legends_request.h"
-
-#define GraphicsCommandReg              (*(volatile unsigned short int *)(0xFF210000))
-#define GraphicsStatusReg               (*(volatile unsigned short int *)(0xFF210000))
-#define GraphicsX1Reg                   (*(volatile unsigned short int *)(0xFF210002))
-#define GraphicsY1Reg                   (*(volatile unsigned short int *)(0xFF210004))
-#define GraphicsX2Reg                   (*(volatile unsigned short int *)(0xFF210006))
-#define GraphicsY2Reg                   (*(volatile unsigned short int *)(0xFF210008))
-#define GraphicsColourReg               (*(volatile unsigned short int *)(0xFF21000E))
-#define GraphicsBackGroundColourReg     (*(volatile unsigned short int *)(0xFF210010))
+#include "imu/imu.h"
 
 #define DEBUG 0
 
@@ -53,10 +45,12 @@ int main(void)
 	initSystem();
 	loadMapData();
 
+	//calibrating/zeroing scale
 	hx711_set_scale(72.61);
 	hx711_tare(20);
 	printf("Scale calibration done!\n");
 	
+	//resetting vga store map
 	displayStoreMap();
 
     if(DEBUG) printf("buffer * location in mem = 0x%p\n", (void *) BUFFER);
@@ -64,6 +58,7 @@ int main(void)
     char stringBT[1024];
     int times = 0;
 
+    //main loop
     for(;;)
     {
 		readStringUsingProtocol(stringBT);
@@ -88,7 +83,10 @@ int main(void)
 	return 0;
 }
 
-
+/**
+ * Handles the message we receive from bluetooth differently
+ * depending on the protocol we defined
+ */
 void handleBTMessage(char*code, char*data)
 {
 
@@ -103,6 +101,7 @@ void handleBTMessage(char*code, char*data)
 	char sendMessage[1024] = "";
 	int *error_code; //see common.h for description of errors
 
+	//person scanned item
 	if(!strcmp(code,scanCode)){
 		lastScannedItem = requestItem(data, error_code);
 
@@ -121,9 +120,7 @@ void handleBTMessage(char*code, char*data)
 			double weight = getWeight(current_expected_weight + 40, current_expected_weight + 1000);
 
 
-			if(weight == -1){
-			}
-			else
+			if (weight != -1)
 			{
 				weight -= current_expected_weight;
 				double item_cost = (lastScannedItem.cost * weight) / 1000;
@@ -182,12 +179,14 @@ void handleBTMessage(char*code, char*data)
 		}
 	}
 
+	//item cost received
 	if(!strcmp(code,itemCostCode)){
 		AddItemToCart(lastScannedItem);
 
 		writeStringBT("acked");
 	}
 
+	//need to draw path to next item
 	if(!strcmp(code,pathPlanningCode)){
 		Item next_item = requestItem(data, error_code);
 
@@ -206,6 +205,7 @@ void handleBTMessage(char*code, char*data)
 		old_path_length = new_path_length;
 	}
 
+	//cold start path on bluetooth connect
 	if (!strcmp(code, startPlanningCode))
 	{
 		int node_id = 42;
@@ -233,6 +233,7 @@ void handleBTMessage(char*code, char*data)
 		old_path_length = new_path_length;
 	}
 
+	//clear path on VGA map
 	if (!strcmp(code, clearPlanningCode))
 	{
 		coord_t new_path_clear[1];
@@ -240,6 +241,7 @@ void handleBTMessage(char*code, char*data)
 		ShowNextItem("");
 	}
 
+	//payment was successful
 	if(!strcmp(code,successfulPayment)){
 		//theft protection
 		current_expected_weight += lastScannedItem.weight_g;
@@ -271,6 +273,7 @@ void handleBTMessage(char*code, char*data)
 		DisplayPaymentConfirmation();
 	}
 
+	//reset VGA map
 	if(!strcmp(code,reset)){
 		displayStoreMap();
 
@@ -278,6 +281,9 @@ void handleBTMessage(char*code, char*data)
 	}
 }
 
+/**
+ * Initializes bluetooth, wifi, and imu
+ */
 void initSystem()
 {
 	initBluetooth();
@@ -308,6 +314,9 @@ void initSystem()
     }
 }
 
+/**
+ * loads map data from database
+ */
 void loadMapData(){
 	int *error_code; //see common.h for description of errors
 
@@ -318,6 +327,9 @@ void loadMapData(){
 	legends = l.legends;
 }
 
+/**
+ * displays the map on the VGA monitor
+ */
 void displayStoreMap()
 {
 	int sectionSize = ss.size;
@@ -335,7 +347,8 @@ void displayStoreMap()
 }
 
 /*
- * returns the weight in grams, a return value of -1 means that no weight above the tolerance level was found
+ * Returns the weight in grams, a return value of -1 means
+ * that no weight within the tolerance level was found
  */
 double getWeight(double min, double max){
 	int retVal = -1;

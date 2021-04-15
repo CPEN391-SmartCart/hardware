@@ -132,12 +132,42 @@
 #define ADXL345_REG_DATAZ0      0x36  // read only
 #define ADXL345_REG_DATAZ1      0x37  // read only
 
-
+/**
+ * Configures the Pin Mux to connect the ADXL345 I2C wires to I2C0
+ */
 void pinmux_config();
+
+/**
+ * Initializes/configures I2C0
+ */
 void I2C0_init();
+
+/**
+ * Reads from the ADXL345 internal registers
+ */
 void ADXL345_REG_READ(uint8_t address, uint8_t *value);
+
+/**
+ * Writes to the ADXL345 internal registers
+ */
 void ADXL345_REG_WRITE(uint8_t address, uint8_t value);
+
+/**
+ * Reads len consecutive internal registers of the ADXL345
+ */
 void ADXL345_REG_MULTI_READ(uint8_t address, uint8_t values[], uint8_t len);
+
+/**
+ * Initializes/configures the ADXL345 mode of operation
+ */
 void ADXL345_init();
+
+/**
+ * Reads the acceleration data for the x, y, and z axes
+ */
 void ADXL345_XYZ_read(int16_t szData16[3]);
+
+/**
+ * Checks if there is new acceleration data
+ */
 bool ADXL345_is_data_ready();

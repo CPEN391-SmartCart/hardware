@@ -17,7 +17,22 @@
  */
 #define MESSAGE_STRING_BEGIN 2
 
+/**
+ * Initializes the bluetooth UART registers
+ */
 void initBluetooth(void);
+
+/**
+ * Writes the string to the bluetooth UART transmitter fifo
+ */
 void writeStringBT(char *string);
+
+/**
+ * Reads from the bluetooth UART receiver fifo into "string"
+ */
 int readStringBT(char string[32]);
+
+/**
+ * Reads the string from bluetooth using our predefined protocol
+ */
 int readStringUsingProtocol(char string[64]);

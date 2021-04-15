@@ -41,13 +41,46 @@ extern ALT_INT_INTERRUPT_t WIFI_INTERRUPT;
 extern volatile struct wifi_context *WIFI_ISR_CONTEXT;
 extern char BUFFER[1024];
 
+/**
+ * Initializes wifi with a specific baud rate
+ */
 void initWiFi(int baud_rate);
+
+/**
+ * Sets wifi reset on the chip low so the chip is reset
+ */
 void resetWiFi(void);
+
+/**
+ * Writes every character in the string (except null terminating one)
+ * to the UART transmitter fifo
+ */
 void writeStringWIFI(char *string);
+
+/**
+ * Reads from the UART receiver fifo until there is no more data available
+ * CAP of 16 bytes
+ */
 void readStringWIFI(char string[32]);
+
+/**
+ * Reads from the UART receiver fifo every cpu cycle until size is reached
+ */
 void readStringTillSizeWIFI(char *string, int size);
+
+/**
+ * Writes a command to the wifi chip, nodemcu (lua), and reads the response
+ */
 int writeAndReadResponse(char *write, char *response);
+
+/**
+ * Triggered on interrupt caused by receiving data from the wifi chip
+ */
 void wifi_isr_callback ( uint32_t icciar, void * context) ;
+
+/**
+ * Resets the wifi isr
+ */
 void resetWifiIsrContext(void);
 
 
