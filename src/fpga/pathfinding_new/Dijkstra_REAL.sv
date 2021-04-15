@@ -1,3 +1,7 @@
+/*
+INSPIRED FROM: https://people.ece.cornell.edu/land/courses/ece5760/FinalProjects/s2018/cz382_zz488_bx64/cz382_zz488_bx64/cz382_zz488_bx64/index.html
+*/
+
 `define INFINITY 14'd10000
 
 module Dijkstra_Table

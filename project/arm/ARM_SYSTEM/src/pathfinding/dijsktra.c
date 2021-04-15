@@ -2,29 +2,10 @@
 #include "../delay/delay.h"
 #include <stdio.h>
 
-//void initialize_map(char *nodes)
-//{
-//	char *node_split_token = strtok(nodes, "|");
-//
-//	while (node_split_token != NULL)
-//	{
-//		char *value_token = strtok(node_split_token, ",");
-//
-//		while (value_token != NULL)
-//		{
-//
-//
-//
-//			value_token = strtok(NULL, ",");
-//		}
-//
-//		node_split_token = strtok(NULL, "|");
-//	}
-//}
-
-
 int generate_path(int start_node_id, int goal_node_id, coord_t *path)
 {
+	//DS5 complaining about putting this in header file, not much we can do
+	//without rewriting the makefile
 	coord_t nodes[] = {
 			{21, 18},
 			{107, 18},
@@ -144,48 +125,3 @@ int generate_path(int start_node_id, int goal_node_id, coord_t *path)
 
 	return length + 1;
 }
-
-//short GeneratePath(short start_node[], short goal_node[], coord_t *path)
-//{
-//	int i, j;
-//
-//	*PATH_GOAL_SET = 0;
-//
-//	*PATH_WRITE = 1;
-//
-//	for (i = 0, j = 0; i < 17; i++)
-//	{
-//		*(PATH_WRITE_START + i) = start_node[i];
-//	}
-//
-//	for (i = 0, j = 0; i < 17; i++)
-//	{
-//		*(PATH_WRITE_START + 17 + i) = goal_node[i];
-//	}
-//
-//	*PATH_GOAL_SET = 1;
-//
-//	short length = *PATH_LENGTH;
-//
-//	//wait for the path to be generated, == FFFF doesnt work for some reason
-//	while (length & 0x8000)
-//	{
-//		length = *PATH_LENGTH;
-//	}
-//
-//    for(i = 0, j = 0; i <= 2 * length + 2; i++)
-//    {
-//
-//        if(i % 2 == 0)
-//        {
-//            path[j].x = *(PATH_START + i) + 3; //pixel offset of 3
-//        }
-//        else
-//        {
-//            path[j].y = *(PATH_START + i) + 5; //pixel offset of 5
-//            j++;
-//        }
-//    }
-//
-//	return length;
-//}

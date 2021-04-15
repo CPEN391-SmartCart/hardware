@@ -47,17 +47,17 @@ void addToCart(){
 
 
 	char *barcodes[] = {
-		"XEAQ5424",
-		"XGAO9797",
-		"SCEU6683",
-		"THEY8635",
+		"604059000075",
+		"628233883209",
+		"064200160001",
+		"065302000271",
 		"NTSN6378",
-		"GNLK7691",
-		"ZTZZ2398",
-		"CXKC2105",
-		"SNBN0794",
-		"RCJJ7746",
-		"WBPG8611"
+		"065333001100",
+		"667888310661",
+		"628233229540",
+		"068100058925",
+		"068400662709",
+		"068100895971"
 	};
 
 	Item start_item = requestItem(barcodes[0],ec );
@@ -127,7 +127,7 @@ void vgaRoutine(){
 	printf("check screen...\n");
 
 }
-//working
+
 void wifiItemRoutine(){
 	int *ec;
 
@@ -142,8 +142,8 @@ void wifiItemRoutine(){
 
      delay_us(100000);
 
-     Item bc = requestItem("XGAO9797", ec);
-     Item bc2 = requestItem("THEY8635", ec);
+     Item bc = requestItem("604059000075", ec);
+     Item bc2 = requestItem("628233883209", ec);
 
 
      printf(" barcode barcode,name,sectionid = %s, name = %s, section = %d\n", bc.barcode, bc.name, bc.section_id);
@@ -151,7 +151,6 @@ void wifiItemRoutine(){
 
 }
 
-//working
 void wifiSectionsRoutine(){
 	int *ec;
 
@@ -177,7 +176,6 @@ void wifiSectionsRoutine(){
      }
 }
 
-//working
 void wifiLegendsRoutine(){
 	int *ec;
 
@@ -217,8 +215,8 @@ void wifiNodeInfoRoutine(){
      delay_us(100000);
 
 
-     NodeInfo i1 = requestNodeInfo("XEAQ5424");
-     NodeInfo i2 = requestNodeInfo("ZTZZ2398");
+     NodeInfo i1 = requestNodeInfo("604059000075");
+     NodeInfo i2 = requestNodeInfo("628233883209");
 
 
      printf("node info 1:\n");
@@ -231,4 +229,209 @@ void wifiNodeInfoRoutine(){
      for(int i = 0; i < NODE_INFO_ARRAY_SIZE; i++){
     	 printf("%d\n", i2.nodeInfo[i]);
      }
+}
+
+
+void pathfindingTestNodeToNode()
+{
+    int start_node_id = 0;
+    int goal_node_id = 82; //last node ID that isn't an item
+
+    coord_t path[100];
+    int path_length = generate_path(start_node_id, goal_node_id, path);
+
+    for (int i = 0; i < path_length; i++)
+    {
+        printf("X: %d, Y: %d\n", path[i].x, path[i].y);
+    }
+
+    printf("DONE!\n");
+}
+
+void pathfindingTestNodeToItem()
+{
+    int start_node_id = 0;
+    int goal_node_id = 83; //first node ID that is an item
+
+    coord_t path[100];
+    int path_length = generate_path(start_node_id, goal_node_id, path);
+
+    for (int i = 0; i < path_length; i++)
+    {
+        printf("X: %d, Y: %d\n", path[i].x, path[i].y);
+    }
+
+    printf("DONE!\n");
+}
+
+void pathfindingTestItemToItem()
+{
+    int start_node_id = 83; //first node ID that is an item
+    int goal_node_id = 96; //last node ID that is an item
+
+    coord_t path[100];
+    int path_length = generate_path(start_node_id, goal_node_id, path);
+
+    for (int i = 0; i < path_length; i++)
+    {
+        printf("X: %d, Y: %d\n", path[i].x, path[i].y);
+    }
+
+    printf("DONE!\n");
+}
+
+
+void weightScaleTestSpaghetti(void)
+{
+    hx711_set_scale(72.61); //precalibrated scale
+    hx711_tare(20); //zeroing
+    printf("Scale calibration done!\n");
+
+    printf("Place spaghetti on scale\n");
+
+    int i = 0;
+    while (i < 10)
+    {
+        char weight[20];
+        FloatToString(hx711_get_units(10), weight, 2, 0);
+        i++;
+    }
+}
+
+void weightScaleTestTuna(void)
+{
+    hx711_set_scale(72.61); //precalibrated scale
+    hx711_tare(20); //zeroing
+    printf("Scale calibration done!\n");
+
+    printf("Place tuna on scale\n");
+
+    int i = 0;
+    while (i < 10)
+    {
+        char weight[20];
+        FloatToString(hx711_get_units(10), weight, 2, 0);
+        i++;
+    }
+}
+
+void weightScaleTestOnion(void)
+{
+    hx711_set_scale(72.61); //precalibrated scale
+    hx711_tare(20); //zeroing
+    printf("Scale calibration done!\n");
+
+    printf("Place onion on scale\n");
+
+    int i = 0;
+    while (i < 10)
+    {
+        char weight[20];
+        FloatToString(hx711_get_units(10), weight, 2, 0);
+        i++;
+    }
+}
+
+void weightScaleTestCocoa(void)
+{
+    hx711_set_scale(72.61); //precalibrated scale
+    hx711_tare(20); //zeroing
+    printf("Scale calibration done!\n");
+
+    printf("Place cocoa on scale\n");
+
+    int i = 0;
+    while (i < 10)
+    {
+        char weight[20];
+        FloatToString(hx711_get_units(10), weight, 2, 0);
+        i++;
+    }
+}
+
+void imuTestX(void)
+{
+    uint8_t devid;
+
+    pinmux_config();
+    I2C0_init();
+    ADXL345_REG_READ(0x00, &devid);
+
+    if (devid == 0xE5)
+    {
+        ADXL345_init();
+    }
+    else
+    {
+        printf("Incorrect device ID!!\n");
+    }
+
+
+    int16_t XYZ[3];
+    ADXL345_XYZ_read(XYZ);
+
+    int i = 0;
+    while (i < 50)
+    {
+        printf("change in X: %d", XYZ[0] * 4);
+        i++;
+    }
+}
+
+void imuTestY(void)
+{
+    uint8_t devid;
+
+    pinmux_config();
+    I2C0_init();
+    ADXL345_REG_READ(0x00, &devid);
+
+    if (devid == 0xE5)
+    {
+        ADXL345_init();
+    }
+    else
+    {
+        printf("Incorrect device ID!!\n");
+    }
+
+
+    int16_t XYZ[3];
+    ADXL345_XYZ_read(XYZ);
+
+    int i = 0;
+    while (i < 50)
+    {
+        printf("change in Y: %d", XYZ[1] * 4);
+        i++;
+    }
+}
+
+void imuTestZ(void)
+{
+    uint8_t devid;
+
+    pinmux_config();
+    I2C0_init();
+    ADXL345_REG_READ(0x00, &devid);
+
+    if (devid == 0xE5)
+    {
+        ADXL345_init();
+    }
+    else
+    {
+        printf("Incorrect device ID!!\n");
+    }
+
+
+    int16_t XYZ[3];
+    ADXL345_XYZ_read(XYZ);
+
+    int i = 0;
+    while (i < 50)
+    {
+        printf("change in Z: %d", XYZ[2] * 4);
+        i++;
+    }
 }
