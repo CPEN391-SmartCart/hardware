@@ -56,7 +56,7 @@ void initUART(
     *LineControlReg |= 1UL << 1;
     *LineControlReg |= 1UL;
 
-    // Reset the Fifo’s in the FiFo Control Reg by setting bits 1 & 2
+    // Reset the Fifos in the FiFo Control Reg by setting bits 1 & 2
     *FifoControlReg |= 1UL << 2;
     *FifoControlReg |= 1UL << 1;
 
@@ -73,6 +73,7 @@ void writeStringUART(char *string, volatile unsigned char *LineStatusReg, volati
     {
         writeCharUART(c, LineStatusReg, TransmitterFifo);
     }
+    writeCharUART('\n', LineStatusReg, TransmitterFifo);
 }
 
 void writeCharUART(char c, volatile unsigned char *LineStatusReg, volatile unsigned char *TransmitterFifo)

@@ -1,24 +1,37 @@
-typedef struct packed {
-	logic [15:0] x;
-	logic [15:0] y;
-} coord_t;
-
-module Path_Writer(
-	input logic success,
-	input coord_t path[100],
-	input logic [15:0] length,
+module Path_Writer
+#(
+	parameter MAX_NODES = 10
+)
+(
+	input logic clk,
+	input logic [8:0] neighbour [MAX_NODES-1:0],
 
 	input logic [15:0] address,
 	input logic io_enable,
 	input logic write_enable,
+	input logic [15:0] data_in,
 	
 	output logic [15:0] data_out
 );
 
+	logic [15:0] data_in_reg;
+
+	always_ff @(posedge clk) begin 
+		if (io_enable == 0 && write_enable == 0 && address == 15'b0000_0001_0000_000)
+			data_in_reg <= data_in;
+	end
+
 	always_comb
 	begin
 		data_out = 16'bZZZZZZZZZZZZZZZZ;
-		
+
+		if (!io_enable && write_enable) begin 
+			if (address[15:1] == 15'b0000_0001_0000_001) begin 
+				data_out = neighbour[data_in_reg];
+			end
+		end
+
+		/*
 		if (!io_enable && write_enable) begin
 			if (address[15:1] == 15'b0000_0001_0000_000)
 				if (success)
@@ -426,6 +439,7 @@ module Path_Writer(
 			else if (address[15:1] == 15'b0000_0010_1001_000) //200
 				data_out = path[99].y;
 		end
+		*/
 	end
 
 endmodule

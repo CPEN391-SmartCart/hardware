@@ -2,37 +2,44 @@
 # Automatically-generated file. Do not edit!
 ################################################################################
 
-O_SRCS := 
-CPP_SRCS := 
-C_UPPER_SRCS := 
-C_SRCS := 
-S_UPPER_SRCS := 
-S_SRCS := 
-ASM_SRCS := 
-CXX_SRCS := 
 ASM_UPPER_SRCS := 
+ASM_SRCS := 
+SX_UPPER_SRCS := 
+CPP_SRCS := 
+S_UPPER_SRCS := 
+O_SRCS := 
+C_UPPER_SRCS := 
+CXX_SRCS := 
 C++_SRCS := 
+S_SRCS := 
+SX_SRCS := 
 CC_SRCS := 
-OBJS := 
-C++_DEPS := 
-ASM_DEPS := 
+C_SRCS := 
+C_UPPER_DEPS := 
+S_DEPS := 
 C_DEPS := 
 CC_DEPS := 
+SX_DEPS := 
 ASM_UPPER_DEPS := 
-CPP_DEPS := 
-S_DEPS := 
+C++_DEPS := 
 EXECUTABLES := 
 CXX_DEPS := 
-C_UPPER_DEPS := 
+OBJS := 
+SX_UPPER_DEPS := 
+ASM_DEPS := 
 S_UPPER_DEPS := 
+CPP_DEPS := 
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-src/wifi \
-src/uart \
-src \
-src/io \
-src/hx711 \
-src/delay \
 src/bluetooth \
+src/delay \
+src/hx711 \
+src/interrupt \
+src/io \
+src/luaRequests \
+src \
+src/uart \
+src/vga \
+src/wifi \
 

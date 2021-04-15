@@ -50,7 +50,7 @@ static int getFirstLegendFromResponse(char *read, Legend *legend_result){
 /*
  * returns malloaced array of Legends created from response. pls free!
  */
-LegendArr requestLegends(int store_id){
+LegendArr requestLegends(int store_id, int *ec){
 	char command[50];
 	Legend first_legend;
 
@@ -67,6 +67,7 @@ LegendArr requestLegends(int store_id){
 
 	int status = writeAndReadResponse(command, first_response);
 
+	*ec = status;
 	int size;
 
 	if(status == LUA_RESPONSE_TBC){
@@ -90,6 +91,7 @@ LegendArr requestLegends(int store_id){
 	while(status == LUA_RESPONSE_TBC){
 		char response[100];
 		status = writeAndReadResponse(command, response);
+		*ec = status;
 		Legend l = getLegendFromResponse(response);
 		legends[index++] = l;
 

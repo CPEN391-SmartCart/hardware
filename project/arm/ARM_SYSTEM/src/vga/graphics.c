@@ -60,13 +60,6 @@ void VLine(int x1, int y1, int length, int Colour)
      GraphicsCommandReg = DrawLine; // give graphics "draw line" command
  }
 
-//void DrawShortestPath(int Colour)
-//{
-//    WAIT_FOR_GRAPHICS;             // is graphics ready for new command
-//    GraphicsColourReg = Colour;    // set pixel colour
-//    GraphicsCommandReg = DrawPath; // give graphics "draw path" command
-//}
-
 void Rectangle(int x, int y, int width, int height, int colour, int borderThickness)
 {
     FilledRectangle(x, y, borderThickness, height, colour);

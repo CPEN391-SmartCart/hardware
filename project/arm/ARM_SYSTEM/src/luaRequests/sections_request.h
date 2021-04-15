@@ -11,7 +11,7 @@
 
 static Section getSectionFromResponse(char *response);
 static int getFirstSectionFromResponse(char *read, Section *section_result);
-SectionArr requestSections(int store_id);
+SectionArr requestSections(int store_id, int *ec);
 
 
 #endif /* REQUESTS_SECTIONS_REQUEST_H_ */

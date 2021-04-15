@@ -91,12 +91,16 @@ void readStringWIFI(char *string)
     char c = ' ';
 
     i = 0;
-    while (c != '\r')
+    int nodata = 0;
+    while (c != '\r' && nodata < 100)
     {
 		if (dataReadyUART(WiFi_LineStatusReg))
 		{
 			c = readCharUART(WiFi_LineStatusReg, WiFi_ReceiverFifo);
 			string[i++] = c;
+			nodata = 0;
+		} else{
+			nodata++;
 		}
     }
 
@@ -120,11 +124,11 @@ int writeAndReadResponse(char *write, char *read) {
 		if(WIFI_ISR_CONTEXT->doneRead == 1) {
 			done_or_timeout = 1;
 		} else if (num_waits++ >= 500) {
-			printf("\n TIMEOUT ON RECEIVING RESPONSE\N");
+			printf("\n TIMEOUT ON RECEIVING RESPONSE\n");
 			done_or_timeout = 1;
-			char error_resp[50];
-			memcpy(error_resp, WIFI_ISR_CONTEXT->BUFFER, 49);
-			error_resp[49]='\0';
+			char error_resp[200];
+			memcpy(error_resp, WIFI_ISR_CONTEXT->BUFFER, 199);
+			error_resp[199]='\0';
 			printf("Received in Buffer (note this could be incomplete): %s", error_resp);
 			return -1;
 		}

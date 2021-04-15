@@ -41,11 +41,11 @@ module node_mem (
 	q);
 
 	input	  clock;
-	input	[271:0]  data;
+	input	[13:0]  data;
 	input	[6:0]  rdaddress;
 	input	[6:0]  wraddress;
 	input	  wren;
-	output	[271:0]  q;
+	output	[13:0]  q;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
@@ -89,7 +89,7 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
-// Retrieval info: PRIVATE: MEMSIZE NUMERIC "27200"
+// Retrieval info: PRIVATE: MEMSIZE NUMERIC "1400"
 // Retrieval info: PRIVATE: MEM_IN_BITS NUMERIC "0"
 // Retrieval info: PRIVATE: MIFfilename STRING ""
 // Retrieval info: PRIVATE: OPERATION_MODE NUMERIC "2"
@@ -109,10 +109,10 @@ endmodule
 // Retrieval info: PRIVATE: USE_DIFF_CLKEN NUMERIC "0"
 // Retrieval info: PRIVATE: UseDPRAM NUMERIC "1"
 // Retrieval info: PRIVATE: VarWidth NUMERIC "0"
-// Retrieval info: PRIVATE: WIDTH_READ_A NUMERIC "272"
-// Retrieval info: PRIVATE: WIDTH_READ_B NUMERIC "272"
-// Retrieval info: PRIVATE: WIDTH_WRITE_A NUMERIC "272"
-// Retrieval info: PRIVATE: WIDTH_WRITE_B NUMERIC "272"
+// Retrieval info: PRIVATE: WIDTH_READ_A NUMERIC "14"
+// Retrieval info: PRIVATE: WIDTH_READ_B NUMERIC "14"
+// Retrieval info: PRIVATE: WIDTH_WRITE_A NUMERIC "14"
+// Retrieval info: PRIVATE: WIDTH_WRITE_B NUMERIC "14"
 // Retrieval info: PRIVATE: WRADDR_ACLR_B NUMERIC "0"
 // Retrieval info: PRIVATE: WRADDR_REG_B NUMERIC "0"
 // Retrieval info: PRIVATE: WRCTRL_ACLR_B NUMERIC "0"
@@ -131,7 +131,7 @@ endmodule
 // Retrieval info: CONSTANT: RDCONTROL_ACLR STRING "OFF"
 // Retrieval info: CONSTANT: RDCONTROL_REG STRING "UNREGISTERED"
 // Retrieval info: CONSTANT: READ_DURING_WRITE_MODE_MIXED_PORTS STRING "CONSTRAINED_DONT_CARE"
-// Retrieval info: CONSTANT: WIDTH NUMERIC "272"
+// Retrieval info: CONSTANT: WIDTH NUMERIC "14"
 // Retrieval info: CONSTANT: WIDTHAD NUMERIC "7"
 // Retrieval info: CONSTANT: WIDTH_BYTEENA NUMERIC "1"
 // Retrieval info: CONSTANT: WRADDRESS_ACLR STRING "OFF"
@@ -139,18 +139,18 @@ endmodule
 // Retrieval info: CONSTANT: WRCONTROL_ACLR STRING "OFF"
 // Retrieval info: CONSTANT: WRCONTROL_REG STRING "INCLOCK"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
-// Retrieval info: USED_PORT: data 0 0 272 0 INPUT NODEFVAL "data[271..0]"
-// Retrieval info: USED_PORT: q 0 0 272 0 OUTPUT NODEFVAL "q[271..0]"
+// Retrieval info: USED_PORT: data 0 0 14 0 INPUT NODEFVAL "data[13..0]"
+// Retrieval info: USED_PORT: q 0 0 14 0 OUTPUT NODEFVAL "q[13..0]"
 // Retrieval info: USED_PORT: rdaddress 0 0 7 0 INPUT NODEFVAL "rdaddress[6..0]"
 // Retrieval info: USED_PORT: wraddress 0 0 7 0 INPUT NODEFVAL "wraddress[6..0]"
 // Retrieval info: USED_PORT: wren 0 0 0 0 INPUT GND "wren"
-// Retrieval info: CONNECT: @data 0 0 272 0 data 0 0 272 0
+// Retrieval info: CONNECT: @data 0 0 14 0 data 0 0 14 0
 // Retrieval info: CONNECT: @inclock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @outclock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @rdaddress 0 0 7 0 rdaddress 0 0 7 0
 // Retrieval info: CONNECT: @wraddress 0 0 7 0 wraddress 0 0 7 0
 // Retrieval info: CONNECT: @wren 0 0 0 0 wren 0 0 0 0
-// Retrieval info: CONNECT: q 0 0 272 0 @q 0 0 272 0
+// Retrieval info: CONNECT: q 0 0 14 0 @q 0 0 14 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL node_mem.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL node_mem.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL node_mem.cmp FALSE

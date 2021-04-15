@@ -27,7 +27,7 @@
 #define DrawVLine 2
 #define DrawLine 3
 #define DrawRectangle 4
-#define DrawPath 5 // TODO: include in verilog
+#define DrawPath 5
 #define PutAPixel 0xA
 #define GetAPixel 0xB
 #define ProgramPaletteColour 0x10
@@ -51,17 +51,63 @@
 #define BROWN 10
 #define GREY 9
 
+/*
+ * Clears the entire VGA
+ */
 void Reset();
+
+/*
+ * Draws a single pixel
+ */
 void WriteAPixel(int x, int y, int colour);
+
+/*
+ * Returns the pixel color at a specific pixel coordinates
+ */
 int ReadAPixel(int x, int y);
+
+/*
+ * Programs the palette with a custom RBG value
+ */
 void ProgramPalette(int PaletteNumber, int RGB);
+
+/*
+ * Draws a horizontal line
+ */
 void HLine(int x1, int y1, int length, int colour);
+
+/*
+ * Draws a vertical line
+ */
 void VLine(int x1, int y1, int length, int colour);
+
+/*
+ * Draws a Bresenham's line in any direction
+ */
 void DrawAnyLine(int x1, int y1, int x2, int y2, int colour);
+
+/*
+ * Draws a hollow rectangle
+ */
 void Rectangle(int x, int y, int width, int height, int colour, int borderThickness);
+
+/*
+ * Draws a filled rectangle
+ */
 void FilledRectangle(int x, int y, int width, int height, int colour);
+
+/*
+ * Draws a single ASCII character
+ */
 void DrawFontCharacter(int x, int y, int fontColour, int backgroundcolour, int c, int erase);
+
+/*
+ * Draws an entire ASCII string
+ */
 void DrawFontLine(int x, int y, int fontColour, int backgroundcolour, char *string, int bolded, int erase);
+
+/*
+ * Clears a text field
+ */
 void ClearTextField(int x, int y, int width, int height);
-//void DrawShortestPath(int Colour);
 

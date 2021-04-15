@@ -32,9 +32,9 @@ module Explored_RAM
 (
 	input logic clk,
 	input logic write_enable,
-	input logic [8:0] write_address,
+	input logic [11:0] write_address,
 	input node_info write_data,
-	input logic [8:0] read_address,
+	input logic [11:0] read_address,
 	
 	output node_info explored_node
 );
@@ -53,6 +53,10 @@ module Explored_RAM
 	`else
 		reg [271:0] mem [MAX_NODES-1:0] /* synthesis ramstyle = "no_rw_check, M10K" */;
 		
+		initial begin
+			$readmemh("/home/jared/Desktop/smartcart/hardware/zeroes.txt", mem);
+		end
+
 		always_ff @(posedge clk)
 		begin
 			if (write_enable) begin
@@ -78,7 +82,7 @@ module Explored_Child
 	input node_info current_child,
 	input node_info read_node,
 	
-	output logic [8:0] read_address,
+	output logic [11:0] read_address,
 	output logic explored_child,
 	output logic done
 );
@@ -155,7 +159,7 @@ module Explored_Parent
 	input node_info read_node,
 	
 	output logic finding_parent,
-	output logic [8:0] read_address,
+	output logic [11:0] read_address,
 	output node_info parent_node,
 	output logic done
 );
@@ -222,4 +226,84 @@ module Explored_Parent
 			end
 		endcase
 	end
+endmodule
+
+module Explored_Index
+#(
+	parameter MAX_NODES = 255
+)
+(
+	input logic clk,
+	input logic reset,
+	input logic find,
+	input node_info current_node,
+	input node_info read_node,
+	
+	output logic finding_explored_index,
+	output logic [11:0] read_address,
+
+	output logic [11:0] explored_address,
+	output logic done
+);
+	
+	localparam IDLE 		= 3'b000;
+	localparam START		= 3'b001;
+	localparam SET_ADDRESS	= 3'b010;
+	localparam WAIT_READ	= 3'b011;
+	localparam READ			= 3'b100;
+	localparam DONE			= 3'b101;
+
+	logic [2:0] state;
+	
+	always_ff @(posedge clk)
+	begin
+		if (reset)
+			state <= IDLE;
+		else
+			case (state)
+				IDLE:
+					if (find)
+						state <= START;
+						
+				START: state <= WAIT_READ;
+				WAIT_READ: state <= READ;
+				READ:
+					if (read_node.node_id == current_node.node_id || read_node.node_id == 16'b0)
+						state <= DONE;
+					else if (read_address < MAX_NODES)
+						state <= SET_ADDRESS;
+					else
+						state <= DONE;
+				SET_ADDRESS: state <= WAIT_READ;
+						
+				DONE: state <= IDLE;
+			endcase
+	end
+
+	always_ff @(posedge clk)
+	begin
+		case (state)
+			IDLE: begin
+				done <= 1'b0;
+				read_address <= 7'b0;	
+			end
+			START: begin
+				finding_explored_index <= 1'b1;
+				explored_address <= 7'b0;
+			end
+			READ: begin
+				if (read_node.node_id == current_node.node_id || read_node.node_id == 16'd0) begin
+					explored_address <= read_address;
+				end
+			end
+			SET_ADDRESS: begin
+				read_address <= read_address + 1'b1;
+			end
+			DONE: begin
+				finding_explored_index <= 1'b0;
+				done <= 1'b1;
+			end
+		endcase
+	end
+	
 endmodule

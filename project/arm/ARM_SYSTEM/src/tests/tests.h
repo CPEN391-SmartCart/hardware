@@ -7,6 +7,7 @@ void wifiItemRoutine(void);
 void wifiLegendsRoutine(void);
 void vgaRoutine(void);
 void wifiNodeInfoRoutine(void);
-
-
+void addToCart(void);
+void delayTest(void);
+void btTest(void);
 #endif /* TESTS_TESTS_H_ */
